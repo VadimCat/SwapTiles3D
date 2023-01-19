@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6636be04d75829b45baf40159ab92f04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelViewOrigin: {fileID: 566519204892903193, guid: eb75f46a2babe734ca46d63b0de5ad21, type: 3}
+  levelsConfig: {fileID: 11400000, guid: a2bd7cfba25506a4cb415304a3e56424, type: 2}
   screenNavigator: {fileID: 907379513472099776}
   backgroundService: {fileID: 907379514284693776}
   updateService: {fileID: 907379513036217410}

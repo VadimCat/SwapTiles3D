@@ -4,6 +4,7 @@ using Ji2Core.Core;
 using Ji2Core.Core.Analytics;
 using Ji2Core.Core.Audio;
 using Ji2Core.Core.Compliments;
+using Ji2Core.Core.SaveDataContainer;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.States;
 using Ji2Core.Core.UserInput;
@@ -15,8 +16,7 @@ namespace Client
 {
     public class Bootstrap : BootstraperBase
     {
-        // [SerializeField] private LevelsViewDataStorageBase<> levelsStorageBase;
-        
+        [SerializeField] private LevelsConfig levelsConfig;
         [SerializeField] private ScreenNavigator screenNavigator;
         [SerializeField] private BackgroundService backgroundService;
         [SerializeField] private UpdateService updateService;
@@ -25,12 +25,11 @@ namespace Client
         
         private AppSession appSession; 
             
-        private readonly Context context = new();
+        private readonly Context context = Context.GetInstance();
 
         protected override void Start()
         {
             DontDestroyOnLoad(this);
-            //TODO: Create installers where needed
             InstallCamera();
             InstallAudioService();
             InstallLevelsData();
@@ -40,23 +39,31 @@ namespace Client
             
             var sceneLoader = new SceneLoader(updateService);
             
-            var analytics = new Analytics(); 
-            analytics.AddLogger(new YandexMetricaLogger(AppMetrica.Instance));
-            
-            // var levelService = new LevelService(
-            //     // levelsStorageBase, 
-            //     levelViewOrigin, screenNavigator, updateService,
-            //     backgroundService, context, sceneLoader, analytics);
+            InstallAnalytics();
 
+            ISaveDataContainer dataContainer = new PlayerPrefsSaveDataContainer();
+            context.Register<ISaveDataContainer>(dataContainer);
+            context.Register(new PlayerPrefsSaveDataContainer());
+            
+            context.Register(new LevelsLoopProgress(dataContainer, levelsConfig.GetLevelsOrder()));
+            
             context.Register(sceneLoader);
-            context.Register(audioService);
-            // context.Register(levelService);
             context.Register(complimentsWordsService);
             
+            StartApplication();
+        }
+
+        private void InstallAnalytics()
+        {
+            var analytics = new Analytics();
+            analytics.AddLogger(new YandexMetricaLogger(AppMetrica.Instance));
+            context.Register(analytics);
+        }
+
+        private void StartApplication()
+        {
             StateMachine appStateMachine = new StateMachine(new StateFactory(context));
-            
             appSession = new AppSession(appStateMachine);
-            
             appSession.StateMachine.Enter<InitialState>();
         }
 
@@ -74,6 +81,7 @@ namespace Client
         {
             audioService.Bootstrap();
             audioService.PlayMusic(AudioClipName.DefaultBackgroundMusic);
+            context.Register(audioService);
         }
 
         private void InstallNavigator()
@@ -84,7 +92,8 @@ namespace Client
 
         private void InstallLevelsData()
         {
-            // levelsStorageBase.Bootstrap();
+            levelsConfig.Bootstrap();
+            context.Register(levelsConfig);
         }
     }
 }

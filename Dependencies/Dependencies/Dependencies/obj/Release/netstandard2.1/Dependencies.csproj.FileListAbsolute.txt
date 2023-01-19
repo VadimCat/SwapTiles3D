@@ -1,0 +1,10 @@
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\obj\Release\netstandard2.1\Dependencies.csproj.AssemblyReference.cache
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\obj\Release\netstandard2.1\Dependencies.GeneratedMSBuildEditorConfig.editorconfig
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\obj\Release\netstandard2.1\Dependencies.AssemblyInfoInputs.cache
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\obj\Release\netstandard2.1\Dependencies.AssemblyInfo.cs
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\obj\Release\netstandard2.1\Dependencies.csproj.CoreCompileInputs.cache
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\bin\Release\netstandard2.1\Dependencies.deps.json
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\bin\Release\netstandard2.1\Dependencies.dll
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\bin\Release\netstandard2.1\Dependencies.pdb
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\obj\Release\netstandard2.1\Dependencies.dll
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\obj\Release\netstandard2.1\Dependencies.pdb

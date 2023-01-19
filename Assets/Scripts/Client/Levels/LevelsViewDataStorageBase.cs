@@ -6,8 +6,7 @@ using UnityEngine;
 
 namespace Client
 {
-    [CreateAssetMenu]
-    public class LevelsViewDataStorageBase<TLevel> : ScriptableObject, IBootstrapable where TLevel : ILevel
+    public abstract class LevelsViewDataStorageBase<TLevel> : ScriptableObject, IBootstrapable where TLevel : ILevelView
     {
         [SerializeField] private List<TLevel> levels;
 
@@ -27,6 +26,12 @@ namespace Client
             {
                 levelsDict[lvl.Id] = lvl;
             }
+        }
+
+        public string[] GetLevelsOrder()
+        {
+            return (from level in levels
+                select level.Id).ToArray();
         }
 
 #if UNITY_EDITOR

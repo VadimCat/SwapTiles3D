@@ -1,0 +1,9 @@
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\bin\Release\netstandard2.1\publish\Dependencies.dll
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\bin\Release\netstandard2.1\publish\Dependencies.deps.json
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\bin\Release\netstandard2.1\publish\Dependencies.pdb
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\bin\Release\netstandard2.1\publish\Castle.Core.dll
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\bin\Release\netstandard2.1\publish\Newtonsoft.Json.dll
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\bin\Release\netstandard2.1\publish\NSubstitute.dll
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\bin\Release\netstandard2.1\publish\System.Diagnostics.EventLog.dll
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\bin\Release\netstandard2.1\publish\System.Security.Principal.Windows.dll
+C:\Vadzim\Projects\SwapTiles\Dependencies\Dependencies\Dependencies\bin\Release\netstandard2.1\publish\System.Threading.Tasks.Extensions.dll

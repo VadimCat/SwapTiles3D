@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1beba4238a4c4fdfbe2f4b69cd1daa49, type: 3}
   m_Name: CellAnimationConfig
   m_EditorClassIdentifier: 
-  selectTime: 0.5
-  moveTime: 1.5
-  selectScale: 1.1
+  selectTime: 0.15
+  moveTime: 0.45
+  selectScale: 0.95

@@ -17,16 +17,19 @@ namespace Client.States
 
         public Dictionary<Type, IExitableState> GetStates(StateMachine stateMachine)
         {
-
+            var screenNavigator = context.ScreenNavigator();
             var dict = new Dictionary<Type, IExitableState>();
 
-            dict[typeof(InitialState)] = new InitialState(stateMachine, context.ScreenNavigator(),
+            dict[typeof(InitialState)] = new InitialState(stateMachine, screenNavigator,
                 context.LevelsLoopProgress(), context.ISaveDataContainer());
-            
+
             dict[typeof(LoadLevelState)] = new LoadLevelState(context, stateMachine, context.SceneLoader(),
-                context.ScreenNavigator(), context.GetService<LevelsConfig>());
-            
-            dict[typeof(GameState)] = new GameState(stateMachine, context.ScreenNavigator());
+                screenNavigator, context.GetService<LevelsConfig>());
+
+            dict[typeof(GameState)] = new GameState(stateMachine, screenNavigator);
+
+            dict[typeof(LevelCompletedState)] = new LevelCompletedState(stateMachine, screenNavigator,
+                context.LevelsLoopProgress(), context.GetService<LevelsConfig>());
 
             return dict;
         }

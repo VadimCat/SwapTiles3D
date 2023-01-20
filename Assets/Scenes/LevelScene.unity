@@ -687,6 +687,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelView
       objectReference: {fileID: 0}
+    - target: {fileID: 8948780791794523292, guid: ab6809cdbe9b22740b926216bd85484d, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1781361740}
+    - target: {fileID: 8948780791794523292, guid: ab6809cdbe9b22740b926216bd85484d, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8948780791794523295, guid: ab6809cdbe9b22740b926216bd85484d, type: 3}
       propertyPath: m_Pivot.x
       value: 0

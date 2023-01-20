@@ -36,15 +36,6 @@ namespace Client.UI.Screens
             animationsSequence.Play();
         }
 
-        public void HideNextButton()
-        {
-            var zeroAlpha = nextButton.image.color;
-            zeroAlpha.a = 0;
-            nextButton.image.color = zeroAlpha;
-            nextButtonText.alpha = 0;
-            nextButton.interactable = false;
-        }
-
         private async void FireNext()
         {
             await nextButton.transform.DOScale(0.9f, 0.1f).AwaitForComplete();
@@ -54,6 +45,11 @@ namespace Client.UI.Screens
         private void Complete()
         {
             ClickNext?.Invoke();
+        }
+
+        private void OnDestroy()
+        {
+            ClickNext = null;
         }
     }
 }

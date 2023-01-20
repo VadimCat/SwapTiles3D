@@ -1,6 +1,5 @@
 ﻿using Client.Views.Level;
 using UnityEngine;
-using Views.Cell;
 
 namespace Client
 {

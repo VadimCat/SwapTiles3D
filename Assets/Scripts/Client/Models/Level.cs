@@ -74,7 +74,7 @@ namespace Client.Models
             {
                 for (var j = 0; j < currentPoses.GetLength(1); j++)
                 {
-                    if (currentPoses[i, j].x == i || currentPoses[i, j].y == j)
+                    if (currentPoses[i, j].x != i || currentPoses[i, j].y != j)
                         isFailed = true;
                 }
 

@@ -40,7 +40,7 @@ namespace Client.States
             await UniTask.WhenAll(facebookTask, dataLoadingTask);
 
             stateMachine.Enter<LoadLevelState, LoadLevelStatePayload>(
-                new LoadLevelStatePayload(levelsLoopProgress.GetNextLevelData(), 0));
+                new LoadLevelStatePayload(levelsLoopProgress.GetNextLevelData()));
         }
 
         private async UniTask LoadFb()

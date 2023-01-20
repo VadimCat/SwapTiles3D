@@ -14,7 +14,8 @@ namespace Client.Models
         private float playTime = 0;
 
         public string Name => levelData.name;
-
+        public int LevelCount => levelData.playedTotal;
+        
         protected LevelBase(Analytics analytics, LevelData levelData, ISaveDataContainer saveDataContainer)
         {
             this.analytics = analytics;

@@ -12,6 +12,8 @@ namespace Client.States
         private readonly ScreenNavigator screenNavigator;
         private readonly LevelsLoopProgress levelsLoopProgress;
 
+        private GameStatePayload payload;
+
         public GameState(StateMachine stateMachine, ScreenNavigator screenNavigator)
         {
             this.stateMachine = stateMachine;
@@ -20,47 +22,26 @@ namespace Client.States
 
         public async UniTask Enter(GameStatePayload payload)
         {
+            this.payload = payload;
             await screenNavigator.PushScreen<LevelScreen>();
-            
+
             payload.levelPresenter.StartLevel();
             payload.levelPresenter.LevelCompleted += OnLevelComplete;
         }
 
         private void OnLevelComplete()
         {
-            stateMachine.Enter<LevelCompletedState, LevelCompletedPayload>(new LevelCompletedPayload());
+            var levelCompletedPayload = new LevelCompletedPayload()
+            {
+                level = payload.levelPresenter.Model
+            };
+            stateMachine.Enter<LevelCompletedState, LevelCompletedPayload>(levelCompletedPayload);
         }
 
         public async UniTask Exit()
         {
             await screenNavigator.CloseScreen<LevelScreen>();
         }
-    }
-
-    public class LevelCompletedState : IPayloadedState<LevelCompletedPayload>
-    {
-        private readonly StateMachine stateMachine;
-        private readonly ScreenNavigator screenNavigator;
-
-        public LevelCompletedState(StateMachine stateMachine, ScreenNavigator screenNavigator)
-        {
-            this.stateMachine = stateMachine;
-            this.screenNavigator = screenNavigator;
-        }
-        
-        public async UniTask Enter(LevelCompletedPayload payload)
-        {
-            await screenNavigator.PushScreen<LevelCompletedScreen>();
-        }
-
-        public UniTask Exit()
-        {
-            throw new System.NotImplementedException();
-        }
-    }
-
-    public class LevelCompletedPayload
-    {
     }
 
     public class GameStatePayload

@@ -43,6 +43,8 @@ namespace Client.Presenters
             model.TileDeselected += DeselectTile;
         }
 
+        public Level Model => model;
+
         public void BuildLevel()
         {
             var levelViewData = levelViewConfig.GetData(model.Name).ViewData();
@@ -69,7 +71,7 @@ namespace Client.Presenters
         {
             model.LogAnalyticsLevelStart();
             levelScreen = (LevelScreen)screenNavigator.CurrentScreen;
-            levelScreen.SetLevelName(model.Name);
+            levelScreen.SetLevelName($"Level {model.LevelCount + 1}");
 
             updateService.Add(this);
         }

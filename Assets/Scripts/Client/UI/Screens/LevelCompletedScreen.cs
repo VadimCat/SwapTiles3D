@@ -1,25 +1,24 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Scripts.Utils;
 using Ji2Core.UI.Screens;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Utils;
 
 namespace Client.UI.Screens
 {
     public class LevelCompletedScreen : BaseScreen
     {
         private const string levelNamePattern = "LEVEL {0}";
+        
         [SerializeField] private Button nextButton;
         [SerializeField] private Image levelResult;
         [SerializeField] private TMP_Text levelName;
         [SerializeField] private Transform light0;
 
-        public event Action OnClickNext;
+        public event Action ClickNext;
 
         private void Awake()
         {
@@ -55,7 +54,7 @@ namespace Client.UI.Screens
         public void SetLevelResult(Sprite levelResult, int levelNumber)
         {
             this.levelResult.sprite = levelResult;
-            this.levelName.text = string.Format(levelNamePattern, levelNumber);
+            this.levelName.text = string.Format(levelNamePattern, levelNumber + 1);
         }
 
         private async void FireNext()
@@ -66,12 +65,12 @@ namespace Client.UI.Screens
 
         private void Complete()
         {
-            OnClickNext?.Invoke();
+            ClickNext?.Invoke();
         }
 
         private void OnDestroy()
         {
-            OnClickNext = null;
+            ClickNext = null;
         }
     }
 }

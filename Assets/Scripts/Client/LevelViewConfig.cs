@@ -21,6 +21,15 @@ namespace Client
                 Image = image
             };
         }
+
+#if UNITY_EDITOR
+        public void SetData(string id, Sprite image, Vector2Int cutSize)
+        {
+            this.id = id;
+            this.image = image;
+            this.cutSize = cutSize;
+        }
+#endif
     }
 
     public static class SpriteExtensions

@@ -1,13 +1,5 @@
-﻿using Ji2Core.Core;
-using Ji2Core.Core.SaveDataContainer;
-
-public class LevelData
-{
-    public string name;
-    public int playedTotal;
-    public int lvlLoop;
-    public int lvlIndex;
-}
+﻿using Ji2Core.Core.SaveDataContainer;
+using UnityEngine;
 
 namespace Client
 {
@@ -30,7 +22,7 @@ namespace Client
             int lvlIndex = playedTotal % levelOrder.Length;
             int lvlLoop = playedTotal / levelOrder.Length;
             string lvlId = levelOrder[lvlIndex];
-
+            
             return new LevelData()
             {
                 name = lvlId,
@@ -46,4 +38,12 @@ namespace Client
             saveDataContainer.SaveValue(LevelsPlayedTotalIndexKey, playedTotal + 1);
         }
     }
+}
+
+public class LevelData
+{
+    public string name;
+    public int playedTotal;
+    public int lvlLoop;
+    public int lvlIndex;
 }

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Ji2Core.Core.Analytics;
+using Ji2Core.Core.SaveDataContainer;
 using Models;
+using UnityEngine;
 
 namespace Client.Models
 {
@@ -8,19 +10,35 @@ namespace Client.Models
     {
         private readonly Analytics analytics;
         private readonly LevelData levelData;
+        protected readonly ISaveDataContainer saveDataContainer;
         private float playTime = 0;
 
-        public string name => levelData.name;
-        
-        public LevelBase(Analytics analytics, LevelData levelData)
+        public string Name => levelData.name;
+
+        protected LevelBase(Analytics analytics, LevelData levelData, ISaveDataContainer saveDataContainer)
         {
             this.analytics = analytics;
             this.levelData = levelData;
+            this.saveDataContainer = saveDataContainer;
+            
+            CheckPlayTimeForAnalytics();
         }
-        
+
+        private void CheckPlayTimeForAnalytics()
+        {
+            playTime = saveDataContainer.GetValue<float>(Name);
+            if (Mathf.Approximately(0, playTime))
+            {
+                LogAnalyticsLevelFinish(LevelExitType.game_closed);
+                playTime = 0;
+                saveDataContainer.ResetKey(Name);
+            }
+        }
+
         public void AppendPlayTime(float time)
         {
             playTime += time;
+            saveDataContainer.SaveValue(Name, time);
         }
 
         public void LogAnalyticsLevelStart()

@@ -1,12 +1,13 @@
 ﻿using Client.Models;
+using Client.Presenters;
 using Client.Views.Level;
 using Cysharp.Threading.Tasks;
 using Ji2Core.Core;
 using Ji2Core.Core.Analytics;
+using Ji2Core.Core.SaveDataContainer;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.States;
 using Ji2Core.UI.Screens;
-using UnityEngine;
 
 namespace Client.States
 {
@@ -61,20 +62,18 @@ namespace Client.States
             var view = context.GetService<LevelView>();
             var viewConfig = levelsConfig.GetData(levelData.name);
             var viewData = viewConfig.ViewData();
-            view.SetGridSizeByData(viewData);
+            var levelModel = new Level(context.GetService<Analytics>(), levelData, viewData.CutSize,
+                context.GetService<ISaveDataContainer>());
 
-            var levelModel = new Level(context.GetService<Analytics>(), levelData, viewData.CutSize);
+            var levelPresenter =
+                new LevelPresenter(view, levelModel, screenNavigator, context.GetService<UpdateService>(), levelsConfig,
+                    context.GetService<LevelsLoopProgress>());
 
-            foreach (var position in levelModel.CurrentPoses)
+            levelPresenter.BuildLevel();
+
+            return new GameStatePayload
             {
-                var cellView = Object.Instantiate(levelsConfig.CellView, view.GridRoot);
-                cellView.SetData(viewData, position);
-            }
-
-            return new GameStatePayload()
-            {
-                levelView = view,
-                level = levelModel
+                levelPresenter = levelPresenter
             };
         }
 

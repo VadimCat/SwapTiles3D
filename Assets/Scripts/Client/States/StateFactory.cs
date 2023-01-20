@@ -26,8 +26,7 @@ namespace Client.States
             dict[typeof(LoadLevelState)] = new LoadLevelState(context, stateMachine, context.SceneLoader(),
                 context.ScreenNavigator(), context.GetService<LevelsConfig>());
             
-            dict[typeof(GameState)] = new GameState(stateMachine, context.ScreenNavigator(), 
-                context.GetService<LevelsLoopProgress>());
+            dict[typeof(GameState)] = new GameState(stateMachine, context.ScreenNavigator());
 
             return dict;
         }

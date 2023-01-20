@@ -1,6 +1,5 @@
-﻿using Client.Models;
+﻿using Client.Presenters;
 using Client.UI.Screens;
-using Client.Views.Level;
 using Cysharp.Threading.Tasks;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.States;
@@ -13,27 +12,23 @@ namespace Client.States
         private readonly ScreenNavigator screenNavigator;
         private readonly LevelsLoopProgress levelsLoopProgress;
 
-        public GameState(StateMachine stateMachine, ScreenNavigator screenNavigator,
-            LevelsLoopProgress levelsLoopProgress)
+        public GameState(StateMachine stateMachine, ScreenNavigator screenNavigator)
         {
             this.stateMachine = stateMachine;
             this.screenNavigator = screenNavigator;
-            this.levelsLoopProgress = levelsLoopProgress;
         }
 
         public async UniTask Enter(GameStatePayload payload)
         {
-            var screen = await screenNavigator.PushScreen<LevelScreen>();
-            screen.ClickNext += OnClickNext; 
-            screen.SetLevelName(payload.level.name);
-            screen.ShowNextButton();
+            await screenNavigator.PushScreen<LevelScreen>();
+            
+            payload.levelPresenter.StartLevel();
+            payload.levelPresenter.LevelCompleted += OnLevelComplete;
         }
 
-        private void OnClickNext()
+        private void OnLevelComplete()
         {
-            levelsLoopProgress.IncLevel();
-            var payload = new LoadLevelStatePayload(levelsLoopProgress.GetNextLevelData(), .2f);
-            stateMachine.Enter<LoadLevelState, LoadLevelStatePayload>(payload);
+            stateMachine.Enter<LevelCompletedState, LevelCompletedPayload>(new LevelCompletedPayload());
         }
 
         public async UniTask Exit()
@@ -42,9 +37,34 @@ namespace Client.States
         }
     }
 
+    public class LevelCompletedState : IPayloadedState<LevelCompletedPayload>
+    {
+        private readonly StateMachine stateMachine;
+        private readonly ScreenNavigator screenNavigator;
+
+        public LevelCompletedState(StateMachine stateMachine, ScreenNavigator screenNavigator)
+        {
+            this.stateMachine = stateMachine;
+            this.screenNavigator = screenNavigator;
+        }
+        
+        public async UniTask Enter(LevelCompletedPayload payload)
+        {
+            await screenNavigator.PushScreen<LevelCompletedScreen>();
+        }
+
+        public UniTask Exit()
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+
+    public class LevelCompletedPayload
+    {
+    }
+
     public class GameStatePayload
     {
-        public LevelView levelView;
-        public Level level;
+        public LevelPresenter levelPresenter;
     }
 }

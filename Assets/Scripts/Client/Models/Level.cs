@@ -61,7 +61,7 @@ namespace Client.Models
                 currentPoses[selectedTiles[1].x, selectedTiles[1].y]) = (
                 currentPoses[selectedTiles[1].x, selectedTiles[1].y],
                 currentPoses[selectedTiles[0].x, selectedTiles[0].y]);
-
+            
             TilesSwapped?.Invoke(selectedTiles[0], selectedTiles[1]);
             CheckComplete();
         }

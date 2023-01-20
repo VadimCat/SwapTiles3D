@@ -55,7 +55,7 @@ namespace Client.Views.Level
             sortingCanvas.overrideSorting = false;
         }
 
-        public async UniTask PlayMoveAnimation(Vector3 pos, int childPos)
+        public async UniTask PlayMoveAnimation(Vector3 pos)
         {
             button.interactable = false;
             
@@ -64,6 +64,8 @@ namespace Client.Views.Level
             
             sortingCanvas.overrideSorting = false;
             button.interactable = true;
+            
+            button.transform.localPosition = Vector3.zero;
         }
 
         private void OnDestroy()

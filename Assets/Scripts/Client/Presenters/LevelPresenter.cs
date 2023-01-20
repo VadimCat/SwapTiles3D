@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Client.Models;
 using Client.UI.Screens;
 using Client.Views.Level;
+using Cysharp.Threading.Tasks;
 using Ji2Core.Core;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Utils.Shuffling;
@@ -23,7 +24,7 @@ namespace Client.Presenters
         private readonly LevelsLoopProgress levelsLoopProgress;
 
         private LevelScreen levelScreen;
-        private Dictionary<Vector2Int, CellView> posToView = new();
+        private Dictionary<Vector2Int, CellView> posToCell = new();
         private Dictionary<CellView, Vector2Int> viewToPos = new();
 
         public LevelPresenter(LevelView view, Level model, ScreenNavigator screenNavigator,
@@ -47,12 +48,18 @@ namespace Client.Presenters
             var levelViewData = levelViewConfig.GetData(model.Name).ViewData();
             view.SetGridSizeByData(levelViewData);
 
-            foreach (var position in model.currentPoses)
+            for (var y = 0; y < model.currentPoses.GetLength(0); y++)
+            for (var x = 0; x < model.currentPoses.GetLength(1); x++)
             {
+                var position = model.currentPoses[x, y];
+                
                 var cellView = Object.Instantiate(levelViewConfig.CellView, view.GridRoot);
                 cellView.SetData(levelViewData, position);
-                posToView[position] = cellView;
-                viewToPos[cellView] = position;
+                
+                var tilePos = new Vector2Int(x, y);
+                
+                posToCell[new Vector2Int(x, y)] = cellView;
+                viewToPos[cellView] = tilePos;
 
                 cellView.Clicked += OnTileClick;
             }
@@ -80,28 +87,42 @@ namespace Client.Presenters
 
         private void DeselectTile(Vector2Int pos)
         {
-            posToView[pos].PlayDeselectAnimation();
+            posToCell[pos].PlayDeselectAnimation();
         }
 
-        private void SwapTiles(Vector2Int pos1, Vector2Int pos2)
+        private async void SwapTiles(Vector2Int pos1, Vector2Int pos2)
         {
-            var view1 = posToView[pos1];
-            var view2 = posToView[pos2];
+            var cell1 = posToCell[pos1];
+            var cell2 = posToCell[pos2];
+
+            var task1 = cell1.PlayMoveAnimation(cell2.transform.position);
+            var task2 = cell2.PlayMoveAnimation(cell1.transform.position);
+
+            var p1 = Shufflling.Vector2IntToInt(pos1, model.cutSize);
+            var p2 = Shufflling.Vector2IntToInt(pos2, model.cutSize);
             
-            posToView[pos1]
-                .PlayMoveAnimation(view2.transform.position, Shufflling.Vector2IntToInt(pos1, model.cutSize));
+            await UniTask.WhenAll(task1, task2);
+
+            if(p1 < p2)
+            {
+                cell1.transform.SetSiblingIndex(p2);
+                cell2.transform.SetSiblingIndex(p1);
+            }
+            else
+            {
+                cell2.transform.SetSiblingIndex(p1);
+                cell1.transform.SetSiblingIndex(p2);
+            }
             
-            posToView[pos2]
-                .PlayMoveAnimation(view1.transform.position, Shufflling.Vector2IntToInt(pos2, model.cutSize));
-            
-            (posToView[pos1], posToView[pos2]) = (posToView[pos2], posToView[pos1]);
-            viewToPos[posToView[pos1]] = pos1;
-            viewToPos[posToView[pos2]] = pos2;
+            (posToCell[pos1], posToCell[pos2]) = (posToCell[pos2], posToCell[pos1]);
+
+            viewToPos[posToCell[pos1]] = pos1;
+            viewToPos[posToCell[pos2]] = pos2;
         }
 
         private void SelectTile(Vector2Int tilePos)
         {
-            posToView[tilePos].PlaySelectAnimation();
+            posToCell[tilePos].PlaySelectAnimation();
         }
 
         private void OnLevelCompleted()

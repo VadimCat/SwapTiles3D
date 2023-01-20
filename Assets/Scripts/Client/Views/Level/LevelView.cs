@@ -42,10 +42,5 @@ namespace Client.Views.Level
             grid.cellSize = cellSize * CELL_SIZE_RATIO;
             grid.spacing = cellSize * CELL_DISTANCE_RATIO;
         }
-
-        public void RegisterCellView(Vector2Int pos, CellView view)
-        {
-            cellViews[pos] = view;
-        }
     }
 }

@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 293a1e3d60d840c0bff9638072b926c5, type: 3}
-  m_Name: rocket_rider_ViewData
+  m_Name: 17_ViewData
   m_EditorClassIdentifier: 
-  id: rocket_rider
-  image: {fileID: 21300000, guid: 15ca29675723de1428e9cc61e2da8d6f, type: 3}
-  cutSize: {x: 3, y: 3}
+  id: 17
+  image: {fileID: 21300000, guid: 2785cc5944863422185ee50f28891956, type: 3}
+  cutSize: {x: 2, y: 2}

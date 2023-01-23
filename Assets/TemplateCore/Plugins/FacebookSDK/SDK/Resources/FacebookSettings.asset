@@ -16,9 +16,9 @@ MonoBehaviour:
   clientTokens:
   - 
   appIds:
-  - 
+  - 727793015332928
   appLabels:
-  - 
+  - Pretty tiles
   cookie: 1
   logging: 1
   status: 1

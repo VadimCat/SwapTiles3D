@@ -1,6 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
 using Facebook.Unity;
-using Ji2Core.Core;
 using Ji2Core.Core.SaveDataContainer;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.States;
@@ -35,7 +34,7 @@ namespace Client.States
         {
             var facebookTask = LoadFb();
             var dataLoadingTask = saveDataContainer.Load();
-            
+
             await screenNavigator.PushScreen<LoadingScreen>();
             await UniTask.WhenAll(facebookTask, dataLoadingTask);
 
@@ -45,18 +44,20 @@ namespace Client.States
 
         private async UniTask LoadFb()
         {
-#if UNITY_EDITOR
-            await UniTask.CompletedTask;
-            Debug.LogWarning("FB IS NOT SETTED");
-#else 
-            
+// #if UNITY_EDITOR
+//             await UniTask.CompletedTask;
+//             Debug.LogWarning("FB IS NOT SETTED");
+// #else 
+
             var taskCompletionSource = new UniTaskCompletionSource<bool>();
             FB.Init(() => OnFbInitComplete(taskCompletionSource));
 
             await taskCompletionSource.Task;
-            if (FB.IsInitialized)
+            if (!FB.IsInitialized)
+            {
                 FB.ActivateApp();
-#endif
+            }
+// #endif
         }
 
         private void OnFbInitComplete(UniTaskCompletionSource<bool> uniTaskCompletionSource)

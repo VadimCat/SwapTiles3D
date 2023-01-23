@@ -131,12 +131,6 @@ namespace Client.Presenters
         {
             model.LogAnalyticsLevelFinish();
             levelsLoopProgress.IncLevel();
-            levelScreen.ShowNextButton();
-            levelScreen.ClickNext += CloseLevel;
-        }
-
-        private void CloseLevel()
-        {
             updateService.Remove(this);
             LevelCompleted?.Invoke();
         }

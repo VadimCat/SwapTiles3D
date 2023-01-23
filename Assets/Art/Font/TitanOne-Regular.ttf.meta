@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9f079305b3962cd458c104f5ae69a684
+guid: 9743d4e3ad67a2e4b9b3600526b600e7
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Baloo
+  - Titan One
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

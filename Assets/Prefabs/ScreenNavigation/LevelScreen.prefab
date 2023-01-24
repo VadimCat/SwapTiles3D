@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -231}
+  m_AnchoredPosition: {x: 0, y: -360}
   m_SizeDelta: {x: -382.0531, y: 140.98682}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &965717014254655513
@@ -186,5 +186,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelName: {fileID: 132715597773895400}
-  nextButton: {fileID: 0}
-  nextButtonText: {fileID: 0}

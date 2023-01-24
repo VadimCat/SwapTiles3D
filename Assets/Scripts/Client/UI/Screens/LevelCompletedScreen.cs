@@ -14,23 +14,29 @@ namespace Client.UI.Screens
         
         [SerializeField] private Button nextButton;
         [SerializeField] private Image levelResult;
+        [SerializeField] private Image animateResult;
 
         public event Action ClickNext;
 
         private void Awake()
         {
-            // AnimateLevelResultImage();
+            AnimateLevelResultImage();
+
+            AnimateNextButton();
 
             nextButton.onClick.AddListener(FireNext);
         }
         
         private void AnimateLevelResultImage()
         {
-            levelResult.transform.DoPulseScale(1.06f, 1, gameObject);
-            levelResult.transform.DORotate(Vector3.forward * 2.2f, 1)
-                .SetLoops(-1, LoopType.Yoyo)
-                .SetEase(Ease.Linear)
-                .SetLink(gameObject);
+            animateResult.transform.DOMoveY(-0.08f, 1.4f)
+            .SetLoops(-1, LoopType.Yoyo)
+            .SetEase(Ease.Linear);
+        }
+
+        private void AnimateNextButton()
+        {
+            nextButton.image.DOFade(1, 1f);
         }
 
         public void SetLevelResult(Sprite levelResult, int levelNumber)

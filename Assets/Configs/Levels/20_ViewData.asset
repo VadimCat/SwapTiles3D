@@ -15,3 +15,4 @@ MonoBehaviour:
   id: 20
   image: {fileID: 21300000, guid: df9d4a4e27bb64afb93f3a6e5776de30, type: 3}
   cutSize: {x: 4, y: 4}
+  background: {fileID: 21300000, guid: 50052068ff12d554ca868ab8b24f359a, type: 3}

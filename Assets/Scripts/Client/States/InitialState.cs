@@ -4,7 +4,6 @@ using Ji2Core.Core.SaveDataContainer;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.States;
 using Ji2Core.UI.Screens;
-using UnityEngine;
 
 namespace Client.States
 {
@@ -38,8 +37,12 @@ namespace Client.States
             await screenNavigator.PushScreen<LoadingScreen>();
             await UniTask.WhenAll(facebookTask, dataLoadingTask);
 
+            float fakeLoadingTime = 0;
+#if !UNITY_EDITOR
+            fakeLoadingTime = 1;
+#endif
             stateMachine.Enter<LoadLevelState, LoadLevelStatePayload>(
-                new LoadLevelStatePayload(levelsLoopProgress.GetNextLevelData()));
+                new LoadLevelStatePayload(levelsLoopProgress.GetNextLevelData(), fakeLoadingTime));
         }
 
         private async UniTask LoadFb()

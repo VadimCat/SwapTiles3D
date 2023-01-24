@@ -39,7 +39,7 @@ namespace Client.States
         {
             audioService.PlaySfxAsync(AudioClipName.ButtonFX);
             var levelData = levelsLoopProgress.GetNextLevelData();
-            stateMachine.Enter<LoadLevelState, LoadLevelStatePayload>(new LoadLevelStatePayload(levelData, .5f));
+            stateMachine.Enter<LoadLevelState, LoadLevelStatePayload>(new LoadLevelStatePayload(levelData, 1f));
         }
 
         public async UniTask Exit()

@@ -10,6 +10,7 @@ using Ji2Core.Core.States;
 using Ji2Core.Core.UserInput;
 using Ji2Core.Plugins.AppMetrica;
 using Models;
+using UI.Background;
 using UnityEngine;
 
 namespace Client
@@ -36,7 +37,7 @@ namespace Client
             InstallNavigator();
             InstallInputService();
             context.Register(updateService);
-            
+            context.Register(backgroundService);
             var sceneLoader = new SceneLoader(updateService);
             
             InstallAnalytics();

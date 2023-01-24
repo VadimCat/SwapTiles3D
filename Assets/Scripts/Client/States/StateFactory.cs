@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Client.UI.Screens;
 using Client.Utils;
 using Ji2Core.Core;
 using Ji2Core.Core.States;
+using UI.Background;
 
 namespace Client.States
 {
@@ -24,7 +26,7 @@ namespace Client.States
                 context.LevelsLoopProgress(), context.ISaveDataContainer());
 
             dict[typeof(LoadLevelState)] = new LoadLevelState(context, stateMachine, context.SceneLoader(),
-                screenNavigator, context.GetService<LevelsConfig>());
+                screenNavigator, context.GetService<LevelsConfig>(), context.GetService<BackgroundService>());
 
             dict[typeof(GameState)] = new GameState(stateMachine, screenNavigator);
 

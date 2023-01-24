@@ -23,6 +23,7 @@ namespace Client.Presenters
         private readonly LevelsConfig levelViewConfig;
         private readonly LevelsLoopProgress levelsLoopProgress;
 
+        private ModelAnimator modelAnimator = new();
         private LevelScreen levelScreen;
         private Dictionary<Vector2Int, CellView> posToCell = new();
         private Dictionary<CellView, Vector2Int> viewToPos = new();
@@ -89,21 +90,21 @@ namespace Client.Presenters
 
         private void DeselectTile(Vector2Int pos)
         {
-            posToCell[pos].PlayDeselectAnimation();
+            modelAnimator.Animate(posToCell[pos].PlayDeselectAnimation());
         }
 
         private async void SwapTiles(Vector2Int pos1, Vector2Int pos2)
         {
             var cell1 = posToCell[pos1];
             var cell2 = posToCell[pos2];
-
+            
             var task1 = cell1.PlayMoveAnimation(cell2.transform.position);
             var task2 = cell2.PlayMoveAnimation(cell1.transform.position);
-
+            
             var p1 = Shufflling.Vector2IntToInt(pos1, model.cutSize);
             var p2 = Shufflling.Vector2IntToInt(pos2, model.cutSize);
             
-            await UniTask.WhenAll(task1, task2);
+            await modelAnimator.Animate(UniTask.WhenAll(task1, task2));
 
             if(p1 < p2)
             {
@@ -124,15 +125,39 @@ namespace Client.Presenters
 
         private void SelectTile(Vector2Int tilePos)
         {
-            posToCell[tilePos].PlaySelectAnimation();
+            modelAnimator.Animate(posToCell[tilePos].PlaySelectAnimation());
         }
 
-        private void OnLevelCompleted()
+        private async void OnLevelCompleted()
         {
+            await modelAnimator.AwaitAllAnimationsEnd();
+            Object.Destroy(view.gameObject);
             model.LogAnalyticsLevelFinish();
             levelsLoopProgress.IncLevel();
             updateService.Remove(this);
             LevelCompleted?.Invoke();
+        }
+    }
+
+    public class ModelAnimator
+    {
+        private List<UniTask> animations = new();
+        
+        public async UniTask Animate(UniTask uniTask)
+        {
+            animations.Add(uniTask);
+            await uniTask;
+            animations.Remove(uniTask);
+        }
+
+        public async UniTask AwaitAllAnimationsEnd()
+        {
+            await UniTask.WaitUntil(CheckAnimationsListEmpty);
+        }
+
+        private bool CheckAnimationsListEmpty()
+        {
+            return animations.Count == 0;
         }
     }
 }

@@ -3,6 +3,7 @@ using Client.UI.Screens;
 using Cysharp.Threading.Tasks;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.States;
+using UI.Background;
 
 namespace Client.States
 {
@@ -10,6 +11,7 @@ namespace Client.States
     {
         private readonly StateMachine stateMachine;
         private readonly ScreenNavigator screenNavigator;
+        private readonly BackgroundService backgroundService;
         private readonly LevelsLoopProgress levelsLoopProgress;
 
         private GameStatePayload payload;

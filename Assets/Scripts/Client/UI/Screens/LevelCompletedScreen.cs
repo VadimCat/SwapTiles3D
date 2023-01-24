@@ -3,7 +3,6 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Ji2Core.Scripts.Utils;
 using Ji2Core.UI.Screens;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,24 +14,16 @@ namespace Client.UI.Screens
         
         [SerializeField] private Button nextButton;
         [SerializeField] private Image levelResult;
-        [SerializeField] private TMP_Text levelName;
-        [SerializeField] private Transform light0;
 
         public event Action ClickNext;
 
         private void Awake()
         {
-            AnimateBackLight();
+            // AnimateLevelResultImage();
+
             nextButton.onClick.AddListener(FireNext);
         }
-
-        private void AnimateBackLight()
-        {
-            AnimateLight();
-
-            AnimateLevelResultImage();
-        }
-
+        
         private void AnimateLevelResultImage()
         {
             levelResult.transform.DoPulseScale(1.06f, 1, gameObject);
@@ -42,19 +33,9 @@ namespace Client.UI.Screens
                 .SetLink(gameObject);
         }
 
-        private void AnimateLight()
-        {
-            light0.transform.DoPulseScale(1.2f, 1, gameObject);
-            light0.DORotate(Vector3.back * 180, 8)
-                .SetLoops(-1, LoopType.Incremental)
-                .SetEase(Ease.Linear)
-                .SetLink(gameObject);
-        }
-
         public void SetLevelResult(Sprite levelResult, int levelNumber)
         {
             this.levelResult.sprite = levelResult;
-            this.levelName.text = string.Format(levelNamePattern, levelNumber + 1);
         }
 
         private async void FireNext()

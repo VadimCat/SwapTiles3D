@@ -13,6 +13,7 @@ namespace Editor
         protected static LevelsConfig storageBase;
 
         private static Sprite levelSprite;
+        private static Sprite backSprite;
         private static string levelName;
         private static Vector2Int defaultCutSize;
 
@@ -24,6 +25,7 @@ namespace Editor
             levelName = EditorGUILayout.TextField(levelName);
             EditorGUILayout.LabelField("Level sprite");
             levelSprite = (Sprite)EditorGUILayout.ObjectField(levelSprite, typeof(Sprite), true);
+            backSprite = (Sprite)EditorGUILayout.ObjectField(backSprite, typeof(Sprite), true);
 
             defaultCutSize = EditorGUILayout.Vector2IntField("CutSize", defaultCutSize);
         }
@@ -54,7 +56,7 @@ namespace Editor
                     throw new LevelExistsException(levelName);
                 }
 
-                CreateLevel(levelName, levelSprite, defaultCutSize);
+                CreateLevel(levelName, levelSprite, defaultCutSize, backSprite);
             }
 
             if (GUILayout.Button("Fill levels automaticly"))
@@ -70,16 +72,16 @@ namespace Editor
                 var levelSprites = GetSpritesFromPathes(spritePathes);
                 foreach (var spr in levelSprites)
                 {
-                    CreateLevel(spr.name, spr,defaultCutSize);
+                    CreateLevel(spr.name, spr,defaultCutSize, backSprite);
                 }
             }
         }
 
-        private void CreateLevel(string id, Sprite sprite, Vector2Int size)
+        private void CreateLevel(string id, Sprite sprite, Vector2Int size, Sprite backSprite)
         {
             var config = CreateInstance<LevelViewConfig>();
             config.name = id;
-            config.SetData(id, sprite, size);
+            config.SetData(id, sprite, size, backSprite);
 
             var path = Path.Combine("Assets\\Configs\\Levels", $"{id}_ViewData.asset");
 

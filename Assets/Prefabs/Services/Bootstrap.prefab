@@ -76,6 +76,42 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8963441976716938273, guid: e57d4c7ca3ee6c74a83fc1aaf90a9081, type: 3}
+      propertyPath: loadingBack
+      value: 
+      objectReference: {fileID: 21300000, guid: 1b23f83f07ea1144d9ee51a6477d5aca, type: 3}
+    - target: {fileID: 8963441976716938273, guid: e57d4c7ca3ee6c74a83fc1aaf90a9081, type: 3}
+      propertyPath: levelBackgroundImages.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8963441976716938273, guid: e57d4c7ca3ee6c74a83fc1aaf90a9081, type: 3}
+      propertyPath: levelBackgroundImages.Array.data[0]
+      value: 
+      objectReference: {fileID: 21300000, guid: 4ac59f9ce839947a8bd68c854cd1fd96, type: 3}
+    - target: {fileID: 8963441976716938273, guid: e57d4c7ca3ee6c74a83fc1aaf90a9081, type: 3}
+      propertyPath: levelBackgroundImages.Array.data[1]
+      value: 
+      objectReference: {fileID: 21300000, guid: 4ac59f9ce839947a8bd68c854cd1fd96, type: 3}
+    - target: {fileID: 8963441976716938273, guid: e57d4c7ca3ee6c74a83fc1aaf90a9081, type: 3}
+      propertyPath: levelBackgroundImages.Array.data[2]
+      value: 
+      objectReference: {fileID: 21300000, guid: 4ac59f9ce839947a8bd68c854cd1fd96, type: 3}
+    - target: {fileID: 8963441976716938273, guid: e57d4c7ca3ee6c74a83fc1aaf90a9081, type: 3}
+      propertyPath: levelBackgroundImages.Array.data[3]
+      value: 
+      objectReference: {fileID: 21300000, guid: 4ac59f9ce839947a8bd68c854cd1fd96, type: 3}
+    - target: {fileID: 8963441976716938273, guid: e57d4c7ca3ee6c74a83fc1aaf90a9081, type: 3}
+      propertyPath: levelBackgroundImages.Array.data[4]
+      value: 
+      objectReference: {fileID: 21300000, guid: 4ac59f9ce839947a8bd68c854cd1fd96, type: 3}
+    - target: {fileID: 8963441976716938273, guid: e57d4c7ca3ee6c74a83fc1aaf90a9081, type: 3}
+      propertyPath: levelBackgroundImages.Array.data[5]
+      value: 
+      objectReference: {fileID: 21300000, guid: 4ac59f9ce839947a8bd68c854cd1fd96, type: 3}
+    - target: {fileID: 8963441976716938273, guid: e57d4c7ca3ee6c74a83fc1aaf90a9081, type: 3}
+      propertyPath: levelBackgroundImages.Array.data[6]
+      value: 
+      objectReference: {fileID: 21300000, guid: 4ac59f9ce839947a8bd68c854cd1fd96, type: 3}
     - target: {fileID: 8963441976716938277, guid: e57d4c7ca3ee6c74a83fc1aaf90a9081, type: 3}
       propertyPath: m_Pivot.x
       value: 0

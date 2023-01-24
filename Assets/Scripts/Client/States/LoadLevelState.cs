@@ -1,5 +1,6 @@
 ﻿using Client.Models;
 using Client.Presenters;
+using Client.UI.Screens;
 using Client.Views.Level;
 using Cysharp.Threading.Tasks;
 using Ji2Core.Core;
@@ -8,6 +9,7 @@ using Ji2Core.Core.SaveDataContainer;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.States;
 using Ji2Core.UI.Screens;
+using UI.Background;
 
 namespace Client.States
 {
@@ -20,18 +22,20 @@ namespace Client.States
         private readonly ScreenNavigator screenNavigator;
         private readonly Context context;
         private readonly LevelsConfig levelsConfig;
+        private readonly BackgroundService backgroundService;
 
         private LoadingScreen loadingScreen;
         private LevelData levelData;
 
         public LoadLevelState(Context context, StateMachine stateMachine, SceneLoader sceneLoader,
-            ScreenNavigator screenNavigator, LevelsConfig levelsConfig)
+            ScreenNavigator screenNavigator, LevelsConfig levelsConfig, BackgroundService backgroundService)
         {
             this.context = context;
             this.stateMachine = stateMachine;
             this.sceneLoader = sceneLoader;
             this.screenNavigator = screenNavigator;
             this.levelsConfig = levelsConfig;
+            this.backgroundService = backgroundService;
         }
 
         public async UniTask Enter(LoadLevelStatePayload payload)
@@ -61,6 +65,7 @@ namespace Client.States
         {
             var view = context.GetService<LevelView>();
             var viewConfig = levelsConfig.GetData(levelData.name);
+            backgroundService.SwitchBackground(viewConfig.Background);
             var viewData = viewConfig.ViewData();
             var levelModel = new Level(context.GetService<Analytics>(), levelData, viewData.CutSize,
                 context.GetService<ISaveDataContainer>());

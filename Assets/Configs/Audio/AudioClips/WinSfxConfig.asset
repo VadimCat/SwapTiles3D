@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: WinSfxConfig
   m_EditorClassIdentifier: 
   playVolume: 1
-  clip: {fileID: 8300000, guid: 5130d16e49d135b488c40caa44c59f2a, type: 3}
+  clip: {fileID: 8300000, guid: 605e93c6cf2b28d40924c1866da8fa4d, type: 3}
   clipName: 2

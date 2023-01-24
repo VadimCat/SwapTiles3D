@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Client.UI.Screens;
 using Client.Utils;
 using Ji2Core.Core;
+using Ji2Core.Core.Audio;
 using Ji2Core.Core.States;
 using UI.Background;
 
@@ -31,7 +31,7 @@ namespace Client.States
             dict[typeof(GameState)] = new GameState(stateMachine, screenNavigator);
 
             dict[typeof(LevelCompletedState)] = new LevelCompletedState(stateMachine, screenNavigator,
-                context.LevelsLoopProgress(), context.GetService<LevelsConfig>());
+                context.LevelsLoopProgress(), context.GetService<LevelsConfig>(), context.GetService<AudioService>());
 
             return dict;
         }

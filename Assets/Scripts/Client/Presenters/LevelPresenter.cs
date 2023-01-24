@@ -5,6 +5,7 @@ using Client.UI.Screens;
 using Client.Views.Level;
 using Cysharp.Threading.Tasks;
 using Ji2Core.Core;
+using Ji2Core.Core.Audio;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Utils.Shuffling;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace Client.Presenters
         private readonly UpdateService updateService;
         private readonly LevelsConfig levelViewConfig;
         private readonly LevelsLoopProgress levelsLoopProgress;
+        private readonly AudioService audioService;
 
         private ModelAnimator modelAnimator = new();
         private LevelScreen levelScreen;
@@ -29,7 +31,8 @@ namespace Client.Presenters
         private Dictionary<CellView, Vector2Int> viewToPos = new();
 
         public LevelPresenter(LevelView view, Level model, ScreenNavigator screenNavigator,
-            UpdateService updateService, LevelsConfig levelViewConfig, LevelsLoopProgress levelsLoopProgress)
+            UpdateService updateService, LevelsConfig levelViewConfig, LevelsLoopProgress levelsLoopProgress,
+            AudioService audioService)
         {
             this.view = view;
             this.model = model;
@@ -37,6 +40,7 @@ namespace Client.Presenters
             this.updateService = updateService;
             this.levelViewConfig = levelViewConfig;
             this.levelsLoopProgress = levelsLoopProgress;
+            this.audioService = audioService;
 
             model.LevelCompleted += OnLevelCompleted;
             model.TileSelected += SelectTile;
@@ -55,12 +59,12 @@ namespace Client.Presenters
             for (var x = 0; x < model.currentPoses.GetLength(1); x++)
             {
                 var position = model.currentPoses[x, y];
-                
+
                 var cellView = Object.Instantiate(levelViewConfig.CellView, view.GridRoot);
                 cellView.SetData(levelViewData, position);
-                
+
                 var tilePos = new Vector2Int(x, y);
-                
+
                 posToCell[new Vector2Int(x, y)] = cellView;
                 viewToPos[cellView] = tilePos;
 
@@ -84,12 +88,16 @@ namespace Client.Presenters
 
         private void OnTileClick(CellView cellView)
         {
+            audioService.PlaySfxAsync(AudioClipName.TileTapFx);
+
             var pos = viewToPos[cellView];
             model.ClickTile(pos);
         }
 
         private void DeselectTile(Vector2Int pos)
         {
+            audioService.PlaySfxAsync(AudioClipName.TileTapFx);
+
             modelAnimator.Animate(posToCell[pos].PlayDeselectAnimation());
         }
 
@@ -97,16 +105,16 @@ namespace Client.Presenters
         {
             var cell1 = posToCell[pos1];
             var cell2 = posToCell[pos2];
-            
+
             var task1 = cell1.PlayMoveAnimation(cell2.transform.position);
             var task2 = cell2.PlayMoveAnimation(cell1.transform.position);
-            
+
             var p1 = Shufflling.Vector2IntToInt(pos1, model.cutSize);
             var p2 = Shufflling.Vector2IntToInt(pos2, model.cutSize);
-            
+
             await modelAnimator.Animate(UniTask.WhenAll(task1, task2));
 
-            if(p1 < p2)
+            if (p1 < p2)
             {
                 cell1.transform.SetSiblingIndex(p2);
                 cell2.transform.SetSiblingIndex(p1);
@@ -116,7 +124,7 @@ namespace Client.Presenters
                 cell2.transform.SetSiblingIndex(p1);
                 cell1.transform.SetSiblingIndex(p2);
             }
-            
+
             (posToCell[pos1], posToCell[pos2]) = (posToCell[pos2], posToCell[pos1]);
 
             viewToPos[posToCell[pos1]] = pos1;
@@ -131,10 +139,13 @@ namespace Client.Presenters
         private async void OnLevelCompleted()
         {
             await modelAnimator.AwaitAllAnimationsEnd();
-            Object.Destroy(view.gameObject);
+            
             model.LogAnalyticsLevelFinish();
             levelsLoopProgress.IncLevel();
             updateService.Remove(this);
+            audioService.PlaySfxAsync(AudioClipName.WinFX);
+            Object.Destroy(view.gameObject);
+
             LevelCompleted?.Invoke();
         }
     }
@@ -142,7 +153,7 @@ namespace Client.Presenters
     public class ModelAnimator
     {
         private List<UniTask> animations = new();
-        
+
         public async UniTask Animate(UniTask uniTask)
         {
             animations.Add(uniTask);

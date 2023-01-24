@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ButtonTapSfxConfig
   m_EditorClassIdentifier: 
   playVolume: 1
-  clip: {fileID: 8300000, guid: c7fdbd7f8bafe3e46a8294e0c63b8763, type: 3}
+  clip: {fileID: 8300000, guid: b5d8ae29aedb62f42b737d509cf13aba, type: 3}
   clipName: 1

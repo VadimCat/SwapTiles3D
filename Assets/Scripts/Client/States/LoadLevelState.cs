@@ -5,6 +5,7 @@ using Client.Views.Level;
 using Cysharp.Threading.Tasks;
 using Ji2Core.Core;
 using Ji2Core.Core.Analytics;
+using Ji2Core.Core.Audio;
 using Ji2Core.Core.SaveDataContainer;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.States;
@@ -72,7 +73,7 @@ namespace Client.States
 
             var levelPresenter =
                 new LevelPresenter(view, levelModel, screenNavigator, context.GetService<UpdateService>(), levelsConfig,
-                    context.GetService<LevelsLoopProgress>());
+                    context.GetService<LevelsLoopProgress>(), context.GetService<AudioService>());
 
             levelPresenter.BuildLevel();
 

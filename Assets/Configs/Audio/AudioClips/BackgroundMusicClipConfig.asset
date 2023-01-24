@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: BackgroundMusicClipConfig
   m_EditorClassIdentifier: 
   playVolume: 1
-  clip: {fileID: 8300000, guid: 2bd7394c22028ee459bb2f55659622f8, type: 3}
+  clip: {fileID: 8300000, guid: 9cd2a9a24b7f84b4a8567a5a5cd8aff0, type: 3}
   clipName: 0

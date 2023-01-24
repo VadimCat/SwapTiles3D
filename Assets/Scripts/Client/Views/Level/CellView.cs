@@ -2,7 +2,6 @@ using System;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Client.Views.Level
@@ -13,6 +12,8 @@ namespace Client.Views.Level
         [SerializeField] private RawImage image;
         [SerializeField] private Canvas sortingCanvas;
         [SerializeField] private CellAnimationConfig animationConfig;
+
+        private Transform root => sortingCanvas.transform;
         
         public event Action<CellView> Clicked;
 
@@ -42,7 +43,7 @@ namespace Client.Views.Level
             sortingCanvas.sortingOrder = 1000;
             
             button.interactable = false;
-            await button.transform.DOScale(animationConfig.SelectScale, animationConfig.SelectTime)
+            await root.DOScale(animationConfig.SelectScale, animationConfig.SelectTime)
                 .AwaitForComplete();
             button.interactable = true;
         }
@@ -50,7 +51,7 @@ namespace Client.Views.Level
         public async UniTask PlayDeselectAnimation()
         {
             button.interactable = false;
-            await button.transform.DOScale(1, animationConfig.SelectTime).AwaitForComplete();
+            await root.DOScale(1, animationConfig.SelectTime).AwaitForComplete();
             button.interactable = true;
             sortingCanvas.overrideSorting = false;
         }
@@ -59,13 +60,13 @@ namespace Client.Views.Level
         {
             button.interactable = false;
             
-            await button.transform.DOMove(pos, animationConfig.MoveTime).AwaitForComplete();
-            await button.transform.DOScale(1, animationConfig.SelectTime).AwaitForComplete();
+            await root.DOMove(pos, animationConfig.MoveTime).AwaitForComplete();
+            await root.DOScale(1, animationConfig.SelectTime).AwaitForComplete();
             
             sortingCanvas.overrideSorting = false;
             button.interactable = true;
             
-            button.transform.localPosition = Vector3.zero;
+            root.localPosition = Vector3.zero;
         }
 
         private void OnDestroy()

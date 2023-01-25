@@ -39,7 +39,7 @@ namespace Client.States
 
             float fakeLoadingTime = 0;
 #if !UNITY_EDITOR
-            fakeLoadingTime = 1;
+            fakeLoadingTime = 5;
 #endif
             stateMachine.Enter<LoadLevelState, LoadLevelStatePayload>(
                 new LoadLevelStatePayload(levelsLoopProgress.GetNextLevelData(), fakeLoadingTime));

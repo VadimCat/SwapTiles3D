@@ -60,8 +60,7 @@ namespace Client.Tutorial
             
             if (model.TryGetNotSelectedCell(out var pos))
             {
-                pointer.Hide();
-
+                pointer.ShowTooltip();
                 await UniTask.Delay(50);
 
                 var position = presenter.GetTilePos(pos);
@@ -74,6 +73,8 @@ namespace Client.Tutorial
             }
             else
             {
+                stateMachine.StateEntered -= OnStateEnter;
+                pointer.HideTooltip();
                 pointer.Hide();
                 Completed?.Invoke();
             }

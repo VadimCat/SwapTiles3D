@@ -1,4 +1,5 @@
-﻿using Client.Presenters;
+﻿using System;
+using Client.Presenters;
 using Client.UI.Screens;
 using Cysharp.Threading.Tasks;
 using Ji2Core.Core.ScreenNavigation;
@@ -15,12 +16,14 @@ namespace Client.States
         private readonly LevelsLoopProgress levelsLoopProgress;
 
         private GameStatePayload payload;
-
+        
         public GameState(StateMachine stateMachine, ScreenNavigator screenNavigator)
         {
             this.stateMachine = stateMachine;
             this.screenNavigator = screenNavigator;
         }
+
+        public GameStatePayload Payload => payload;
 
         public async UniTask Enter(GameStatePayload payload)
         {
@@ -42,6 +45,7 @@ namespace Client.States
 
         public async UniTask Exit()
         {
+            payload.levelPresenter.LevelCompleted -= OnLevelComplete;
             await screenNavigator.CloseScreen<LevelScreen>();
         }
     }

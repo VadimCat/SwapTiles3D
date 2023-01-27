@@ -123,6 +123,32 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &618167682 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4727307825375038689, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
+  m_PrefabInstance: {fileID: 907379512993701660}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &618167687
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 618167682}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 3000
+  m_TargetDisplay: 0
 --- !u!1001 &907379512993701660
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -188,6 +214,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 907379513116661682, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2840260439249003972, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6961043523254794761, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 6961043523254794761, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 9131764606992471702, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9131764606992471702, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9131764606992471702, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9131764606992471702, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

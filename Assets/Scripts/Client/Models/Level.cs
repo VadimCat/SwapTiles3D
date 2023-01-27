@@ -13,9 +13,13 @@ namespace Client.Models
         public event Action<Vector2Int> TileSelected;
         public event Action<Vector2Int> TileDeselected;
         public event Action<Vector2Int, Vector2Int> TilesSwapped;
-
+        public event Action<Vector2Int> TileSetted;
+        
         public readonly Vector2Int[,] currentPoses;
         public readonly Vector2Int cutSize;
+
+        public Vector2Int? selectedTile => selectedTiles.Count == 0 ? null : selectedTiles[0];
+        public int SelectedTilesCount => selectedTiles.Count;
         
         private readonly Analytics analytics;
         private readonly LevelData levelData;
@@ -55,6 +59,33 @@ namespace Client.Models
             }
         }
 
+        public bool TryGetNotSelectedCell(out Vector2Int selectedTile)
+        {
+            if (selectedTiles.Count == 1)
+            {
+                selectedTile = currentPoses[selectedTiles[0].x, selectedTiles[0].y];
+                return true;
+            }
+            else
+            {
+                for (var x = 0; x < currentPoses.GetLength(0); x++)
+                {
+                    for (var y = 0; y < currentPoses.GetLength(1); y++)
+                    {
+                        var cell = currentPoses[x, y];
+                        if (cell.x != x || cell.y != y)
+                        {
+                            selectedTile = new Vector2Int(x, y);
+                            return true;
+                        }
+                    }
+                }
+
+                selectedTile = default;
+                return false;
+            }
+        }
+        
         private void SwapTiles()
         {
             (currentPoses[selectedTiles[0].x, selectedTiles[0].y],
@@ -75,11 +106,14 @@ namespace Client.Models
                 for (var j = 0; j < currentPoses.GetLength(1); j++)
                 {
                     if (currentPoses[i, j].x != i || currentPoses[i, j].y != j)
+                    {
                         isFailed = true;
+                    }
+                    else
+                    {
+                        TileSetted?.Invoke(new Vector2Int(i,j));
+                    }
                 }
-
-                if (isFailed)
-                    break;
             }
 
             if (!isFailed)

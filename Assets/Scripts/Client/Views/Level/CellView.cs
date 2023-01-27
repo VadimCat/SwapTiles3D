@@ -12,9 +12,10 @@ namespace Client.Views.Level
         [SerializeField] private RawImage image;
         [SerializeField] private Canvas sortingCanvas;
         [SerializeField] private CellAnimationConfig animationConfig;
+        [SerializeField] private Transform disableAnimationRoot;
 
         private Transform root => sortingCanvas.transform;
-        
+
         public event Action<CellView> Clicked;
 
         private void Awake()
@@ -41,7 +42,7 @@ namespace Client.Views.Level
         {
             sortingCanvas.overrideSorting = true;
             sortingCanvas.sortingOrder = 1000;
-            
+
             button.interactable = false;
             await root.DOScale(animationConfig.SelectScale, animationConfig.SelectTime)
                 .AwaitForComplete();
@@ -59,14 +60,22 @@ namespace Client.Views.Level
         public async UniTask PlayMoveAnimation(Vector3 pos)
         {
             button.interactable = false;
-            
+
             await root.DOMove(pos, animationConfig.MoveTime).AwaitForComplete();
             await root.DOScale(1, animationConfig.SelectTime).AwaitForComplete();
-            
+
             sortingCanvas.overrideSorting = false;
             button.interactable = true;
-            
+
             root.localPosition = Vector3.zero;
+        }
+
+        public async UniTask PlaySettedAnimation()
+        {
+            button.interactable = false;
+            await disableAnimationRoot.transform.DOScale(animationConfig.SelectScale, animationConfig.SelectTime)
+                .SetLink(gameObject)
+                .AwaitForComplete();
         }
 
         private void OnDestroy()

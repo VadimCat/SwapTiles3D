@@ -25,10 +25,13 @@ namespace Client.Presenters
         private readonly LevelsLoopProgress levelsLoopProgress;
         private readonly AudioService audioService;
 
-        private ModelAnimator modelAnimator = new();
+        private readonly ModelAnimator modelAnimator = new();
+        private readonly Dictionary<Vector2Int, CellView> posToCell = new();
+        private readonly Dictionary<CellView, Vector2Int> viewToPos = new();
+        
         private LevelScreen levelScreen;
-        private Dictionary<Vector2Int, CellView> posToCell = new();
-        private Dictionary<CellView, Vector2Int> viewToPos = new();
+
+        public Level Model => model;
 
         public LevelPresenter(LevelView view, Level model, ScreenNavigator screenNavigator,
             UpdateService updateService, LevelsConfig levelViewConfig, LevelsLoopProgress levelsLoopProgress,
@@ -46,9 +49,13 @@ namespace Client.Presenters
             model.TileSelected += SelectTile;
             model.TilesSwapped += SwapTiles;
             model.TileDeselected += DeselectTile;
+            model.TileSetted += SetTile;
         }
 
-        public Level Model => model;
+        private void SetTile(Vector2Int pos)
+        {
+            modelAnimator.EnqueueAnimation(() => posToCell[pos].PlaySettedAnimation());
+        }
 
         public void BuildLevel()
         {
@@ -103,16 +110,18 @@ namespace Client.Presenters
 
         private async void SwapTiles(Vector2Int pos1, Vector2Int pos2)
         {
+            await modelAnimator.EnqueueAnimation(() => SwapAnimation(pos1, pos2));
+        }
+
+        private async UniTask SwapAnimation(Vector2Int pos1, Vector2Int pos2)
+        {
             var cell1 = posToCell[pos1];
             var cell2 = posToCell[pos2];
 
-            var task1 = cell1.PlayMoveAnimation(cell2.transform.position);
-            var task2 = cell2.PlayMoveAnimation(cell1.transform.position);
-
+            await UniTask.WhenAll(cell1.PlayMoveAnimation(cell2.transform.position),
+                cell2.PlayMoveAnimation(cell1.transform.position));
             var p1 = Shufflling.Vector2IntToInt(pos1, model.cutSize);
             var p2 = Shufflling.Vector2IntToInt(pos2, model.cutSize);
-
-            await modelAnimator.Animate(UniTask.WhenAll(task1, task2));
 
             if (p1 < p2)
             {
@@ -138,37 +147,22 @@ namespace Client.Presenters
 
         private async void OnLevelCompleted()
         {
-            await modelAnimator.AwaitAllAnimationsEnd();
-            
             model.LogAnalyticsLevelFinish();
             levelsLoopProgress.IncLevel();
             updateService.Remove(this);
+
+            modelAnimator.EnqueueAnimation(() => view.AnimateWin());
+            await modelAnimator.AwaitAllAnimationsEnd();
+
             audioService.PlaySfxAsync(AudioClipName.WinFX);
             Object.Destroy(view.gameObject);
 
             LevelCompleted?.Invoke();
         }
-    }
 
-    public class ModelAnimator
-    {
-        private List<UniTask> animations = new();
-
-        public async UniTask Animate(UniTask uniTask)
+        public Vector3 GetTilePos(Vector2Int pos)
         {
-            animations.Add(uniTask);
-            await uniTask;
-            animations.Remove(uniTask);
-        }
-
-        public async UniTask AwaitAllAnimationsEnd()
-        {
-            await UniTask.WaitUntil(CheckAnimationsListEmpty);
-        }
-
-        private bool CheckAnimationsListEmpty()
-        {
-            return animations.Count == 0;
+            return posToCell[pos].transform.position;
         }
     }
 }

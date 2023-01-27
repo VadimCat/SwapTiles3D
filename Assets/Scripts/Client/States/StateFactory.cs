@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Client.Tutorial;
 using Client.Utils;
 using Ji2Core.Core;
 using Ji2Core.Core.Audio;
@@ -23,6 +24,7 @@ namespace Client.States
             var dict = new Dictionary<Type, IExitableState>();
 
             dict[typeof(InitialState)] = new InitialState(stateMachine, screenNavigator,
+                context.GetService<TutorialService>(),
                 context.LevelsLoopProgress(), context.ISaveDataContainer());
 
             dict[typeof(LoadLevelState)] = new LoadLevelState(context, stateMachine, context.SceneLoader(),

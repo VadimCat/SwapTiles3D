@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Ji2Core.Core;
 using UnityEngine;
 using UnityEngine.UI;
@@ -41,6 +42,11 @@ namespace Client.Views.Level
             
             grid.cellSize = cellSize * CELL_SIZE_RATIO;
             grid.spacing = cellSize * CELL_DISTANCE_RATIO;
+        }
+
+        public async UniTask AnimateWin()
+        {
+            await UniTask.CompletedTask;
         }
     }
 }

@@ -1,5 +1,4 @@
 using Client.States;
-using Client.UI.Screens;
 using Ji2Core.Core;
 using Ji2Core.Core.Analytics;
 using Ji2Core.Core.Audio;
@@ -12,6 +11,7 @@ using Ji2Core.Plugins.AppMetrica;
 using Models;
 using UI.Background;
 using UnityEngine;
+using Client.Tutorial;
 
 namespace Client
 {
@@ -23,9 +23,11 @@ namespace Client
         [SerializeField] private UpdateService updateService;
         [SerializeField] private ComplimentsWordsService complimentsWordsService;
         [SerializeField] private AudioService audioService;
-        
-        private AppSession appSession; 
-            
+        [SerializeField] private TutorialPointer tutorialPointer;
+
+
+        private AppSession appSession;
+
         private readonly Context context = Context.GetInstance();
 
         protected override void Start()
@@ -39,19 +41,35 @@ namespace Client
             context.Register(updateService);
             context.Register(backgroundService);
             var sceneLoader = new SceneLoader(updateService);
-            
+
             InstallAnalytics();
 
             ISaveDataContainer dataContainer = new PlayerPrefsSaveDataContainer();
             context.Register<ISaveDataContainer>(dataContainer);
-            context.Register(new PlayerPrefsSaveDataContainer());
-            
+
             context.Register(new LevelsLoopProgress(dataContainer, levelsConfig.GetLevelsOrder()));
-            
+
+
             context.Register(sceneLoader);
             context.Register(complimentsWordsService);
-            
+
+            InstallStateMachine();
+            InstallTutorial();
             StartApplication();
+        }
+
+        private void InstallTutorial()
+        {
+            context.Register(tutorialPointer);
+            var tutorialService =
+                new TutorialService(context.GetService<ISaveDataContainer>(), new TutorialFactory(context));
+            context.Register(tutorialService);
+        }
+
+        private void InstallStateMachine()
+        {
+            StateMachine appStateMachine = new StateMachine(new StateFactory(context));
+            context.Register(appStateMachine);
         }
 
         private void InstallAnalytics()
@@ -63,7 +81,8 @@ namespace Client
 
         private void StartApplication()
         {
-            StateMachine appStateMachine = new StateMachine(new StateFactory(context));
+            var appStateMachine = context.GetService<StateMachine>();
+            appStateMachine.Load();
             appSession = new AppSession(appStateMachine);
             appSession.StateMachine.Enter<InitialState>();
         }

@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using Client.Tutorial;
+using Cysharp.Threading.Tasks;
 using Facebook.Unity;
 using Ji2Core.Core.SaveDataContainer;
 using Ji2Core.Core.ScreenNavigation;
@@ -11,15 +12,17 @@ namespace Client.States
     {
         private readonly StateMachine stateMachine;
         private readonly ScreenNavigator screenNavigator;
+        private readonly TutorialService tutorialService;
         private readonly LevelsLoopProgress levelsLoopProgress;
         private readonly ISaveDataContainer saveDataContainer;
 
 
-        public InitialState(StateMachine stateMachine, ScreenNavigator screenNavigator,
+        public InitialState(StateMachine stateMachine, ScreenNavigator screenNavigator, TutorialService tutorialService,
             LevelsLoopProgress levelsLoopProgress, ISaveDataContainer saveDataContainer)
         {
             this.stateMachine = stateMachine;
             this.screenNavigator = screenNavigator;
+            this.tutorialService = tutorialService;
             this.levelsLoopProgress = levelsLoopProgress;
             this.saveDataContainer = saveDataContainer;
         }
@@ -32,8 +35,10 @@ namespace Client.States
         public async UniTask Enter()
         {
             var facebookTask = LoadFb();
-            var dataLoadingTask = saveDataContainer.Load();
 
+            var dataLoadingTask = saveDataContainer.Load();
+            tutorialService.TryRunSteps();
+            
             await screenNavigator.PushScreen<LoadingScreen>();
             await UniTask.WhenAll(facebookTask, dataLoadingTask);
 

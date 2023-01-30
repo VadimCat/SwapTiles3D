@@ -37,6 +37,22 @@ namespace Client
             int playedTotal = saveDataContainer.GetValue<int>(LevelsPlayedTotalIndexKey);
             saveDataContainer.SaveValue(LevelsPlayedTotalIndexKey, playedTotal + 1);
         }
+
+        public LevelData GetRetryLevelData()
+        {
+            int playedTotal = saveDataContainer.GetValue<int>(LevelsPlayedTotalIndexKey) - 1;
+            int lvlIndex = playedTotal % levelOrder.Length;
+            int lvlLoop = playedTotal / levelOrder.Length;
+            string lvlId = levelOrder[lvlIndex];
+            
+            return new LevelData()
+            {
+                name = lvlId,
+                playedTotal = playedTotal,
+                lvlIndex = lvlIndex,
+                lvlLoop = lvlLoop
+            };
+        }
     }
 }
 

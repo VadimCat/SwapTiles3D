@@ -5,6 +5,7 @@ using Ji2Core.Core.SaveDataContainer;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.States;
 using Ji2Core.UI.Screens;
+using UI.Screens;
 
 namespace Client.States
 {

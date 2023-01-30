@@ -24,7 +24,8 @@ namespace Client
         [SerializeField] private ComplimentsWordsService complimentsWordsService;
         [SerializeField] private AudioService audioService;
         [SerializeField] private TutorialPointer tutorialPointer;
-
+        [SerializeField] private LevelResultViewConfig levelResultViewConfig;
+        
 
         private AppSession appSession;
 
@@ -46,7 +47,7 @@ namespace Client
 
             ISaveDataContainer dataContainer = new PlayerPrefsSaveDataContainer();
             context.Register<ISaveDataContainer>(dataContainer);
-
+            context.Register(levelResultViewConfig);
             context.Register(new LevelsLoopProgress(dataContainer, levelsConfig.GetLevelsOrder()));
 
 

@@ -58,6 +58,7 @@ MonoBehaviour:
   complimentsWordsService: {fileID: 4032787900542854738}
   audioService: {fileID: 2999049635880329263}
   tutorialPointer: {fileID: 5817220037493933901}
+  levelResultViewConfig: {fileID: 11400000, guid: 23e06dca140b674428aff8d842d1c0dc, type: 2}
 --- !u!1 &4727307825375038689
 GameObject:
   m_ObjectHideFlags: 0

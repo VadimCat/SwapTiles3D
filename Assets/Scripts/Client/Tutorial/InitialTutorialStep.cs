@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using Client.Models;
 using Client.Presenters;
 using Client.States;
 using Client.Views.Level;
 using Cysharp.Threading.Tasks;
-using Ji2Core.Core;
 using Ji2Core.Core.States;
-using UnityEngine;
 
 namespace Client.Tutorial
 {
@@ -58,7 +54,7 @@ namespace Client.Tutorial
         {
             cancellationTokenSource = new CancellationTokenSource();
             
-            if (model.TryGetNotSelectedCell(out var pos))
+            if (model.TryGetRandomNotSelectedCell(out var pos))
             {
                 pointer.ShowTooltip();
                 await UniTask.Delay(50);

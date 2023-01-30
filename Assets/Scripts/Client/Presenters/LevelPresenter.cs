@@ -50,6 +50,12 @@ namespace Client.Presenters
             model.TilesSwapped += SwapTiles;
             model.TileDeselected += DeselectTile;
             model.TileSetted += SetTile;
+            model.TurnCompleted += UpdateTurn;
+        }
+
+        private void UpdateTurn(int turnCount)
+        {
+            levelScreen.SetTurnsCount(turnCount);
         }
 
         private void SetTile(Vector2Int pos)
@@ -84,7 +90,9 @@ namespace Client.Presenters
             model.LogAnalyticsLevelStart();
             levelScreen = (LevelScreen)screenNavigator.CurrentScreen;
             levelScreen.SetLevelName($"Level {model.LevelCount + 1}");
-
+            
+            levelScreen.SetUpProgressBar(model.OkResult, model.GoodResult, model.PerfectResult);
+            
             updateService.Add(this);
         }
 

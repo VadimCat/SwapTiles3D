@@ -14,15 +14,18 @@ namespace Client.States
         private readonly LevelsLoopProgress levelsLoopProgress;
         private readonly LevelsConfig levelsConfig;
         private readonly AudioService audioService;
+        private readonly LevelResultViewConfig levelResultViewConfig;
 
         public LevelCompletedState(StateMachine stateMachine, ScreenNavigator screenNavigator,
-            LevelsLoopProgress levelsLoopProgress, LevelsConfig levelsConfig, AudioService audioService)
+            LevelsLoopProgress levelsLoopProgress, LevelsConfig levelsConfig, AudioService audioService,
+            LevelResultViewConfig levelResultViewConfig)
         {
             this.stateMachine = stateMachine;
             this.screenNavigator = screenNavigator;
             this.levelsLoopProgress = levelsLoopProgress;
             this.levelsConfig = levelsConfig;
             this.audioService = audioService;
+            this.levelResultViewConfig = levelResultViewConfig;
         }
 
         public async UniTask Enter(LevelCompletedPayload payload)
@@ -30,9 +33,18 @@ namespace Client.States
             var screen = await screenNavigator.PushScreen<LevelCompletedScreen>();
             var levelName = payload.level.Name;
             var levelViewConfig = levelsConfig.GetData(levelName);
-            var levelResult = levelViewConfig.Image;
-            screen.SetLevelResult(levelResult, payload.level.LevelCount);
+            var levelResultImage = levelViewConfig.Image;
+            var color = levelResultViewConfig.GetColor(payload.level.Result);
+            screen.SetLevelResult(levelResultImage, color);
+
             screen.ClickNext += OnClickNext;
+            screen.ClickRetry += OnClickRetry;
+        }
+
+        private void OnClickRetry()
+        {
+            var levelData = levelsLoopProgress.GetRetryLevelData();
+            stateMachine.Enter<LoadLevelState, LoadLevelStatePayload>(new LoadLevelStatePayload(levelData, 1f));
         }
 
         private void OnClickNext()
@@ -47,7 +59,7 @@ namespace Client.States
             await screenNavigator.CloseScreen<LevelCompletedScreen>();
         }
     }
-    
+
 
     public class LevelCompletedPayload
     {

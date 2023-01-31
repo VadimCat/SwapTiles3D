@@ -14,7 +14,7 @@ namespace Client.Models
         private float playTime = 0;
 
         public string Name => levelData.name;
-        public int LevelCount => levelData.playedTotal;
+        public int LevelCount => levelData.uniqueLevelNumber;
         
         protected LevelBase(Analytics analytics, LevelData levelData, ISaveDataContainer saveDataContainer)
         {
@@ -46,10 +46,11 @@ namespace Client.Models
         {
             var eventData = new Dictionary<string, object>
             {
-                [Constants.LevelNumberKey] = levelData.playedTotal,
+                [Constants.LevelNumberKey] = levelData.uniqueLevelNumber,
                 [Constants.LevelNameKey] = levelData.name,
-                [Constants.LevelCountKey] = levelData.playedTotal,
-                [Constants.LevelLoopKey] = levelData.lvlLoop
+                [Constants.LevelCountKey] = levelData.levelCount,
+                [Constants.LevelLoopKey] = levelData.lvlLoop,
+                [Constants.LevelRandomKey] = levelData.isRandom,
             };
             analytics.LogEventDirectlyTo<YandexMetricaLogger>(Constants.StartEvent, eventData);
             analytics.ForceSendDirectlyTo<YandexMetricaLogger>();
@@ -59,12 +60,13 @@ namespace Client.Models
         {
             var eventData = new Dictionary<string, object>
             {
-                [Constants.LevelNumberKey] = levelData.playedTotal,
+                [Constants.LevelNumberKey] = levelData.uniqueLevelNumber,
                 [Constants.LevelNameKey] = levelData.name,
-                [Constants.LevelCountKey] = levelData.playedTotal,
+                [Constants.LevelCountKey] = levelData.levelCount,
                 [Constants.LevelLoopKey] = levelData.lvlLoop,
+                [Constants.LevelRandomKey] = levelData.isRandom,
                 [Constants.ResultKey] = ((int)levelExitType).ToString(),
-                [Constants.TimeKey] = playTime
+                [Constants.TimeKey] = playTime,
             };
 
             analytics.LogEventDirectlyTo<YandexMetricaLogger>(Constants.FinishEvent, eventData);

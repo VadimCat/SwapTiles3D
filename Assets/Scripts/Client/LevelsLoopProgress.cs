@@ -1,57 +1,68 @@
 ﻿using Ji2Core.Core.SaveDataContainer;
-using UnityEngine;
+using Random = System.Random;
 
 namespace Client
 {
     public class LevelsLoopProgress
     {
-        private readonly ISaveDataContainer saveDataContainer;
+        private readonly Random rnd = new(19021999);
+        private readonly ISaveDataContainer save;
         private readonly string[] levelOrder;
 
         private const string LevelsPlayedTotalIndexKey = "LastPlayedLevel";
+        private const string LevelsPlayedUniqueTotalKey = "LastPlayedLevel";
 
-        public LevelsLoopProgress(ISaveDataContainer saveDataContainer, string[] levelOrder)
+        public LevelsLoopProgress(ISaveDataContainer save, string[] levelOrder)
         {
-            this.saveDataContainer = saveDataContainer;
+            this.save = save;
             this.levelOrder = levelOrder;
         }
 
         public LevelData GetNextLevelData()
         {
-            int playedTotal = saveDataContainer.GetValue<int>(LevelsPlayedTotalIndexKey);
-            int lvlIndex = playedTotal % levelOrder.Length;
-            int lvlLoop = playedTotal / levelOrder.Length;
-            string lvlId = levelOrder[lvlIndex];
-            
-            return new LevelData()
+            int playedTotal = save.GetValue<int>(LevelsPlayedTotalIndexKey);
+            return GetLevelData(playedTotal);
+        }
+
+        private LevelData GetLevelData(int playedTotal)
+        {
+            int playedUniqueTotal = save.GetValue<int>(LevelsPlayedUniqueTotalKey);
+            int lvlLoop = playedUniqueTotal / levelOrder.Length;
+            int lvlIndex = playedUniqueTotal % levelOrder.Length;
+            string lvlId = GetLevelName(playedUniqueTotal);
+
+            return new LevelData
             {
                 name = lvlId,
-                playedTotal = playedTotal,
-                lvlIndex = lvlIndex,
+                uniqueLevelNumber = playedUniqueTotal,
+                levelCount = playedTotal,
                 lvlLoop = lvlLoop
             };
+        }
+
+        private string GetLevelName(int playedUniqueTotal)
+        {
+            var lvlIndex = playedUniqueTotal % levelOrder.Length;
+            if (lvlIndex >= levelOrder.Length)
+            {
+                lvlIndex = rnd.Next(levelOrder.Length);
+            }
+            return levelOrder[lvlIndex];
         }
 
         public void IncLevel()
         {
-            int playedTotal = saveDataContainer.GetValue<int>(LevelsPlayedTotalIndexKey);
-            saveDataContainer.SaveValue(LevelsPlayedTotalIndexKey, playedTotal + 1);
+            int playedUnique = save.GetValue<int>(LevelsPlayedUniqueTotalKey);
+            save.SaveValue(LevelsPlayedUniqueTotalKey, playedUnique + 1);
+            
+            int playedTotal = save.GetValue<int>(LevelsPlayedTotalIndexKey);
+            save.SaveValue(LevelsPlayedTotalIndexKey, playedTotal + 1);
         }
 
         public LevelData GetRetryLevelData()
         {
-            int playedTotal = saveDataContainer.GetValue<int>(LevelsPlayedTotalIndexKey) - 1;
-            int lvlIndex = playedTotal % levelOrder.Length;
-            int lvlLoop = playedTotal / levelOrder.Length;
-            string lvlId = levelOrder[lvlIndex];
-            
-            return new LevelData()
-            {
-                name = lvlId,
-                playedTotal = playedTotal,
-                lvlIndex = lvlIndex,
-                lvlLoop = lvlLoop
-            };
+            int playedTotal = save.GetValue<int>(LevelsPlayedUniqueTotalKey) - 1;
+            return GetLevelData(playedTotal);
         }
     }
 }
@@ -59,7 +70,8 @@ namespace Client
 public class LevelData
 {
     public string name;
-    public int playedTotal;
+    public int uniqueLevelNumber;
+    public int levelCount;
     public int lvlLoop;
-    public int lvlIndex;
+    public int isRandom;
 }

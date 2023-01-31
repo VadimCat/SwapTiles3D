@@ -30,9 +30,9 @@ namespace Client.Views.Level
 
         public void SetData(LevelViewData viewData, Vector2Int position)
         {
-            image.texture = viewData.Image.texture;
-            float w = (float)1 / viewData.CutSize.x;
-            float h = (float)1 / viewData.CutSize.y;
+            image.texture = viewData.image.texture;
+            float w = (float)1 / viewData.cutSize.x;
+            float h = (float)1 / viewData.cutSize.y;
             float x = w * position.x;
             float y = h * position.y;
             image.uvRect = new Rect(x, y, w, h);

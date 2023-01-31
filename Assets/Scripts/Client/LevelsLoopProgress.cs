@@ -1,4 +1,5 @@
-﻿using Ji2Core.Core.SaveDataContainer;
+﻿using Client.Models;
+using Ji2Core.Core.SaveDataContainer;
 using Random = System.Random;
 
 namespace Client
@@ -74,4 +75,5 @@ public class LevelData
     public int levelCount;
     public int lvlLoop;
     public int isRandom;
+    public Difficulty difficulty;
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Client.Models;
+using UnityEngine;
 
 namespace Client
 {
@@ -7,20 +8,21 @@ namespace Client
     {
         [SerializeField] private string id;
         [SerializeField] private Sprite image;
-        [SerializeField] private Vector2Int cutSize = new Vector2Int(3, 3);
+        [SerializeField] private Vector2Int[] cutSize = { new(3, 3) };
         [SerializeField] private Sprite background;
 
         public Sprite Background => this.background;
         public string Id => this.id;
-        public Vector2Int CutSize => this.cutSize;
         public Sprite Image => image;
 
-        public LevelViewData ViewData()
+        public LevelViewData ViewData(int loop)
         {
             return new LevelViewData()
             {
-                CutSize = cutSize,
-                Image = image
+                //HACK
+                difficulty = (Difficulty)Mathf.Clamp(loop, 0, cutSize.Length),
+                cutSize = cutSize[Mathf.Clamp(loop, 0, cutSize.Length)],
+                image = image
             };
         }
 
@@ -29,7 +31,7 @@ namespace Client
         {
             this.id = id;
             this.image = image;
-            this.cutSize = cutSize;
+            this.cutSize = new[] { cutSize };
             this.background = backSprite;
         }
 #endif

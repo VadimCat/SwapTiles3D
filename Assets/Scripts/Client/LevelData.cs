@@ -1,12 +1,14 @@
-﻿using UnityEngine;
+﻿using Client.Models;
+using UnityEngine;
 
 namespace Client
 {
     public class LevelViewData
     {
-        public Sprite Image;
-        public Vector2Int CutSize;
+        public Sprite image;
+        public Vector2Int cutSize;
+        public Difficulty difficulty;
         
-        public float Aspect => this.Image.Aspect();
+        public float Aspect => this.image.Aspect();
     }
 }

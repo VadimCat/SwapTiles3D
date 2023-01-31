@@ -65,7 +65,7 @@ namespace Client.Presenters
 
         public void BuildLevel()
         {
-            var levelViewData = levelViewConfig.GetData(model.Name).ViewData();
+            var levelViewData = levelViewConfig.GetData(model.Name).ViewData((int)model.Difficulty);
             view.SetGridSizeByData(levelViewData);
 
             for (var y = 0; y < model.currentPoses.GetLength(0); y++)

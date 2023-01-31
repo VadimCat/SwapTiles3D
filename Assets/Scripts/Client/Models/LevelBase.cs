@@ -15,7 +15,7 @@ namespace Client.Models
 
         public string Name => levelData.name;
         public int LevelCount => levelData.uniqueLevelNumber;
-        
+        public Difficulty Difficulty => levelData.difficulty;
         protected LevelBase(Analytics analytics, LevelData levelData, ISaveDataContainer saveDataContainer)
         {
             this.analytics = analytics;
@@ -35,7 +35,7 @@ namespace Client.Models
                 saveDataContainer.ResetKey(Name);
             }
         }
-
+        
         public void AppendPlayTime(float time)
         {
             playTime += time;
@@ -51,6 +51,7 @@ namespace Client.Models
                 [Constants.LevelCountKey] = levelData.levelCount,
                 [Constants.LevelLoopKey] = levelData.lvlLoop,
                 [Constants.LevelRandomKey] = levelData.isRandom,
+                [Constants.DifficultyKey] = levelData.difficulty
             };
             analytics.LogEventDirectlyTo<YandexMetricaLogger>(Constants.StartEvent, eventData);
             analytics.ForceSendDirectlyTo<YandexMetricaLogger>();
@@ -65,6 +66,7 @@ namespace Client.Models
                 [Constants.LevelCountKey] = levelData.levelCount,
                 [Constants.LevelLoopKey] = levelData.lvlLoop,
                 [Constants.LevelRandomKey] = levelData.isRandom,
+                [Constants.DifficultyKey] = levelData.difficulty,
                 [Constants.ResultKey] = ((int)levelExitType).ToString(),
                 [Constants.TimeKey] = playTime,
             };
@@ -72,5 +74,14 @@ namespace Client.Models
             analytics.LogEventDirectlyTo<YandexMetricaLogger>(Constants.FinishEvent, eventData);
             analytics.ForceSendDirectlyTo<YandexMetricaLogger>();
         }
+    }
+
+    public enum Difficulty
+    {
+        easy,
+        normal,
+        hard,
+        harder,
+        insane
     }
 }

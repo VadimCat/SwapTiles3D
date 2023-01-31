@@ -33,11 +33,11 @@ namespace Client.Views.Level
         
         public void SetGridSizeByData(LevelViewData levelData)
         {
-            float cellWidth = cellsRootTransform.rect.width / levelData.CutSize.x;
+            float cellWidth = cellsRootTransform.rect.width / levelData.cutSize.x;
             float aspectHeight = cellsRootTransform.rect.width / levelData.Aspect;
             
-            float cellHeight = aspectHeight / levelData.CutSize.y; 
-            grid.constraintCount = levelData.CutSize.x;
+            float cellHeight = aspectHeight / levelData.cutSize.y; 
+            grid.constraintCount = levelData.cutSize.x;
             Vector2 cellSize = new Vector2(cellWidth, cellHeight);
             
             grid.cellSize = cellSize * CELL_SIZE_RATIO;

@@ -68,8 +68,10 @@ namespace Client.States
             var view = context.GetService<LevelView>();
             var viewConfig = levelsConfig.GetData(levelData.name);
             backgroundService.SwitchBackground(viewConfig.Background);
-            var viewData = viewConfig.ViewData();
-            var levelModel = new Level(context.GetService<Analytics>(), levelData, viewData.CutSize,
+            var viewData = viewConfig.ViewData(levelData.lvlLoop);
+            //HACK
+            levelData.difficulty = viewData.difficulty;
+            var levelModel = new Level(context.GetService<Analytics>(), levelData, viewData.cutSize,
                 context.GetService<ISaveDataContainer>());
 
             var levelPresenter =

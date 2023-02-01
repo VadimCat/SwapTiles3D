@@ -14,5 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 5
   image: {fileID: 21300000, guid: 9d6d05785d38a418f9d07ed0fea54e10, type: 3}
-  cutSize: {x: 4, y: 4}
+  cutSize:
+  - {x: 4, y: 4}
+  - {x: 4, y: 4}
+  - {x: 4, y: 4}
+  - {x: 4, y: 4}
   background: {fileID: 21300000, guid: 01f5eaffe82b95741ad86cd76781cfa7, type: 3}

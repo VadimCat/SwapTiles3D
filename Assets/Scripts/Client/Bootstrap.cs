@@ -15,7 +15,7 @@ using Client.Tutorial;
 
 namespace Client
 {
-    public class Bootstrap : BootstraperBase
+    public class  Bootstrap : BootstraperBase
     {
         [SerializeField] private LevelsConfig levelsConfig;
         [SerializeField] private ScreenNavigator screenNavigator;

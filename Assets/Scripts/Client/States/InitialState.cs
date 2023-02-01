@@ -37,11 +37,12 @@ namespace Client.States
         {
             var facebookTask = LoadFb();
 
-            var dataLoadingTask = saveDataContainer.Load();
+            saveDataContainer.Load();
+            levelsLoopProgress.Load();
             tutorialService.TryRunSteps();
             
             await screenNavigator.PushScreen<LoadingScreen>();
-            await UniTask.WhenAll(facebookTask, dataLoadingTask);
+            await facebookTask;
 
             float fakeLoadingTime = 0;
 #if !UNITY_EDITOR

@@ -16,7 +16,5 @@ MonoBehaviour:
   image: {fileID: 21300000, guid: 209c159deef0c4482a214b5fdb5ef692, type: 3}
   cutSize:
   - {x: 4, y: 4}
-  - {x: 4, y: 4}
-  - {x: 4, y: 4}
-  - {x: 4, y: 4}
+  - {x: 3, y: 3}
   background: {fileID: 21300000, guid: 820c55664766ed44f805395ae5e79c35, type: 3}

@@ -44,7 +44,7 @@ namespace Client.States
             await screenNavigator.PushScreen<LoadingScreen>();
             await facebookTask;
 
-            float fakeLoadingTime = 0;
+            float fakeLoadingTime = 5;
 #if !UNITY_EDITOR
             fakeLoadingTime = 5;
 #endif

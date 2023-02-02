@@ -18,8 +18,14 @@ namespace Client.UI.Screens
         [SerializeField] private RectTransform goodArea;
         [SerializeField] private RectTransform perfectArea;
         [SerializeField] private Slider slider;
-
+        [SerializeField] private Image handleImage;
+        [SerializeField] private LevelResultViewConfig resultViewConfig;
+        
         private Sequence animationsSequence;
+        
+        private int perfectCount;
+        private int goodCount;
+        private int okCount;
 
         public void SetLevelName(string name)
         {
@@ -29,10 +35,38 @@ namespace Client.UI.Screens
         public void SetTurnsCount(int turnsCount)
         {
             progressBar.AnimateProgressAsync(turnsCount);
+            if (turnsCount > okCount)
+            {
+                AnimateHandleColor(LevelResult.Worst);
+            }
+            else if(turnsCount > goodCount)
+            {
+                AnimateHandleColor(LevelResult.Ok);
+            }
+            else if(turnsCount > perfectCount)
+            {
+                AnimateHandleColor(LevelResult.Good);
+            }
+            else
+            {
+                AnimateHandleColor(LevelResult.Perfect);
+            }
         }
-        
+
+        private void AnimateHandleColor(LevelResult result)
+        {
+            handleImage.DOColor(resultViewConfig.GetColor(result), 1f)
+                .SetLink(gameObject);
+        }
+
         public void SetUpProgressBar(int okCount, int goodCount, int perfectCount)
         {
+            this.perfectCount = perfectCount;
+            this.goodCount = goodCount;
+            this.okCount = okCount;
+
+            handleImage.color = resultViewConfig.GetColor(LevelResult.Perfect);
+            
             int totalCount = okCount + 2;
 
             float worstAreaPercent = 2 / (float)totalCount;

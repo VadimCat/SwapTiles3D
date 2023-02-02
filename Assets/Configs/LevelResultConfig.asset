@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resultsViewData:
   - result: 1
-    color: {r: 0.5377358, g: 0.5377358, b: 0.5377358, a: 1}
+    color: {r: 0.6603774, g: 0.6603774, b: 0.6603774, a: 1}
   - result: 2
-    color: {r: 0.089523785, g: 0.745283, b: 0, a: 1}
+    color: {r: 1, g: 0.42352942, b: 0.42352942, a: 1}
   - result: 3
-    color: {r: 0.7735849, g: 0, b: 0.6766404, a: 1}
+    color: {r: 1, g: 0.7647059, b: 0.40784314, a: 1}
   - result: 4
-    color: {r: 1, g: 0.6975163, b: 0, a: 1}
+    color: {r: 0.6156863, g: 0.93333334, b: 0.5019608, a: 1}

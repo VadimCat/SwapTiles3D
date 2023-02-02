@@ -17,6 +17,8 @@ namespace Client
 
         public List<int> randomLevels;
 
+        private LevelData currentLevelData;
+        
         public LevelsLoopProgress(ISaveDataContainer save, string[] levelOrder)
         {
             this.save = save;
@@ -35,22 +37,22 @@ namespace Client
         public LevelData GetNextLevelData()
         {
             int playedTotal = save.GetValue<int>(LastLevelNumberKey);
-            return GetLevelData(playedTotal);
-        }
-
-        public void IncLevel()
-        {
-            int playedUnique = save.GetValue<int>(LastLevelCountKey);
-            save.SaveValue(LastLevelCountKey, playedUnique + 1);
-
-            int playedTotal = save.GetValue<int>(LastLevelNumberKey);
-            save.SaveValue(LastLevelNumberKey, playedTotal + 1);
+            return GetLevelData(playedTotal, true);
         }
 
         public LevelData GetRetryLevelData()
         {
-            int playedTotal = save.GetValue<int>(LastLevelCountKey) - 1;
-            return GetLevelData(playedTotal);
+            int playedTotal = save.GetValue<int>(LastLevelNumberKey) - 1;
+            return GetLevelData(playedTotal, false);
+        }
+
+        public void IncLevel()
+        {
+            if (currentLevelData.isUnique)
+            {
+                int playedTotal = save.GetValue<int>(LastLevelNumberKey);
+                save.SaveValue(LastLevelNumberKey, playedTotal + 1);
+            }
         }
 
         public void Reset()
@@ -59,21 +61,25 @@ namespace Client
             save.ResetKey(LastLevelNumberKey);
             save.ResetKey(RandomLevelsKey);
         }
-
-        private LevelData GetLevelData(int playedUnique)
+        
+        private LevelData GetLevelData(int playedUnique, bool isUnique)
         {
             int levelCount = save.GetValue<int>(LastLevelCountKey);
+            save.SaveValue(LastLevelCountKey, levelCount);
+            
             int lvlLoop = playedUnique / levelOrder.Length;
 
             string lvlId = GetLevelName(playedUnique);
 
-            return new LevelData
+            currentLevelData = new LevelData
             {
                 name = lvlId,
                 uniqueLevelNumber = playedUnique,
                 levelCount = levelCount,
-                lvlLoop = lvlLoop
+                lvlLoop = lvlLoop,
+                isUnique = isUnique
             };
+            return currentLevelData;
         }
 
         private string GetLevelName(int playedUniqueTotal)
@@ -108,4 +114,5 @@ public class LevelData
     public int lvlLoop;
     public int isRandom;
     public Difficulty difficulty;
+    public bool isUnique;
 }

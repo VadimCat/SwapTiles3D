@@ -2,7 +2,6 @@ using Client.States;
 using Ji2Core.Core;
 using Ji2Core.Core.Analytics;
 using Ji2Core.Core.Audio;
-using Ji2Core.Core.Compliments;
 using Ji2Core.Core.SaveDataContainer;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.States;
@@ -12,6 +11,7 @@ using Models;
 using UI.Background;
 using UnityEngine;
 using Client.Tutorial;
+using Core.Compliments;
 
 namespace Client
 {
@@ -21,7 +21,7 @@ namespace Client
         [SerializeField] private ScreenNavigator screenNavigator;
         [SerializeField] private BackgroundService backgroundService;
         [SerializeField] private UpdateService updateService;
-        [SerializeField] private ComplimentsWordsService complimentsWordsService;
+        [SerializeField] private ImageCompliments compliments;
         [SerializeField] private AudioService audioService;
         [SerializeField] private TutorialPointer tutorialPointer;
         [SerializeField] private LevelResultViewConfig levelResultViewConfig;
@@ -52,7 +52,7 @@ namespace Client
 
 
             context.Register(sceneLoader);
-            context.Register(complimentsWordsService);
+            context.Register<ICompliments>(compliments);
 
             InstallStateMachine();
             InstallTutorial();

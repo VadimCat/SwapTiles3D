@@ -60,7 +60,11 @@ namespace Client.Presenters
 
         private void SetTile(Vector2Int pos)
         {
-            modelAnimator.EnqueueAnimation(() => posToCell[pos].PlaySettedAnimation());
+            modelAnimator.EnqueueAnimation(() =>
+            {
+                audioService.PlaySfxAsync(AudioClipName.TileSet);
+                return posToCell[pos].PlaySettedAnimation();
+            });
         }
 
         public void BuildLevel()
@@ -118,7 +122,11 @@ namespace Client.Presenters
 
         private async void SwapTiles(Vector2Int pos1, Vector2Int pos2)
         {
-            await modelAnimator.EnqueueAnimation(() => SwapAnimation(pos1, pos2));
+            await modelAnimator.EnqueueAnimation(() =>
+            {
+                audioService.PlaySfxAsync(AudioClipName.Swap);
+                return SwapAnimation(pos1, pos2);
+            });
         }
 
         private async UniTask SwapAnimation(Vector2Int pos1, Vector2Int pos2)

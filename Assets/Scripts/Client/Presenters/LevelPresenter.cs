@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using Client.Models;
 using Client.UI.Screens;
 using Client.Views.Level;
+using Core.Compliments;
 using Cysharp.Threading.Tasks;
 using Ji2Core.Core;
 using Ji2Core.Core.Audio;
 using Ji2Core.Core.ScreenNavigation;
+using Ji2Core.Core.UserInput;
 using Ji2Core.Utils.Shuffling;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -24,18 +26,21 @@ namespace Client.Presenters
         private readonly LevelsConfig levelViewConfig;
         private readonly LevelsLoopProgress levelsLoopProgress;
         private readonly AudioService audioService;
+        private readonly ICompliments compliments;
+        private readonly InputService inputService;
 
         private readonly ModelAnimator modelAnimator = new();
         private readonly Dictionary<Vector2Int, CellView> posToCell = new();
         private readonly Dictionary<CellView, Vector2Int> viewToPos = new();
         
         private LevelScreen levelScreen;
+        private int tilesSet;
 
         public Level Model => model;
 
         public LevelPresenter(LevelView view, Level model, ScreenNavigator screenNavigator,
             UpdateService updateService, LevelsConfig levelViewConfig, LevelsLoopProgress levelsLoopProgress,
-            AudioService audioService)
+            AudioService audioService, ICompliments compliments, InputService inputService)
         {
             this.view = view;
             this.model = model;
@@ -44,6 +49,8 @@ namespace Client.Presenters
             this.levelViewConfig = levelViewConfig;
             this.levelsLoopProgress = levelsLoopProgress;
             this.audioService = audioService;
+            this.compliments = compliments;
+            this.inputService = inputService;
 
             model.LevelCompleted += OnLevelCompleted;
             model.TileSelected += SelectTile;
@@ -60,8 +67,14 @@ namespace Client.Presenters
 
         private void SetTile(Vector2Int pos)
         {
+            tilesSet++;
+            int closureSet = tilesSet;
             modelAnimator.EnqueueAnimation(() =>
             {
+                if (closureSet % 3 == 0)
+                {
+                    compliments.ShowRandomFromScreenPosition(inputService.lastPos);
+                }
                 audioService.PlaySfxAsync(AudioClipName.TileSet);
                 return posToCell[pos].PlaySettedAnimation();
             });

@@ -16,22 +16,23 @@ namespace Client.Models
         public event Action<Vector2Int, Vector2Int> TilesSwapped;
         public event Action<Vector2Int> TileSetted;
         public event Action<int> TurnCompleted;
-        
+
         public readonly Vector2Int[,] currentPoses;
         public readonly Vector2Int cutSize;
-
         public int turnsCount;
+        public int PerfectResult;
+        public int GoodResult;
+        public int OkResult;
+        public int SelectedTilesCount => selectedTiles.Count;
 
         public Vector2Int? selectedTile => selectedTiles.Count == 0 ? null : selectedTiles[0];
-        public int SelectedTilesCount => selectedTiles.Count;
-        
+
+
+        private HashSet<Vector2Int> settedTiles;
         private readonly Analytics analytics;
         private readonly LevelData levelData;
         private readonly List<Vector2Int> selectedTiles = new(2);
 
-        public int PerfectResult;
-        public int GoodResult;
-        public int OkResult;
 
         public LevelResult Result { get; private set; } = LevelResult.None;
 
@@ -39,11 +40,11 @@ namespace Client.Models
             : base(analytics, levelData, saveDataContainer)
         {
             this.cutSize = cutSize;
-            
+            settedTiles = new HashSet<Vector2Int>(cutSize.x * cutSize.y);
             PerfectResult = TurnsCountForResult(LevelResult.Perfect);
             GoodResult = TurnsCountForResult(LevelResult.Good);
             OkResult = TurnsCountForResult(LevelResult.Ok);
-            
+
             currentPoses = Shufflling.CreatedShuffled2DimensionalArray(cutSize);
         }
 
@@ -68,6 +69,7 @@ namespace Client.Models
                         SwapTiles();
                         selectedTiles.Clear();
                     }
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -84,7 +86,7 @@ namespace Client.Models
             else
             {
                 List<Vector2Int> notSettedTiles = new List<Vector2Int>();
-                
+
                 for (var x = 0; x < currentPoses.GetLength(0); x++)
                 {
                     for (var y = 0; y < currentPoses.GetLength(1); y++)
@@ -112,15 +114,15 @@ namespace Client.Models
 
         private LevelResult GetResult()
         {
-            if (turnsCount <= PerfectResult )
+            if (turnsCount <= PerfectResult)
             {
                 return LevelResult.Perfect;
             }
-            else if(turnsCount <= GoodResult)
+            else if (turnsCount <= GoodResult)
             {
                 return LevelResult.Good;
             }
-            else if(turnsCount <= OkResult)
+            else if (turnsCount <= OkResult)
             {
                 return LevelResult.Ok;
             }
@@ -129,7 +131,7 @@ namespace Client.Models
                 return LevelResult.Worst;
             }
         }
-        
+
         public int TurnsCountForResult(LevelResult result)
         {
             switch (result)
@@ -147,14 +149,14 @@ namespace Client.Models
                     throw new ArgumentOutOfRangeException(nameof(result), result, null);
             }
         }
-        
+
         private void SwapTiles()
         {
             (currentPoses[selectedTiles[0].x, selectedTiles[0].y],
                 currentPoses[selectedTiles[1].x, selectedTiles[1].y]) = (
                 currentPoses[selectedTiles[1].x, selectedTiles[1].y],
                 currentPoses[selectedTiles[0].x, selectedTiles[0].y]);
-            
+
             TilesSwapped?.Invoke(selectedTiles[0], selectedTiles[1]);
             turnsCount++;
             TurnCompleted?.Invoke(Mathf.Clamp(turnsCount, 0, OkResult + 2));
@@ -169,13 +171,15 @@ namespace Client.Models
             {
                 for (var j = 0; j < currentPoses.GetLength(1); j++)
                 {
+                    var posToCheck = new Vector2Int(i, j);
                     if (currentPoses[i, j].x != i || currentPoses[i, j].y != j)
                     {
                         isFailed = true;
                     }
-                    else
+                    else if(!settedTiles.Contains(posToCheck))
                     {
-                        TileSetted?.Invoke(new Vector2Int(i,j));
+                        TileSetted?.Invoke(posToCheck);
+                        settedTiles.Add(posToCheck);
                     }
                 }
             }

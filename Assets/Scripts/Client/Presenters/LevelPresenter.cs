@@ -71,7 +71,7 @@ namespace Client.Presenters
             int closureSet = tilesSet;
             modelAnimator.EnqueueAnimation(() =>
             {
-                if (closureSet % 3 == 0)
+                if (closureSet % 2 == 0)
                 {
                     compliments.ShowRandomFromScreenPosition(inputService.lastPos);
                 }

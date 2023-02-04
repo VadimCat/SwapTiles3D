@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Ji2Core.Core;
+using Ji2Core.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,8 +10,8 @@ namespace Client.Views.Level
 {
     public class LevelView : MonoBehaviour
     {
-        private const float CELL_SIZE_RATIO = 0.96F;
-        private const float CELL_DISTANCE_RATIO = 0.04F;
+        private const float CellSizeRatio = 0.96F;
+        private const float CellDistanceRatio = 0.04F;
 
         [SerializeField] private RectTransform cellsRootTransform;
         [SerializeField] private GridLayoutGroup grid;
@@ -35,24 +35,23 @@ namespace Client.Views.Level
 
         public void SetGridSizeByData(LevelViewData levelData)
         {
-            float cellWidth = cellsRootTransform.rect.width / levelData.cutSize.x;
-            float aspectHeight = cellsRootTransform.rect.width / levelData.Aspect;
+            var rect = cellsRootTransform.rect;
+            float cellWidth = rect.width / levelData.cutSize.x;
+            float aspectHeight = rect.width / levelData.Aspect;
 
             float cellHeight = aspectHeight / levelData.cutSize.y;
             grid.constraintCount = levelData.cutSize.x;
             Vector2 cellSize = new Vector2(cellWidth, cellHeight);
 
-            grid.cellSize = cellSize * CELL_SIZE_RATIO;
-            grid.spacing = cellSize * CELL_DISTANCE_RATIO;
+            grid.cellSize = cellSize * CellSizeRatio;
+            grid.spacing = cellSize * CellDistanceRatio;
         }
 
         public async UniTask AnimateWin()
         {
             var sequence = DOTween.Sequence();
-            sequence.Join(
-                    DOTween.To(() => grid.spacing, spacing => grid.spacing = spacing, Vector2.zero, .2f))
-                .Join(grid.transform.DOScale(.8f, .3f))
-                .Insert(.3f, grid.transform.DOScale(.9f, .3f));
+            sequence.Append(grid.DoSpacing(Vector2.zero, .2f))
+                .Append(grid.transform.DOScale(.9f, .2f));
             await sequence.AwaitForComplete();
         }
     }

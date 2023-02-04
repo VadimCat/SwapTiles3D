@@ -10,6 +10,7 @@ namespace Client.Views.Level
     {
         [SerializeField] private Button button;
         [SerializeField] private RawImage image;
+        [SerializeField] private RectTransform imageRect;
         [SerializeField] private Canvas sortingCanvas;
         [SerializeField] private CellAnimationConfig animationConfig;
         [SerializeField] private Image maskImage;
@@ -29,7 +30,7 @@ namespace Client.Views.Level
         {
             Clicked?.Invoke(this);
         }
-
+        
         public void SetData(LevelViewData viewData, Vector2Int position)
         {
             image.texture = viewData.image.texture;

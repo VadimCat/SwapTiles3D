@@ -32,15 +32,8 @@ namespace Client.UI.Screens
 
         private async void AnimateLevelResultImage()
         {
-            animateResult.color = new Color(1, 1, 1, 0);
             border.color = new Color(1, 1, 1, 0);
-            
-            var sequence = DOTween.Sequence();
-            
-            sequence.Insert(0, animateResult.DOFade(1, .25f));
-            sequence.Insert(0, border.DOFade(1, .25f));
-
-            await sequence.AwaitForComplete();
+            await border.DOFade(1, .25f).AwaitForComplete();
             
             animateResult.transform.DOMoveY(-0.08f, 1.4f)
                 .SetLoops(-1, LoopType.Yoyo)

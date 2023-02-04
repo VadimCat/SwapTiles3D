@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Ji2Core.UI.Screens;
 using Ji2Core.Utils;
@@ -33,31 +34,31 @@ namespace Client.UI.Screens
             levelName.text = name;
         }
 
-        public void SetTurnsCount(int turnsCount)
+        public async UniTask SetTurnsCount(int turnsCount)
         {
-            progressBar.AnimateProgressAsync(turnsCount);
             if (turnsCount > okCount)
             {
-                AnimateHandleColor(LevelResult.Worst);
+                await AnimateHandleColor(LevelResult.Worst);
             }
             else if(turnsCount > goodCount)
             {
-                AnimateHandleColor(LevelResult.Ok);
+                await AnimateHandleColor(LevelResult.Ok);
             }
             else if(turnsCount > perfectCount)
             {
-                AnimateHandleColor(LevelResult.Good);
+                await AnimateHandleColor(LevelResult.Good);
             }
             else
             {
-                AnimateHandleColor(LevelResult.Perfect);
+                await AnimateHandleColor(LevelResult.Perfect);
             }
+            await progressBar.AnimateProgressAsync(turnsCount);
         }
 
-        private void AnimateHandleColor(LevelResult result)
+        private async UniTask AnimateHandleColor(LevelResult result)
         {
-            handleImage.DOColor(resultViewConfig.GetColor(result), 1f)
-                .SetLink(gameObject);
+            await handleImage.DOColor(resultViewConfig.GetColor(result), 1f).SetLink(gameObject)
+                .AwaitForComplete();
         }
 
         public void SetUpProgressBar(int okCount, int goodCount, int perfectCount)

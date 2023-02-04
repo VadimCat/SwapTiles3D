@@ -411,7 +411,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aab74cd137f2424f97403484e5d9ffe3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedPercent: 0.5
+  speedPercent: 0.25
   slider: {fileID: 7307876455029183812}
 --- !u!1 &3669109933783609914
 GameObject:

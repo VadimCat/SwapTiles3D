@@ -5,6 +5,7 @@ using Client.UI.Screens;
 using Client.Views.Level;
 using Core.Compliments;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Ji2Core.Core;
 using Ji2Core.Core.Audio;
 using Ji2Core.Core.ScreenNavigation;
@@ -180,7 +181,8 @@ namespace Client.Presenters
             levelsLoopProgress.IncLevel();
             updateService.Remove(this);
 
-            modelAnimator.EnqueueAnimation(() => view.AnimateWin());
+            modelAnimator.EnqueueAnimation(view.AnimateWin);
+            modelAnimator.EnqueueAnimation(PulseTiles);
             await modelAnimator.AwaitAllAnimationsEnd();
 
             audioService.PlaySfxAsync(AudioClipName.WinFX);
@@ -189,6 +191,18 @@ namespace Client.Presenters
             LevelCompleted?.Invoke();
         }
 
+        public async UniTask PulseTiles()
+        {
+            List<UniTask> pulseTasks = new List<UniTask>();
+            foreach (var view in viewToPos.Keys)
+            {
+                var task = view.transform.DOScale(1.1f, .1f).AwaitForComplete();
+                pulseTasks.Add(task);
+            }
+
+            await UniTask.WhenAll();
+        }
+        
         public Vector3 GetTilePos(Vector2Int pos)
         {
             return posToCell[pos].transform.position;

@@ -12,6 +12,8 @@ namespace Client.Views.Level
         [SerializeField] private RawImage image;
         [SerializeField] private Canvas sortingCanvas;
         [SerializeField] private CellAnimationConfig animationConfig;
+        [SerializeField] private Image maskImage;
+        [SerializeField] private Image rootImage;
         [SerializeField] private Transform disableAnimationRoot;
 
         private Transform root => sortingCanvas.transform;
@@ -70,12 +72,14 @@ namespace Client.Views.Level
             root.localPosition = Vector3.zero;
         }
 
-        public async UniTask PlaySettedAnimation()
+        public UniTask PlaySetAnimation()
         {
             button.interactable = false;
-            await disableAnimationRoot.transform.DOScale(animationConfig.SelectScale, animationConfig.SelectTime)
-                .SetLink(gameObject)
-                .AwaitForComplete();
+            maskImage.sprite = rootImage.sprite;
+            // await disableAnimationRoot.transform.DOScale(animationConfig.SelectScale, animationConfig.SelectTime)
+            //     .SetLink(gameObject)
+            //     .AwaitForComplete();
+            return UniTask.CompletedTask;
         }
 
         private void OnDestroy()

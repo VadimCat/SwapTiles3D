@@ -76,7 +76,7 @@ namespace Client.Presenters
                     compliments.ShowRandomFromScreenPosition(inputService.lastPos);
                 }
                 audioService.PlaySfxAsync(AudioClipName.TileSet);
-                return posToCell[pos].PlaySettedAnimation();
+                return posToCell[pos].PlaySetAnimation();
             });
         }
 

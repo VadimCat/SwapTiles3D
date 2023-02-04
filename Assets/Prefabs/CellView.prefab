@@ -54,6 +54,8 @@ MonoBehaviour:
   image: {fileID: 8668476662693572635}
   sortingCanvas: {fileID: 6503775753478141106}
   animationConfig: {fileID: 11400000, guid: eace83e6c319df54d9c0c3f4f8635e6b, type: 2}
+  maskImage: {fileID: 6222514296175951896}
+  rootImage: {fileID: 1462569193695412124}
   disableAnimationRoot: {fileID: 454001783462898608}
 --- !u!1 &2991814044135618798
 GameObject:

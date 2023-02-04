@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Ji2Core.UI.Screens;
+using Ji2Core.Utils;
 using TMPro;
 using UI;
 using UnityEngine;
@@ -85,26 +86,6 @@ namespace Client.UI.Screens
             okArea.transform.SetLocalX(worstArea.sizeDelta.x);
             goodArea.transform.SetLocalX(worstArea.sizeDelta.x + okArea.sizeDelta.x);
             perfectArea.transform.SetLocalX(worstArea.sizeDelta.x + okArea.sizeDelta.x + goodArea.sizeDelta.x);
-        }
-    }
-
-    public static class RectTransformUtils
-    {
-        public static void SetWidth(this RectTransform transform, float width)
-        {
-            var size = transform.sizeDelta;
-            size.x = width;
-            transform.sizeDelta = size;
-        }
-    }
-
-    public static class TransformUtils
-    {
-        public static void SetLocalX(this Transform transform, float x)
-        {
-            var localPos = transform.localPosition;
-            localPos.x = x;
-            transform.localPosition = localPos;
         }
     }
 }

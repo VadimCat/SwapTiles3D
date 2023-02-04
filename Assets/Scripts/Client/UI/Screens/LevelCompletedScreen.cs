@@ -12,8 +12,9 @@ namespace Client.UI.Screens
         [SerializeField] private Button nextButton;
         [SerializeField] private Button retryButton;
 
-        [SerializeField] private Image levelResult;
+        [SerializeField] private Image levelImageResult;
         [SerializeField] private Image animateResult;
+        [SerializeField] private Image border;
         [SerializeField] private Image rewardMedal;
 
         public event Action ClickNext;
@@ -29,8 +30,18 @@ namespace Client.UI.Screens
             nextButton.onClick.AddListener(FireNext);
         }
 
-        private void AnimateLevelResultImage()
+        private async void AnimateLevelResultImage()
         {
+            animateResult.color = new Color(1, 1, 1, 0);
+            border.color = new Color(1, 1, 1, 0);
+            
+            var sequence = DOTween.Sequence();
+            
+            sequence.Insert(0, animateResult.DOFade(1, .25f));
+            sequence.Insert(0, border.DOFade(1, .25f));
+
+            await sequence.AwaitForComplete();
+            
             animateResult.transform.DOMoveY(-0.08f, 1.4f)
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetEase(Ease.Linear);
@@ -43,7 +54,7 @@ namespace Client.UI.Screens
 
         public void SetLevelResult(Sprite levelResult, Color rewardMedalColor)
         {
-            this.levelResult.sprite = levelResult;
+            this.levelImageResult.sprite = levelResult;
             rewardMedal.color = rewardMedalColor;
         }
 

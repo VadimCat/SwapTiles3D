@@ -1244,8 +1244,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nextButton: {fileID: 8759322470351959481}
   retryButton: {fileID: 1708509267812453763}
-  levelResult: {fileID: 3924200857356332743}
+  levelImageResult: {fileID: 3924200857356332743}
   animateResult: {fileID: 7857078765133921608}
+  border: {fileID: 8200948874103498223}
   rewardMedal: {fileID: 992321855359971067}
 --- !u!1 &8759322470351959431
 GameObject:

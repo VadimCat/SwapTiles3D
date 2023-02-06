@@ -1,17 +1,18 @@
 using Client.States;
 using Ji2Core.Core;
-using Ji2Core.Core.Analytics;
 using Ji2Core.Core.Audio;
-using Ji2Core.Core.SaveDataContainer;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.States;
 using Ji2Core.Core.UserInput;
 using Ji2Core.Plugins.AppMetrica;
-using Models;
 using UI.Background;
 using UnityEngine;
 using Client.Tutorial;
 using Core.Compliments;
+using Ji2.CommonCore.SaveDataContainer;
+using Ji2.Models.Analytics;
+using Ji2.Presenters.Tutorial;
+using Ji2.UI;
 
 namespace Client
 {
@@ -23,7 +24,7 @@ namespace Client
         [SerializeField] private UpdateService updateService;
         [SerializeField] private ImageCompliments compliments;
         [SerializeField] private AudioService audioService;
-        [SerializeField] private TutorialPointer tutorialPointer;
+        [SerializeField] private TutorialPointerView tutorialPointer;
         [SerializeField] private LevelResultViewConfig levelResultViewConfig;
         
 
@@ -62,8 +63,10 @@ namespace Client
         private void InstallTutorial()
         {
             context.Register(tutorialPointer);
+            ITutorialFactory factory = new TutorialFactory(context);
+            ITutorialStep[] steps = { factory.Create<InitialTutorialStep>() };
             var tutorialService =
-                new TutorialService(context.GetService<ISaveDataContainer>(), new TutorialFactory(context));
+                new TutorialService(context.GetService<ISaveDataContainer>(), steps);
             context.Register(tutorialService);
         }
 

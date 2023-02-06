@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Ji2.Utils;
 using Ji2Core.Core;
-using Ji2Core.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,13 +22,13 @@ namespace Client.Views.Level
 
         private Context context;
 
-        public virtual void Awake()
+        public void Awake()
         {
             context = Context.GetInstance();
             context.Register(this);
         }
 
-        public virtual void OnDestroy()
+        public void OnDestroy()
         {
             context.Unregister(this);
         }

@@ -1,5 +1,5 @@
-﻿using Ji2Core.Core;
-using Ji2Core.Core.SaveDataContainer;
+﻿using Ji2.CommonCore.SaveDataContainer;
+using Ji2Core.Core;
 using Ji2Core.Core.ScreenNavigation;
 
 namespace Client.Utils

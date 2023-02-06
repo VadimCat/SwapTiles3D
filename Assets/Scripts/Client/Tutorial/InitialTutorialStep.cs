@@ -5,6 +5,8 @@ using Client.Presenters;
 using Client.States;
 using Client.Views.Level;
 using Cysharp.Threading.Tasks;
+using Ji2.Presenters.Tutorial;
+using Ji2.UI;
 using Ji2Core.Core.States;
 
 namespace Client.Tutorial
@@ -12,7 +14,7 @@ namespace Client.Tutorial
     public class InitialTutorialStep : ITutorialStep
     {
         private readonly StateMachine stateMachine;
-        private readonly TutorialPointer pointer;
+        private readonly TutorialPointerView pointer;
 
         private LevelView levelView;
 
@@ -23,7 +25,7 @@ namespace Client.Tutorial
         private LevelPresenter presenter;
         private Level model;
 
-        public InitialTutorialStep(StateMachine stateMachine, TutorialPointer pointer)
+        public InitialTutorialStep(StateMachine stateMachine, TutorialPointerView pointer)
         {
             this.stateMachine = stateMachine;
             this.pointer = pointer;

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ji2Core.Core.Analytics;
-using Ji2Core.Core.SaveDataContainer;
-using Ji2Core.Utils.Shuffling;
+using Ji2.CommonCore.SaveDataContainer;
+using Ji2.Models;
+using Ji2.Models.Analytics;
+using Ji2.Utils.Shuffling;
 using UnityEngine;
 using Random = UnityEngine.Random;
 

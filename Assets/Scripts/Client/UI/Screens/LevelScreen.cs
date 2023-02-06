@@ -1,9 +1,9 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Ji2.UI;
+using Ji2.Utils;
 using Ji2Core.UI.Screens;
-using Ji2Core.Utils;
 using TMPro;
-using UI;
 using UnityEngine;
 using UnityEngine.UI;
 

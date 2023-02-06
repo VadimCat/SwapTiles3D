@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Client.Tutorial;
 using Client.Utils;
+using Ji2.Presenters.Tutorial;
 using Ji2Core.Core;
 using Ji2Core.Core.Audio;
 using Ji2Core.Core.States;

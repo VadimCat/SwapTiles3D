@@ -1,10 +1,9 @@
-﻿using Client.Tutorial;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using Facebook.Unity;
-using Ji2Core.Core.SaveDataContainer;
+using Ji2.CommonCore.SaveDataContainer;
+using Ji2.Presenters.Tutorial;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.States;
-using Ji2Core.UI.Screens;
 using UI.Screens;
 
 namespace Client.States

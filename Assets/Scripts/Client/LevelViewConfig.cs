@@ -1,4 +1,5 @@
 ﻿using Client.Models;
+using Ji2.Models;
 using UnityEngine;
 
 namespace Client

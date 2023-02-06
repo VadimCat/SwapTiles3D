@@ -220,6 +220,10 @@ PrefabInstance:
       propertyPath: m_Color.a
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3581070745182046588, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
+      propertyPath: devKey
+      value: r9vNC83N8nYpCzYGigyjUh
+      objectReference: {fileID: 0}
     - target: {fileID: 6961043523254794761, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
       propertyPath: m_SizeDelta.x
       value: 256

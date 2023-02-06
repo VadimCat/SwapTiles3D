@@ -16,7 +16,7 @@ using Ji2.UI;
 
 namespace Client
 {
-    public class  Bootstrap : BootstraperBase
+    public class  Bootstrap : BootstrapBase
     {
         [SerializeField] private LevelsConfig levelsConfig;
         [SerializeField] private ScreenNavigator screenNavigator;

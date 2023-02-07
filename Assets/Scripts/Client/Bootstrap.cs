@@ -9,6 +9,7 @@ using UI.Background;
 using UnityEngine;
 using Client.Tutorial;
 using Core.Compliments;
+using Ji2.CommonCore;
 using Ji2.CommonCore.SaveDataContainer;
 using Ji2.Models.Analytics;
 using Ji2.Presenters.Tutorial;

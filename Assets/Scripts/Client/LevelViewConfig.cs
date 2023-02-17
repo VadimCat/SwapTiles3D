@@ -1,5 +1,4 @@
-﻿using Client.Models;
-using Ji2.Models;
+﻿using Ji2.Models;
 using UnityEngine;
 
 namespace Client
@@ -18,11 +17,13 @@ namespace Client
 
         public LevelViewData ViewData(int loop)
         {
+            var difficulty = (Difficulty)Mathf.Clamp(loop, 0, cutSize.Length);
+            var vector2Int = cutSize[Mathf.Clamp(loop, 0, cutSize.Length - 1)];
+            
             return new LevelViewData()
             {
-                //HACK
-                difficulty = (Difficulty)Mathf.Clamp(loop, 0, cutSize.Length),
-                cutSize = cutSize[Mathf.Clamp(loop, 0, cutSize.Length)],
+                difficulty = difficulty,
+                cutSize = vector2Int,
                 image = image
             };
         }

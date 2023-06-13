@@ -58,7 +58,7 @@ namespace Client.Presenters
             model.TileSelected += SelectTile;
             model.TilesSwapped += SwapTiles;
             model.TileDeselected += DeselectTile;
-            model.TileSetted += SetTile;
+            model.TileSet += SetTile;
             model.TurnCompleted += UpdateTurn;
         }
 
@@ -71,13 +71,13 @@ namespace Client.Presenters
         {
             tilesSet++;
             int closureSet = tilesSet;
-            modelAnimator.EnqueueAnimation(() =>
+            modelAnimator.Enqueue(() =>
             {
                 if (closureSet % 2 == 0)
                 {
                     compliments.ShowRandomFromScreenPosition(inputService.lastPos);
                 }
-                audioService.PlaySfxAsync(AudioClipName.TileSet);
+                audioService.PlaySfxAsync(SoundNamesCollection.TileSet);
                 return posToCell[pos].PlaySetAnimation();
             });
         }
@@ -122,7 +122,7 @@ namespace Client.Presenters
 
         private void OnTileClick(CellView cellView)
         {
-            audioService.PlaySfxAsync(AudioClipName.TileTapFx);
+            audioService.PlaySfxAsync(SoundNamesCollection.TileTap);
 
             var pos = viewToPos[cellView];
             model.ClickTile(pos);
@@ -130,16 +130,16 @@ namespace Client.Presenters
 
         private void DeselectTile(Vector2Int pos)
         {
-            audioService.PlaySfxAsync(AudioClipName.TileTapFx);
+            audioService.PlaySfxAsync(SoundNamesCollection.TileTap);
 
             modelAnimator.Animate(posToCell[pos].PlayDeselectAnimation());
         }
 
         private async void SwapTiles(Vector2Int pos1, Vector2Int pos2)
         {
-            await modelAnimator.EnqueueAnimation(() =>
+            await modelAnimator.Enqueue(() =>
             {
-                audioService.PlaySfxAsync(AudioClipName.Swap);
+                audioService.PlaySfxAsync(SoundNamesCollection.Swap);
                 return SwapAnimation(pos1, pos2);
             });
         }
@@ -182,11 +182,11 @@ namespace Client.Presenters
             levelsLoopProgress.IncLevel();
             updateService.Remove(this);
 
-            modelAnimator.EnqueueAnimation(view.AnimateWin);
-            modelAnimator.EnqueueAnimation(PulseTiles);
+            modelAnimator.Enqueue(view.AnimateWin);
+            modelAnimator.Enqueue(PulseTiles);
             await modelAnimator.AwaitAllAnimationsEnd();
 
-            audioService.PlaySfxAsync(AudioClipName.WinFX);
+            audioService.PlaySfxAsync(SoundNamesCollection.Win);
             Object.Destroy(view.gameObject);
 
             LevelCompleted?.Invoke();

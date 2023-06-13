@@ -49,7 +49,7 @@ namespace Client.States
 
         private void OnClickNext()
         {
-            audioService.PlaySfxAsync(AudioClipName.ButtonFX);
+            audioService.PlaySfxAsync(SoundNamesCollection.ButtonTap);
             var levelData = levelsLoopProgress.GetNextLevelData();
             stateMachine.Enter<LoadLevelState, LoadLevelStatePayload>(new LoadLevelStatePayload(levelData, 1f));
         }

@@ -12,7 +12,7 @@ namespace Client.UI.Screens
     public class LevelScreen : BaseScreen
     {
         [SerializeField] private TMP_Text levelName;
-        [SerializeField] private MarkerProgressBar progressBar;
+        [SerializeField] private IProgressBar progressBar;
 
         [SerializeField] private RectTransform commonProgressArea;
         [SerializeField] private RectTransform worstArea;

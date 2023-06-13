@@ -9,13 +9,13 @@ using Random = UnityEngine.Random;
 
 namespace Client.Models
 {
-    public class Level : LevelBase
+    public class Level : LevelBase<ProgressBase>
     {
         public event Action LevelCompleted;
         public event Action<Vector2Int> TileSelected;
         public event Action<Vector2Int> TileDeselected;
         public event Action<Vector2Int, Vector2Int> TilesSwapped;
-        public event Action<Vector2Int> TileSetted;
+        public event Action<Vector2Int> TileSet;
         public event Action<int> TurnCompleted;
 
         public readonly Vector2Int[,] currentPoses;
@@ -179,7 +179,7 @@ namespace Client.Models
                     }
                     else if(!settedTiles.Contains(posToCheck))
                     {
-                        TileSetted?.Invoke(posToCheck);
+                        TileSet?.Invoke(posToCheck);
                         settedTiles.Add(posToCheck);
                     }
                 }

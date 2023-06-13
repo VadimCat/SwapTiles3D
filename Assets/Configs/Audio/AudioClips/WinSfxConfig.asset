@@ -12,6 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2db75aaaaa44ecfbc158cad3df558e2, type: 3}
   m_Name: WinSfxConfig
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: _soundNamesOrigin
+      Entry: 7
+      Data: 0|Client.SoundNamesCollection, Client
+    - Name: 
+      Entry: 8
+      Data: 
   playVolume: 1
   clip: {fileID: 8300000, guid: 605e93c6cf2b28d40924c1866da8fa4d, type: 3}
-  clipName: 2
+  clipName: Win

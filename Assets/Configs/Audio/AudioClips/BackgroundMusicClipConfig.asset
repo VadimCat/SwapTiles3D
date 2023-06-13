@@ -12,6 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2db75aaaaa44ecfbc158cad3df558e2, type: 3}
   m_Name: BackgroundMusicClipConfig
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: _soundNamesOrigin
+      Entry: 7
+      Data: 0|Client.SoundNamesCollection, Client
+    - Name: 
+      Entry: 8
+      Data: 
   playVolume: 1
   clip: {fileID: 8300000, guid: 9cd2a9a24b7f84b4a8567a5a5cd8aff0, type: 3}
-  clipName: 0
+  clipName: BackgroundMusic

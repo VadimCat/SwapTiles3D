@@ -105,7 +105,7 @@ namespace Client
         private void InstallAudioService()
         {
             audioService.Bootstrap();
-            audioService.PlayMusic(AudioClipName.DefaultBackgroundMusic);
+            audioService.PlayMusic(SoundNamesCollection.BackgroundMusic);
             context.Register(audioService);
         }
 

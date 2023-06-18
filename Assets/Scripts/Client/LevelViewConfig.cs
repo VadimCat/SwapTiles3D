@@ -1,15 +1,17 @@
 ﻿using Ji2.Models;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Client
 {
     [CreateAssetMenu(fileName = "LevelViewConfig")]
-    public class LevelViewConfig : ScriptableObject, ILevelView
+    public class LevelViewConfig : SerializedScriptableObject, ILevelView
     {
         [SerializeField] private string id;
         [SerializeField] private Sprite image;
         [SerializeField] private Vector2Int[] cutSize = { new(3, 3) };
         [SerializeField] private Sprite background;
+        [field: SerializeField] private bool[][,] LevelSizes { get; set; }
 
         public Sprite Background => this.background;
         public string Id => this.id;
@@ -18,13 +20,13 @@ namespace Client
         public LevelViewData ViewData(int loop)
         {
             var difficulty = (Difficulty)Mathf.Clamp(loop, 0, cutSize.Length);
-            var vector2Int = cutSize[Mathf.Clamp(loop, 0, cutSize.Length - 1)];
+            var cutTemplate = LevelSizes[Mathf.Clamp(loop, 0, cutSize.Length - 1)];
             
             return new LevelViewData()
             {
-                difficulty = difficulty,
-                cutSize = vector2Int,
-                image = image
+                Difficulty = difficulty,
+                CutTemplate = cutTemplate,
+                Image = image
             };
         }
 
@@ -34,7 +36,7 @@ namespace Client
             this.id = id;
             this.image = image;
             this.cutSize = new[] { cutSize };
-            this.background = backSprite;
+            background = backSprite;
         }
 #endif
     }

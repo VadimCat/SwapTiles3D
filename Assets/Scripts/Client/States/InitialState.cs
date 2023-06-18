@@ -5,6 +5,7 @@ using Ji2.Presenters.Tutorial;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.States;
 using UI.Screens;
+using UnityEngine;
 
 namespace Client.States
 {
@@ -40,10 +41,9 @@ namespace Client.States
             levelsLoopProgress.Load();
             tutorialService.TryRunSteps();
             
-            await screenNavigator.PushScreen<LoadingScreen>();
-            await facebookTask;
+            await UniTask.WhenAll(facebookTask, screenNavigator.PushScreen<LoadingScreen>()) ;
 
-            float fakeLoadingTime = 5;
+            float fakeLoadingTime = 0;
 #if !UNITY_EDITOR
             fakeLoadingTime = 5;
 #endif
@@ -53,10 +53,10 @@ namespace Client.States
 
         private async UniTask LoadFb()
         {
-// #if UNITY_EDITOR
-//             await UniTask.CompletedTask;
-//             Debug.LogWarning("FB IS NOT SETTED");
-// #else 
+#if UNITY_EDITOR
+            await UniTask.CompletedTask;
+            Debug.LogWarning("FB IS NOT SETTED");
+#else 
 
             var taskCompletionSource = new UniTaskCompletionSource<bool>();
             FB.Init(() => OnFbInitComplete(taskCompletionSource));
@@ -66,7 +66,7 @@ namespace Client.States
             {
                 FB.ActivateApp();
             }
-// #endif
+#endif
         }
 
         private void OnFbInitComplete(UniTaskCompletionSource<bool> uniTaskCompletionSource)

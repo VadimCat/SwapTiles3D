@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Ji2.Utils;
@@ -16,31 +15,29 @@ namespace Client.Views.Level
         [SerializeField] private RectTransform cellsRootTransform;
         [SerializeField] private GridLayoutGroup grid;
 
-        private readonly Dictionary<Vector2Int, CellView> cellViews = new();
-
         public Transform GridRoot => grid.transform;
 
-        private Context context;
+        private Context _context;
 
         public void Awake()
         {
-            context = Context.GetInstance();
-            context.Register(this);
+            _context = Context.GetInstance();
+            _context.Register(this);
         }
 
         public void OnDestroy()
         {
-            context.Unregister(this);
+            _context.Unregister(this);
         }
 
         public void SetGridSizeByData(LevelViewData levelData)
         {
             var rect = cellsRootTransform.rect;
-            float cellWidth = rect.width / levelData.cutSize.x;
+            float cellWidth = rect.width / levelData.CutTemplate.GetLength(0);
             float aspectHeight = rect.width / levelData.Aspect;
 
-            float cellHeight = aspectHeight / levelData.cutSize.y;
-            grid.constraintCount = levelData.cutSize.x;
+            float cellHeight = aspectHeight / levelData.CutTemplate.GetLength(1);
+            grid.constraintCount = levelData.CutTemplate.GetLength(0);
             Vector2 cellSize = new Vector2(cellWidth, cellHeight);
 
             grid.cellSize = cellSize * CellSizeRatio;

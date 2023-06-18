@@ -115,6 +115,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 6669128334661287240}
   screens:
-  - {fileID: 8759322470126098185, guid: 3dc1b17ad67f19643aab6410707372b4, type: 3}
-  - {fileID: 2673282795225721937, guid: b6d83a5942eebe544a54f5e723749fe8, type: 3}
   - {fileID: 6398871294771498080, guid: c416dce2c9eaf124190fc494b1e27bbe, type: 3}
+  - {fileID: 2673282795225721937, guid: b6d83a5942eebe544a54f5e723749fe8, type: 3}
+  - {fileID: 8759322470126098185, guid: 3dc1b17ad67f19643aab6410707372b4, type: 3}
+  transform: {fileID: 0}
+  scaler: {fileID: 0}

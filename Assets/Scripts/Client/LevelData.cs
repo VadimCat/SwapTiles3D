@@ -1,15 +1,14 @@
-﻿using Client.Models;
-using Ji2.Models;
+﻿using Ji2.Models;
 using UnityEngine;
 
 namespace Client
 {
     public class LevelViewData
     {
-        public Sprite image;
-        public Vector2Int cutSize;
-        public Difficulty difficulty;
+        public Sprite Image;
+        public bool[,] CutTemplate;
+        public Difficulty Difficulty;
         
-        public float Aspect => this.image.Aspect();
+        public float Aspect => Image.Aspect();
     }
 }

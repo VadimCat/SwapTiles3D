@@ -10,14 +10,14 @@ namespace Client.Views.Level
     {
         [SerializeField] private Button button;
         [SerializeField] private RawImage image;
-        [SerializeField] private RectTransform imageRect;
         [SerializeField] private Canvas sortingCanvas;
         [SerializeField] private CellAnimationConfig animationConfig;
         [SerializeField] private Image maskImage;
         [SerializeField] private Image rootImage;
-        [SerializeField] private Transform disableAnimationRoot;
 
-        private Transform root => sortingCanvas.transform;
+        private Transform Root => sortingCanvas.transform;
+
+        private RawImage MainImage => image;
 
         public event Action<CellView> Clicked;
 
@@ -30,15 +30,25 @@ namespace Client.Views.Level
         {
             Clicked?.Invoke(this);
         }
-        
-        public void SetData(LevelViewData viewData, Vector2Int position)
+
+        public void SetData(LevelViewData viewData, Vector2Int position, float initialRotation)
         {
-            image.texture = viewData.image.texture;
-            float w = (float)1 / viewData.cutSize.x;
-            float h = (float)1 / viewData.cutSize.y;
-            float x = w * position.x;
-            float y = h * position.y;
-            image.uvRect = new Rect(x, y, w, h);
+            if (viewData.CutTemplate[position.x, position.y])
+            {
+                rootImage.color = Color.clear;
+                MainImage.color = Color.clear;
+                button.interactable = false;
+            }
+            else
+            {
+                image.texture = viewData.Image.texture;
+                float w = (float)1 / viewData.CutTemplate.GetLength(0);
+                float h = (float)1 / viewData.CutTemplate.GetLength(1);
+                float x = w * position.x;
+                float y = h * position.y;
+                image.uvRect = new Rect(x, y, w, h);
+                image.transform.localRotation = Quaternion.Euler(0, 0, initialRotation);
+            }
         }
 
         public async UniTask PlaySelectAnimation()
@@ -47,7 +57,7 @@ namespace Client.Views.Level
             sortingCanvas.sortingOrder = 1000;
 
             button.interactable = false;
-            await root.DOScale(animationConfig.SelectScale, animationConfig.SelectTime)
+            await Root.DOScale(animationConfig.SelectScale, animationConfig.SelectTime)
                 .AwaitForComplete();
             button.interactable = true;
         }
@@ -55,31 +65,43 @@ namespace Client.Views.Level
         public async UniTask PlayDeselectAnimation()
         {
             button.interactable = false;
-            await root.DOScale(1, animationConfig.SelectTime).AwaitForComplete();
+            await Root.DOScale(1, animationConfig.SelectTime).AwaitForComplete();
             button.interactable = true;
             sortingCanvas.overrideSorting = false;
         }
 
-        public async UniTask PlayMoveAnimation(Vector3 pos)
+        public async UniTask PlayMoveAnimation(CellView cellView)
         {
             button.interactable = false;
-
-            await root.DOMove(pos, animationConfig.MoveTime).AwaitForComplete();
-            await root.DOScale(1, animationConfig.SelectTime).AwaitForComplete();
-
+            var rectToSet = MainImage.uvRect;
+            var rotationToSet = maskImage.transform.localRotation;
+            
+            await Root.DOMove(cellView.transform.position, animationConfig.MoveTime).AwaitForComplete();
+            await Root.DOScale(1, animationConfig.SelectTime).AwaitForComplete();
+            
+            Root.transform.localPosition = Vector3.zero;
             sortingCanvas.overrideSorting = false;
             button.interactable = true;
-
-            root.localPosition = Vector3.zero;
+            Root.localPosition = Vector3.zero;
+            
+            cellView.MainImage.uvRect = rectToSet;
+            cellView.maskImage.transform.localRotation = rotationToSet;
         }
 
+        public async UniTask PlayRotationAnimation(float rotation)
+        {
+            sortingCanvas.overrideSorting = true;
+            sortingCanvas.sortingOrder = 1000;
+            var rotationEndValue = new Vector3(0, 0, rotation);
+            await maskImage.transform.DOLocalRotate(rotationEndValue, .5f).AwaitForComplete();
+            
+            sortingCanvas.overrideSorting = false;
+        }
+        
         public UniTask PlaySetAnimation()
         {
             button.interactable = false;
             maskImage.sprite = rootImage.sprite;
-            // await disableAnimationRoot.transform.DOScale(animationConfig.SelectScale, animationConfig.SelectTime)
-            //     .SetLink(gameObject)
-            //     .AwaitForComplete();
             return UniTask.CompletedTask;
         }
 

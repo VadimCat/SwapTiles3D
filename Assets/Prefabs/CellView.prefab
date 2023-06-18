@@ -52,6 +52,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 7472117096897845330}
   image: {fileID: 8668476662693572635}
+  imageRect: {fileID: 0}
   sortingCanvas: {fileID: 6503775753478141106}
   animationConfig: {fileID: 11400000, guid: eace83e6c319df54d9c0c3f4f8635e6b, type: 2}
   maskImage: {fileID: 6222514296175951896}
@@ -173,7 +174,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 63
 --- !u!1 &6357243778242332258
 GameObject:
   m_ObjectHideFlags: 0

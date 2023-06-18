@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3026036310494877871}
   - component: {fileID: 6738182120045125389}
   - component: {fileID: 4349911770764616864}
+  - component: {fileID: 6513576431543277645}
   m_Layer: 0
   m_Name: ProgressBar
   m_TagString: Untagged
@@ -93,7 +94,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speedPercent: 0.5
   loadingBar: {fileID: 7894985535828955339}
-  progress: {fileID: 5293157481272012748}
+--- !u!114 &6513576431543277645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441533324649574043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efb3680b6f464614ae43d9c4f3e4d671, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 5293157481272012748}
+  speedPercent: 0.5
 --- !u!1 &3154322764103660463
 GameObject:
   m_ObjectHideFlags: 0
@@ -573,6 +587,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8759322470126098184}
   - component: {fileID: 2673282795225721937}
+  - component: {fileID: 7623509003800375759}
   m_Layer: 0
   m_Name: LoadingScreen
   m_TagString: Untagged
@@ -615,5 +630,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92c3c6976790bcc449de16af6404ee2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 7623509003800375759}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: progressBar
+      Entry: 10
+      Data: 0
   logo0: {fileID: 2760738595001213177}
-  progressBar: {fileID: 4349911770764616864}
+--- !u!114 &7623509003800375759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759322470126098199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ba5a168ea74623b3faad665d2671b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 4349911770764616864}
+    - {fileID: 6513576431543277645}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: bars
+      Entry: 7
+      Data: 0|Ji2.UI.IProgressBar[], Ji2.UI
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 

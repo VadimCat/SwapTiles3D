@@ -8,7 +8,7 @@ namespace Client
         public Sprite Image;
         public bool[,] CutTemplate;
         public Difficulty Difficulty;
-        
+        public int DiscreteRotationAngle;
         public float Aspect => Image.Aspect();
     }
 }

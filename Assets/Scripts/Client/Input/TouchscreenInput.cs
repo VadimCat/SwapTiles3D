@@ -9,9 +9,10 @@ namespace Client.Input
     public class TouchscreenInput
     {
         private readonly TouchScreenInputActions _touch;
-
-        private float _threshold = 5; 
-        private Vector2? _startPos;
+        private const float MaxSwipeTime = .3f;
+        private const float Threshold = 30;
+        private float _startTime;
+        private (Vector2 pos, float time)? _startSwipeData;
         
         public TouchscreenInput()
         {
@@ -29,14 +30,15 @@ namespace Client.Input
             switch (phase)
             {
                 case TouchPhase.Began:
-                    _startPos = _touch.Input.TouchPosition.ReadValue<Vector2>();
+                    _startSwipeData = (_touch.Input.TouchPosition.ReadValue<Vector2>(), Time.time);
                     break;
-                case TouchPhase.Ended when _startPos.HasValue:
+                case TouchPhase.Ended when _startSwipeData.HasValue:
                 {
-                    var dir = _touch.Input.TouchPosition.ReadValue<Vector2>() - _startPos.Value;
-                    if (dir.sqrMagnitude > _threshold * _threshold)
+                    var dir = _touch.Input.TouchPosition.ReadValue<Vector2>() - _startSwipeData.Value.pos;
+                    var swipeTIme = Time.time - _startSwipeData.Value.time;
+                    if (dir.sqrMagnitude > Threshold * Threshold && swipeTIme <= MaxSwipeTime)
                     {                    
-                        _startPos = null;
+                        _startSwipeData = null;
                         
                         var xAbs = Mathf.Abs(dir.x);
                         var yAbs = Mathf.Abs(dir.y);
@@ -47,14 +49,18 @@ namespace Client.Input
                         }
                         else
                         {
-                            EventSwipeDirectional?.Invoke(dir.y > 0 ? Direction.Down : Direction.Right);
+                            EventSwipeDirectional?.Invoke(dir.y > 0 ? Direction.Down : Direction.Up);
                         }
+                    }
+                    else
+                    {
+                        _startSwipeData = null;
                     }
 
                     break;
                 }
                 case TouchPhase.Canceled:
-                    _startPos = null;
+                    _startSwipeData = null;
                     break;
             }
         }

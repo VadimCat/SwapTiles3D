@@ -47,7 +47,7 @@ namespace Client.Views.Level
                 float x = w * position.x;
                 float y = h * position.y;
                 image.uvRect = new Rect(x, y, w, h);
-                image.transform.localRotation = Quaternion.Euler(0, 0, initialRotation);
+                maskImage.transform.localRotation = Quaternion.Euler(0, 0, initialRotation);
             }
         }
 
@@ -88,13 +88,12 @@ namespace Client.Views.Level
             cellView.maskImage.transform.localRotation = rotationToSet;
         }
 
-        public async UniTask PlayRotationAnimation(float rotation)
+        public async UniTask PlayRotationAnimation(int rotation)
         {
             sortingCanvas.overrideSorting = true;
             sortingCanvas.sortingOrder = 1000;
             var rotationEndValue = new Vector3(0, 0, rotation);
             await maskImage.transform.DOLocalRotate(rotationEndValue, .5f).AwaitForComplete();
-            
             sortingCanvas.overrideSorting = false;
         }
         

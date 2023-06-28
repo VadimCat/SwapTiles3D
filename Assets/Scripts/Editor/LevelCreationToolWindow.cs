@@ -81,7 +81,7 @@ namespace Editor
         {
             var config = CreateInstance<LevelViewConfig>();
             config.name = id;
-            config.SetData(id, sprite, size, backSprite);
+            config.SetData(id, sprite, backSprite);
 
             var path = Path.Combine("Assets\\Configs\\Levels", $"{id}_ViewData.asset");
 

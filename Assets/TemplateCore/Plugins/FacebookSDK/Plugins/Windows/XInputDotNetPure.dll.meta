@@ -20,7 +20,8 @@ PluginImporter:
       Editor: Editor
     second:
       enabled: 1
-      settings: {}
+      settings:
+        DefaultValueInitialized: true
   - first:
       Standalone: Win
     second:
@@ -31,6 +32,12 @@ PluginImporter:
       Standalone: Win64
     second:
       enabled: 1
+      settings:
+        CPU: AnyCPU
+  - first:
+      Windows Store Apps: WindowsStoreApps
+    second:
+      enabled: 0
       settings:
         CPU: AnyCPU
   userData: 

@@ -67,14 +67,13 @@ namespace Client.Presenters
             _touchScreenInput.EventSwipeDirectional += TrySwipe;
         }
 
-        private void Rotate(Vector2Int pos, float rotation)
+        private void Rotate(Vector2Int pos, int rotation)
         {
             _modelAnimator.Enqueue(() => _posToCell[pos].PlayRotationAnimation(rotation)).Forget();
         }
 
         private void TrySwipe(Direction dir)
         {
-            Debug.LogError("TRY SWIPE");
             _model.TrySwipe(dir);
         }
 
@@ -107,9 +106,8 @@ namespace Client.Presenters
             for (var x = 0; x < _model.CurrentPoses.GetLength(0); x++)
             for (var y = 0; y < _model.CurrentPoses.GetLength(1); y++)
             {
-                var position = _model.CurrentPoses[x, y];
-                float rotation = _model.TilesRotation[position];
-
+                var position = _model.CurrentPoses[x, y].OriginalPos;
+                int rotation = _model.CurrentPoses[x, y].Rotation;
 
                 var cellView = Object.Instantiate(_levelViewConfig.CellView, _view.GridRoot);
                 cellView.SetData(levelViewData, position, rotation);

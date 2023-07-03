@@ -35,16 +35,10 @@ MonoBehaviour:
       Data: 2|System.Boolean[,], mscorlib
     - Name: 
       Entry: 12
-      Data: 25
+      Data: 6
     - Name: ranks
       Entry: 1
-      Data: 5|5
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: true
+      Data: 2|3
     - Name: 
       Entry: 5
       Data: false
@@ -63,57 +57,6 @@ MonoBehaviour:
     - Name: 
       Entry: 5
       Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: false
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: true
-    - Name: 
-      Entry: 5
-      Data: true
     - Name: 
       Entry: 13
       Data: 
@@ -122,7 +65,7 @@ MonoBehaviour:
       Data: 
     - Name: <IsRotationAvailable>k__BackingField
       Entry: 5
-      Data: true
+      Data: false
     - Name: 
       Entry: 8
       Data: 
@@ -133,5 +76,5 @@ MonoBehaviour:
       Entry: 8
       Data: 
   id: 5
-  image: {fileID: 21300000, guid: e424557faae394539aa8a047c71a850d, type: 3}
+  <Image>k__BackingField: {fileID: 21300000, guid: b2d2bb63153fb45aca35f10d3b840f9b, type: 3}
   background: {fileID: 21300000, guid: 534cfbdfda00d394bbc4ba66ffbddc2a, type: 3}

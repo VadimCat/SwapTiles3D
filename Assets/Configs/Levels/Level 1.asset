@@ -64,5 +64,5 @@ MonoBehaviour:
       Entry: 8
       Data: 
   id: 0
-  image: {fileID: 21300000, guid: ae1d305d6767449c0b23728d797f79ed, type: 3}
+  <Image>k__BackingField: {fileID: 21300000, guid: 88190766b31494dcda0e8b2036b8656d, type: 3}
   background: {fileID: 21300000, guid: 534cfbdfda00d394bbc4ba66ffbddc2a, type: 3}

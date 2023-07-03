@@ -9,7 +9,7 @@ namespace Client
     public class LevelViewConfig : SerializedScriptableObject, ILevelView
     {
         [SerializeField] private string id;
-        [SerializeField] private Sprite image;
+        [SerializeField, PreviewField(150, ObjectFieldAlignment.Left)] private Sprite image;
         [SerializeField] private Sprite background;
         
         [field: SerializeField] private LevelRules[] LevelRules { get; set; }

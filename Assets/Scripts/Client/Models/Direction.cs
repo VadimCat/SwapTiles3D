@@ -8,4 +8,11 @@ namespace Client.Models
         Down,
         Left
     }
+
+    public enum RotationDirection
+    {
+        None,
+        Clockwise,
+        CounterClockwise
+    }
 }

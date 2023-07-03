@@ -35,10 +35,13 @@ MonoBehaviour:
       Data: 2|System.Boolean[,], mscorlib
     - Name: 
       Entry: 12
-      Data: 9
+      Data: 25
     - Name: ranks
       Entry: 1
-      Data: 3|3
+      Data: 5|5
+    - Name: 
+      Entry: 5
+      Data: true
     - Name: 
       Entry: 5
       Data: true
@@ -63,6 +66,51 @@ MonoBehaviour:
     - Name: 
       Entry: 5
       Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 5
+      Data: true
+    - Name: 
+      Entry: 5
+      Data: true
     - Name: 
       Entry: 5
       Data: true
@@ -84,6 +132,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  id: 0
-  image: {fileID: 21300000, guid: 930222daf16824dbd8b541741d3d8b3f, type: 3}
+  id: 5
+  image: {fileID: 21300000, guid: e424557faae394539aa8a047c71a850d, type: 3}
   background: {fileID: 21300000, guid: 534cfbdfda00d394bbc4ba66ffbddc2a, type: 3}

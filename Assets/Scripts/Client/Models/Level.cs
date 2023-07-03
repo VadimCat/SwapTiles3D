@@ -52,7 +52,6 @@ namespace Client.Models
 
             void BuildLevel()
             {
-                int rotationsCount = 360 / rotationAngle;
                 var shuffledPoses = Shufflling.CreatedShuffled2DimensionalArray(new Vector2Int(cutTemplate.GetLength(0),
                     cutTemplate.GetLength(1)));
 
@@ -68,6 +67,7 @@ namespace Client.Models
                     }
                     else
                     {
+                        int rotationsCount = rotationAngle == 0 ? 0 : 360 / rotationAngle;
                         int rotation = rotationAngle == 0 ? 0 : Random.Range(0, rotationsCount) * _rotationAngle;
 
                         CurrentPoses[i, j] = new CellData(new Vector2Int(pos.x, pos.y), rotation);

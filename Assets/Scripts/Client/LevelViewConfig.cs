@@ -9,32 +9,36 @@ namespace Client
     public class LevelViewConfig : SerializedScriptableObject, ILevelView
     {
         [SerializeField] private string id;
-        [SerializeField, PreviewField(150, ObjectFieldAlignment.Left)] private Sprite image;
+
+        [field: SerializeField, PreviewField(150, ObjectFieldAlignment.Left)]
+        public Sprite Image { get; private set; }
+
         [SerializeField] private Sprite background;
-        
+
         [field: SerializeField] private LevelRules[] LevelRules { get; set; }
 
         public Sprite Background => background;
         public string Id => id;
-        public Sprite Image => image;
 
         public LevelViewData ViewData(int loop)
         {
             var difficulty = (Difficulty)Mathf.Clamp(loop, 0, LevelRules.Length);
-            var rules = LevelRules[Mathf.Clamp(loop, 0, LevelRules.Length - 1)];;
+            var rules = LevelRules[Mathf.Clamp(loop, 0, LevelRules.Length - 1)];
+
             var cutTemplate = rules.GetTemplate();
-            
+
             return new LevelViewData()
             {
                 Difficulty = difficulty,
-                CutTemplate = rules.GetTemplate(),
-                Image = image,
-                DiscreteRotationAngle = rules.IsRotationAvailable ? GetRotationAngle() : 0  
+                CutTemplate = cutTemplate,
+                Image = Image,
+                DiscreteRotationAngle = rules.IsRotationAvailable ? GetRotationAngle() : 0
             };
 
             int GetRotationAngle()
             {
-                Vector2Int cellSize = new Vector2Int(image.texture.width / cutTemplate.GetLength(0), image.texture.height / cutTemplate.GetLength(1));
+                Vector2Int cellSize = new Vector2Int(Image.texture.width / cutTemplate.GetLength(0),
+                    Image.texture.height / cutTemplate.GetLength(1));
                 return cellSize.x == cellSize.y ? 90 : 180;
             }
         }
@@ -43,7 +47,7 @@ namespace Client
         public void SetData(string id, Sprite image, Sprite backSprite)
         {
             this.id = id;
-            this.image = image;
+            this.Image = image;
             background = backSprite;
         }
 #endif
@@ -72,7 +76,7 @@ namespace Client
             return template;
         }
     }
-    
+
     public static class SpriteExtensions
     {
         public static float Aspect(this Sprite sprite)

@@ -30,14 +30,15 @@ namespace Client.Views.Level
             _context.Unregister(this);
         }
 
-        public void SetGridSizeByData(LevelViewData levelData)
+        public void SetGridSizeByData(int columns, int rows, float imageAspect)
         {
             var rect = cellsRootTransform.rect;
-            float cellWidth = rect.width / levelData.CutTemplate.GetLength(0);
-            float aspectHeight = rect.width / levelData.Aspect;
+            
+            float cellWidth = rect.width / columns;
+            float aspectHeight = rect.width / imageAspect;
 
-            float cellHeight = aspectHeight / levelData.CutTemplate.GetLength(1);
-            grid.constraintCount = levelData.CutTemplate.GetLength(0);
+            float cellHeight = aspectHeight / rows;
+            grid.constraintCount = columns;
             Vector2 cellSize = new Vector2(cellWidth, cellHeight);
 
             grid.cellSize = cellSize * CellSizeRatio;

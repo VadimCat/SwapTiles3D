@@ -31,23 +31,24 @@ namespace Client.Views.Level
             Clicked?.Invoke(this);
         }
 
-        public void SetData(LevelViewData viewData, Vector2Int position, float initialRotation)
+        public void SetData(Sprite sprite, bool isActive, Vector2Int position, float initialRotation, int columns, int rows)
         {
-            if (viewData.CutTemplate[position.x, position.y])
+            gameObject.name += isActive;
+            if (isActive)
             {
-                rootImage.color = Color.clear;
-                MainImage.color = Color.clear;
-                button.interactable = false;
-            }
-            else
-            {
-                image.texture = viewData.Image.texture;
-                float w = (float)1 / viewData.CutTemplate.GetLength(0);
-                float h = (float)1 / viewData.CutTemplate.GetLength(1);
+                image.texture = sprite.texture;
+                float w = (float)1 / columns;
+                float h = (float)1 / rows;
                 float x = w * position.x;
                 float y = h * position.y;
                 image.uvRect = new Rect(x, y, w, h);
                 maskImage.transform.localRotation = Quaternion.Euler(0, 0, initialRotation);
+            }
+            else
+            {
+                rootImage.color = Color.clear;
+                MainImage.color = Color.clear;
+                button.interactable = false;
             }
         }
 

@@ -52,7 +52,7 @@ namespace Client.Models
 
             void BuildLevel()
             {
-                var shuffledPoses = Shufflling.CreatedShuffled2DimensionalArray(new Vector2Int(cutTemplate.GetLength(0),
+                var shuffledImagePoses = Shufflling.CreatedShuffled2DimensionalArray(new Vector2Int(cutTemplate.GetLength(0),
                     cutTemplate.GetLength(1)));
 
                 CurrentPoses = new CellData[cutTemplate.GetLength(0), cutTemplate.GetLength(1)];
@@ -60,24 +60,24 @@ namespace Client.Models
                 for (var i = 0; i < _cutTemplate.GetLength(0); i++)
                 for (var j = 0; j < _cutTemplate.GetLength(1); j++)
                 {
-                    var pos = shuffledPoses[i, j];
-                    if (_cutTemplate[pos.x, pos.y])
+                    var imagePos = shuffledImagePoses[i, j];
+                    if (_cutTemplate[imagePos.x, imagePos.y])
                     {
-                        CurrentPoses[i, j] = CellData.Disabled(pos);
+                        CurrentPoses[i, j] = CellData.Disabled(imagePos);
                     }
                     else
                     {
                         int rotationsCount = rotationAngle == 0 ? 0 : 360 / rotationAngle;
                         int rotation = rotationAngle == 0 ? 0 : Random.Range(0, rotationsCount) * _rotationAngle;
 
-                        CurrentPoses[i, j] = new CellData(new Vector2Int(pos.x, pos.y), rotation);
+                        CurrentPoses[i, j] = new CellData(new Vector2Int(imagePos.x, imagePos.y), rotation);
                     }
                 }
-
+                
                 for (var i = 0; i < _cutTemplate.GetLength(0); i++)
                 for (var j = 0; j < _cutTemplate.GetLength(1); j++)
                 {
-                    if (!CurrentPoses[i, j].IsActive)
+                    while (!CurrentPoses[i, j].IsActive && !CurrentPoses[i, j].IsOnRightPlace(i, j))
                     {
                         ClickTile(new Vector2Int(i, j));
                         ClickTile(CurrentPoses[i, j].OriginalPos);
@@ -105,7 +105,6 @@ namespace Client.Models
                         _selectedPositions.Add(tilePosition);
                         TileSelected?.Invoke(tilePosition);
                         SwapTiles();
-                        _selectedPositions.Clear();
                     }
 
                     break;
@@ -124,6 +123,7 @@ namespace Client.Models
                 _turnsCount++;
                 TurnCompleted?.Invoke(Mathf.Clamp(_turnsCount, 0, OkResult + 2));
                 CheckComplete();
+                _selectedPositions.Clear();
             }
         }
 
@@ -227,7 +227,7 @@ namespace Client.Models
         {
             if (_selectedPositions.Count == 1)
             {
-                ref CellData selectedTile =  ref CurrentPoses[_selectedPositions[0].x, _selectedPositions[0].y];
+                ref CellData selectedTile = ref CurrentPoses[_selectedPositions[0].x, _selectedPositions[0].y];
                 int directionMultiplier = 0;
                 switch (direction)
                 {

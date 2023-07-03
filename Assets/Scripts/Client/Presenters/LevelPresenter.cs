@@ -100,23 +100,28 @@ namespace Client.Presenters
 
         public void BuildLevel()
         {
-            LevelViewData levelViewData = _levelViewConfig.GetData(_model.Name).ViewData((int)_model.Difficulty);
-            _view.SetGridSizeByData(levelViewData);
+            int columns = _model.CurrentPoses.GetLength(0);
+            int rows = _model.CurrentPoses.GetLength(1);
+            Sprite image = _levelViewConfig.GetData(_model.Name).Image;
+            _view.SetGridSizeByData(columns, rows, image.Aspect());
             int i = 0;
             for (var x = 0; x < _model.CurrentPoses.GetLength(0); x++)
             for (var y = 0; y < _model.CurrentPoses.GetLength(1); y++)
             {
                 var position = _model.CurrentPoses[x, y].OriginalPos;
                 int rotation = _model.CurrentPoses[x, y].Rotation;
+                bool isActive = _model.CurrentPoses[x, y].IsActive;
 
                 var cellView = Object.Instantiate(_levelViewConfig.CellView, _view.GridRoot);
-                cellView.SetData(levelViewData, position, rotation);
+                cellView.name = $"{i}".ToString();
+                cellView.SetData(image, isActive, position, rotation, columns, rows);
                 var tilePos = new Vector2Int(x, y);
 
                 _posToCell[new Vector2Int(x, y)] = cellView;
                 _viewToPos[cellView] = tilePos;
 
                 cellView.Clicked += OnTileClick;
+                i++;
             }
         }
 

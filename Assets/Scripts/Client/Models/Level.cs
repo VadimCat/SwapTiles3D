@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Ji2.CommonCore.SaveDataContainer;
 using Ji2.Models;
 using Ji2.Models.Analytics;
@@ -36,6 +37,7 @@ namespace Client.Models
         private readonly List<Vector2Int> _selectedPositions = new(2);
 
         public LevelResult Result { get; private set; } = LevelResult.None;
+        public Vector2Int FirstSelected => _selectedPositions.FirstOrDefault();
 
         public Level(IAnalytics analytics, LevelData levelData, bool[,] cutTemplate, int rotationAngle,
             ISaveDataContainer saveDataContainer)
@@ -223,18 +225,18 @@ namespace Client.Models
             }
         }
 
-        public void TrySwipe(Direction direction)
+        public void TrySwipe(RotationDirection direction)
         {
             if (_selectedPositions.Count == 1)
             {
                 ref CellData selectedTile = ref CurrentPoses[_selectedPositions[0].x, _selectedPositions[0].y];
-                int directionMultiplier = 0;
+                int directionMultiplier;
                 switch (direction)
                 {
-                    case Direction.Left:
+                    case RotationDirection.CounterClockwise:
                         directionMultiplier = -1;
                         break;
-                    case Direction.Right:
+                    case RotationDirection.Clockwise:
                         directionMultiplier = 1;
                         break;
                     default:

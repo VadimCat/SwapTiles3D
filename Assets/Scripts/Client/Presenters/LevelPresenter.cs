@@ -9,6 +9,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Ji2.CommonCore;
 using Ji2.Presenters;
+using Ji2Core.Core;
 using Ji2Core.Core.Audio;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.UserInput;
@@ -37,13 +38,16 @@ namespace Client.Presenters
 
         private LevelScreen _levelScreen;
         private int _tilesSet;
-        private readonly TouchscreenInput _touchScreenInput;
+        private readonly SwipeListener _swipeListener;
+
+        private readonly Camera _camera;
 
         public Level Model => _model;
 
         public LevelPresenter(LevelView view, Level model, ScreenNavigator screenNavigator,
             UpdateService updateService, LevelsConfig levelViewConfig, LevelsLoopProgress levelsLoopProgress,
-            AudioService audioService, ICompliments compliments, InputService inputService)
+            AudioService audioService, ICompliments compliments, InputService inputService,
+            CameraProvider cameraProvider)
         {
             _view = view;
             _model = model;
@@ -54,6 +58,7 @@ namespace Client.Presenters
             _audioService = audioService;
             _compliments = compliments;
             _inputService = inputService;
+            _camera = cameraProvider.MainCamera;
 
             model.LevelCompleted += OnLevelCompleted;
             model.TileSelected += SelectTile;
@@ -63,18 +68,28 @@ namespace Client.Presenters
             model.TurnCompleted += UpdateTurn;
             model.TileRotated += Rotate;
 
-            _touchScreenInput = new TouchscreenInput();
-            _touchScreenInput.EventSwipeDirectional += TrySwipe;
+            _swipeListener = new SwipeListener(updateService);
+            _swipeListener.EventSwiped += TrySwipe;
+        }
+
+        private void TrySwipe(Vector2 from, Vector2 to)
+        {
+            var swipeDir = to - from;
+            var tileScreenPos =
+                (Vector2)_camera.WorldToScreenPoint(_posToCell[_model.FirstSelected].transform.position);
+            var tileToTouch = tileScreenPos - to;
+            var signedAngle = Vector2.SignedAngle(swipeDir, tileToTouch);
+            _model.TrySwipe(signedAngle > 0 ? RotationDirection.Clockwise : RotationDirection.CounterClockwise);
         }
 
         private void Rotate(Vector2Int pos, int rotation)
         {
-            _modelAnimator.Enqueue(() => _posToCell[pos].PlayRotationAnimation(rotation)).Forget();
-        }
-
-        private void TrySwipe(Direction dir)
-        {
-            _model.TrySwipe(dir);
+            _modelAnimator.Enqueue(async () =>
+            {
+                _swipeListener.Disable();
+                await _posToCell[pos].PlayRotationAnimation(rotation);
+                _swipeListener.Enable();
+            }).Forget();
         }
 
         private void UpdateTurn(int turnCount)
@@ -176,6 +191,15 @@ namespace Client.Presenters
 
         private void SelectTile(Vector2Int tilePos)
         {
+            if (_model.SelectedTilesCount == 1)
+            {
+                _swipeListener.Enable();
+            }
+            else
+            {
+                _swipeListener.Disable();
+            }
+
             _modelAnimator.Animate(_posToCell[tilePos].PlaySelectAnimation()).Forget();
         }
 

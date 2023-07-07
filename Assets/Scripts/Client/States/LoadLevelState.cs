@@ -72,13 +72,15 @@ namespace Client.States
             var viewData = viewConfig.ViewData(levelData.lvlLoop);
             //HACK
             levelData.difficulty = viewData.Difficulty;
-            var levelModel = new Level(context.GetService<Analytics>(), levelData, viewData.CutTemplate, viewData.DiscreteRotationAngle,
+            var levelModel = new Level(context.GetService<Analytics>(), levelData, viewData.CutTemplate,
+                viewData.DiscreteRotationAngle,
                 context.GetService<ISaveDataContainer>());
 
             var levelPresenter =
                 new LevelPresenter(view, levelModel, screenNavigator, context.GetService<UpdateService>(), levelsConfig,
                     context.GetService<LevelsLoopProgress>(), context.GetService<AudioService>(),
-                    context.GetService<ICompliments>(), context.GetService<InputService>());
+                    context.GetService<ICompliments>(), context.GetService<InputService>(),
+                    context.GetService<CameraProvider>());
 
             levelPresenter.BuildLevel();
 

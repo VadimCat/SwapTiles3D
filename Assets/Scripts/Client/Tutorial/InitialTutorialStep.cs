@@ -43,7 +43,7 @@ namespace Client.Tutorial
                 presenter = state.Payload.levelPresenter;
                 model = presenter.Model;
 
-                ShowSwapTip();
+                ShowSwapTip().Forget();
             }
         }
 
@@ -67,7 +67,7 @@ namespace Client.Tutorial
                 await UniTask.WaitWhile(() => currentSelectionCount == model.SelectedTilesCount);
                 Cancel();
 
-                ShowSwapTip();
+                ShowSwapTip().Forget();
             }
             else
             {

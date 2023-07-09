@@ -123,48 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &618167682 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4727307825375038689, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
-  m_PrefabInstance: {fileID: 907379512993701660}
-  m_PrefabAsset: {fileID: 0}
---- !u!223 &618167687
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 618167682}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 1
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 3000
-  m_TargetDisplay: 0
---- !u!224 &1348591512 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8826204613276117324, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
-  m_PrefabInstance: {fileID: 907379512993701660}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1348591514 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8826204613276117321, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
-  m_PrefabInstance: {fileID: 907379512993701660}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &907379512993701660
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -172,16 +130,8 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 907379512822139082, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 907379512822139082, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 907379512822139082, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
-      propertyPath: m_SizeDelta.y
+    - target: {fileID: 536506081, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
+      propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 907379513116661680, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
@@ -232,40 +182,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2840260439249003972, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
-      propertyPath: m_Color.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6961043523254794761, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 256
-      objectReference: {fileID: 0}
-    - target: {fileID: 6961043523254794761, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 256
-      objectReference: {fileID: 0}
-    - target: {fileID: 7732516202711630214, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8826204613276117323, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
-      propertyPath: scaler
-      value: 
-      objectReference: {fileID: 1348591514}
-    - target: {fileID: 8826204613276117323, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
-      propertyPath: transform
-      value: 
-      objectReference: {fileID: 1348591512}
     - target: {fileID: 9131764606992471702, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9131764606992471702, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9131764606992471702, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
-      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9131764606992471702, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Client.Views.Level
+namespace Client.Views
 {
     [CreateAssetMenu(menuName = "View/CellAnimationConfig", fileName = "CellAnimationConfig")]
     public class CellAnimationConfig : ScriptableObject

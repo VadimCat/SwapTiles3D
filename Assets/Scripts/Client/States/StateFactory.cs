@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Client.Views;
+using Ji2.Context;
 using Ji2.Presenters.Tutorial;
 using Ji2Core.Core;
 using Ji2Core.Core.Audio;
+using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.States;
 using UI.Background;
 
@@ -19,7 +22,7 @@ namespace Client.States
 
         public Dictionary<Type, IExitableState> GetStates(StateMachine stateMachine)
         {
-            var screenNavigator = context.ScreenNavigator;
+            var screenNavigator = context.GetService<ScreenNavigator>();
             var dict = new Dictionary<Type, IExitableState>();
 
             dict[typeof(InitialState)] = new InitialState(stateMachine, screenNavigator,

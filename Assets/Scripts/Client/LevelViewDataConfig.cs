@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Client
 {
     [CreateAssetMenu(fileName = "LevelViewConfig")]
-    public class LevelViewConfig : SerializedScriptableObject, ILevelView
+    public class LevelViewDataConfig : SerializedScriptableObject, ILevelViewData
     {
         [SerializeField] private string id;
 

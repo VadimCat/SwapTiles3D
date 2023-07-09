@@ -8,9 +8,11 @@ using Ji2Core.Plugins.AppMetrica;
 using UI.Background;
 using UnityEngine;
 using Client.Tutorial;
+using Client.Views;
 using Core.Compliments;
 using Ji2.CommonCore;
 using Ji2.CommonCore.SaveDataContainer;
+using Ji2.Context;
 using Ji2.Models.Analytics;
 using Ji2.Presenters.Tutorial;
 using Ji2.UI;
@@ -31,7 +33,7 @@ namespace Client
 
         private AppSession appSession;
 
-        private readonly Context context = Context.GetInstance();
+        private readonly Context context = Context.GetOrCreateInstance();
 
         protected override void Start()
         {

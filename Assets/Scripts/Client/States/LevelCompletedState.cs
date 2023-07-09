@@ -1,5 +1,6 @@
 ﻿using Client.Models;
 using Client.UI.Screens;
+using Client.Views;
 using Cysharp.Threading.Tasks;
 using Ji2Core.Core.Audio;
 using Ji2Core.Core.ScreenNavigation;

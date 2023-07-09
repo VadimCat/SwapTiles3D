@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Client;
+using Client.Views;
 using UnityEditor;
 using UnityEngine;
 
@@ -79,7 +80,7 @@ namespace Editor
 
         private void CreateLevel(string id, Sprite sprite, Vector2Int size, Sprite backSprite)
         {
-            var config = CreateInstance<LevelViewConfig>();
+            var config = CreateInstance<LevelViewDataConfig>();
             config.name = id;
             config.SetData(id, sprite, backSprite);
 

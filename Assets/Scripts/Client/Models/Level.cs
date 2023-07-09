@@ -36,6 +36,8 @@ namespace Client.Models
         private readonly LevelData _levelData;
         private readonly List<Vector2Int> _selectedPositions = new(2);
 
+        public Vector2Int Size => new(CurrentPoses.GetLength(0), CurrentPoses.GetLength(1));
+
         public LevelResult Result { get; private set; } = LevelResult.None;
         public Vector2Int FirstSelected => _selectedPositions.FirstOrDefault();
 

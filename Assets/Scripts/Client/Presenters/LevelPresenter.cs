@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Client.Input;
 using Client.Models;
 using Client.UI.Screens;
-using Client.Views.Level;
+using Client.Views;
 using Core.Compliments;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using Ji2.CommonCore;
 using Ji2.Presenters;
 using Ji2Core.Core;
@@ -22,7 +20,7 @@ namespace Client.Presenters
     {
         public event Action LevelCompleted;
 
-        private readonly LevelView _view;
+        private readonly AFieldView _view;
         private readonly Level _model;
         private readonly ScreenNavigator _screenNavigator;
         private readonly UpdateService _updateService;
@@ -33,18 +31,19 @@ namespace Client.Presenters
         private readonly InputService _inputService;
 
         private readonly ModelAnimator _modelAnimator = new();
-        private readonly Dictionary<Vector2Int, CellView> _posToCell = new();
-        private readonly Dictionary<CellView, Vector2Int> _viewToPos = new();
+        private readonly Dictionary<Vector2Int, ACellView> _posToCell = new();
+        private readonly Dictionary<ACellView, Vector2Int> _viewToPos = new();
 
         private LevelScreen _levelScreen;
         private int _tilesSet;
         private readonly SwipeListener _swipeListener;
 
         private readonly Camera _camera;
+        private readonly PositionProvider _positionProvider;
 
         public Level Model => _model;
 
-        public LevelPresenter(LevelView view, Level model, ScreenNavigator screenNavigator,
+        public LevelPresenter(AFieldView view, Level model, ScreenNavigator screenNavigator,
             UpdateService updateService, LevelsConfig levelViewConfig, LevelsLoopProgress levelsLoopProgress,
             AudioService audioService, ICompliments compliments, InputService inputService,
             CameraProvider cameraProvider)
@@ -71,7 +70,7 @@ namespace Client.Presenters
             _swipeListener = new SwipeListener(updateService);
             _swipeListener.EventSwiped += TrySwipe;
         }
-
+        
         private void TrySwipe(Vector2 from, Vector2 to)
         {
             var swipeDir = to - from;
@@ -115,11 +114,13 @@ namespace Client.Presenters
 
         public void BuildLevel()
         {
-            int columns = _model.CurrentPoses.GetLength(0);
-            int rows = _model.CurrentPoses.GetLength(1);
+            PositionProvider positionProvider = new PositionProvider(_model.Size, _screenNavigator.Size, _screenNavigator.ScaleFactor);
+
+            int columns = _model.Size.x;
+            int rows = _model.Size.y;
+            
             Sprite image = _levelViewConfig.GetData(_model.Name).Image;
             _view.SetGridSizeByData(columns, rows, image.Aspect());
-            int i = 0;
             for (var x = 0; x < _model.CurrentPoses.GetLength(0); x++)
             for (var y = 0; y < _model.CurrentPoses.GetLength(1); y++)
             {
@@ -127,16 +128,18 @@ namespace Client.Presenters
                 int rotation = _model.CurrentPoses[x, y].Rotation;
                 bool isActive = _model.CurrentPoses[x, y].IsActive;
 
-                var cellView = Object.Instantiate(_levelViewConfig.CellView, _view.GridRoot);
-                cellView.name = $"{i}".ToString();
-                cellView.SetData(image, isActive, position, rotation, columns, rows);
+                ACellView aCellView = Object.Instantiate(_levelViewConfig.ACellView, _view.SpawnRoot);
+                aCellView.SetData(image, isActive, position, rotation, columns, rows);
+                Transform transform = aCellView.transform;
+                transform.position = positionProvider.GetPoint(position);
+                transform.localScale = Vector3.one * positionProvider.CellSize;
+                
                 var tilePos = new Vector2Int(x, y);
 
-                _posToCell[new Vector2Int(x, y)] = cellView;
-                _viewToPos[cellView] = tilePos;
+                _posToCell[new Vector2Int(x, y)] = aCellView;
+                _viewToPos[aCellView] = tilePos;
 
-                cellView.Clicked += OnTileClick;
-                i++;
+                aCellView.EventClicked += OnTileClick;
             }
         }
 
@@ -156,11 +159,11 @@ namespace Client.Presenters
             _model.AppendPlayTime(Time.deltaTime);
         }
 
-        private void OnTileClick(CellView cellView)
+        private void OnTileClick(ACellView aCellView)
         {
             _audioService.PlaySfxAsync(SoundNamesCollection.TileTap).Forget();
 
-            var pos = _viewToPos[cellView];
+            var pos = _viewToPos[aCellView];
             _model.ClickTile(pos);
         }
 
@@ -224,7 +227,7 @@ namespace Client.Presenters
             List<UniTask> pulseTasks = new List<UniTask>();
             foreach (var view in _viewToPos.Keys)
             {
-                var task = view.transform.DOScale(1.1f, .1f).AwaitForComplete();
+                var task = view.Pulse();
                 pulseTasks.Add(task);
             }
 

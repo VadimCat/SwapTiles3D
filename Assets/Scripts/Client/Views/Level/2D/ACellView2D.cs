@@ -4,9 +4,9 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Client.Views.Level
+namespace Client.Views
 {
-    public class CellView : MonoBehaviour
+    public class ACellView2D : ACellView
     {
         [SerializeField] private Button button;
         [SerializeField] private RawImage image;
@@ -18,8 +18,23 @@ namespace Client.Views.Level
         private Transform Root => sortingCanvas.transform;
 
         private RawImage MainImage => image;
+        
+        public override event Action<ACellView> EventClicked;
 
-        public event Action<CellView> Clicked;
+        public override void EnableInteraction()
+        {
+            sortingCanvas.overrideSorting = true;
+        }
+
+        public override void DisableInteraction()
+        {
+            button.interactable = false;
+        }
+
+        public override async UniTask Pulse()
+        {
+            await transform.DOScale(1.1f, .1f).AwaitForComplete();
+        }
 
         private void Awake()
         {
@@ -28,10 +43,11 @@ namespace Client.Views.Level
 
         private void Click()
         {
-            Clicked?.Invoke(this);
+            EventClicked ?.Invoke(this);
         }
-
-        public void SetData(Sprite sprite, bool isActive, Vector2Int position, float initialRotation, int columns, int rows)
+        
+        public override void SetData(Sprite sprite, bool isActive, Vector2Int position, float initialRotation, int columns,
+            int rows)
         {
             gameObject.name += isActive;
             if (isActive)
@@ -52,7 +68,7 @@ namespace Client.Views.Level
             }
         }
 
-        public async UniTask PlaySelectAnimation()
+        public override async UniTask PlaySelectAnimation()
         {
             sortingCanvas.overrideSorting = true;
             sortingCanvas.sortingOrder = 1000;
@@ -63,7 +79,7 @@ namespace Client.Views.Level
             button.interactable = true;
         }
 
-        public async UniTask PlayDeselectAnimation()
+        public override async UniTask PlayDeselectAnimation()
         {
             button.interactable = false;
             await Root.DOScale(1, animationConfig.SelectTime).AwaitForComplete();
@@ -71,25 +87,25 @@ namespace Client.Views.Level
             sortingCanvas.overrideSorting = false;
         }
 
-        public async UniTask PlayMoveAnimation(CellView cellView)
+        public override async UniTask PlayMoveAnimation(ACellView aCellView)
         {
             button.interactable = false;
             var rectToSet = MainImage.uvRect;
             var rotationToSet = maskImage.transform.localRotation;
-            
-            await Root.DOMove(cellView.transform.position, animationConfig.MoveTime).AwaitForComplete();
+
+            await Root.DOMove(aCellView.transform.position, animationConfig.MoveTime).AwaitForComplete();
             await Root.DOScale(1, animationConfig.SelectTime).AwaitForComplete();
-            
+
             Root.transform.localPosition = Vector3.zero;
             sortingCanvas.overrideSorting = false;
             button.interactable = true;
             Root.localPosition = Vector3.zero;
-            
-            cellView.MainImage.uvRect = rectToSet;
-            cellView.maskImage.transform.localRotation = rotationToSet;
+
+            // cellView.MainImage.uvRect = rectToSet;
+            // cellView.maskImage.transform.localRotation = rotationToSet;
         }
 
-        public async UniTask PlayRotationAnimation(int rotation)
+        public override async UniTask PlayRotationAnimation(int rotation)
         {
             sortingCanvas.overrideSorting = true;
             sortingCanvas.sortingOrder = 1000;
@@ -97,8 +113,8 @@ namespace Client.Views.Level
             await maskImage.transform.DOLocalRotate(rotationEndValue, .5f).AwaitForComplete();
             sortingCanvas.overrideSorting = false;
         }
-        
-        public UniTask PlaySetAnimation()
+
+        public override UniTask PlaySetAnimation()
         {
             button.interactable = false;
             maskImage.sprite = rootImage.sprite;

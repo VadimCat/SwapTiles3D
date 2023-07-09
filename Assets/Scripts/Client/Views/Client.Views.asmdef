@@ -1,0 +1,20 @@
+{
+    "name": "Client.Views",
+    "rootNamespace": "",
+    "references": [
+        "UniTask",
+        "Ji2",
+        "Ji2.Utils",
+        "UniTask.DOTween",
+        "Ji2.Context"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

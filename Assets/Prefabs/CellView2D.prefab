@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2827180676219462076}
   - component: {fileID: 2827180676219462067}
   m_Layer: 5
-  m_Name: CellView
+  m_Name: CellView2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

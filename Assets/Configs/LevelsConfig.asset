@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levels:
   - {fileID: 11400000, guid: 76edcd8ecdb90c042bdc2cf8c4e14150, type: 2}
-  levelCellView: {fileID: 2827180676219462067, guid: 69e990a3d1a54ff43953de4670d85072, type: 3}
+  levelACellView: {fileID: 6665031966729607952, guid: 9f862959e89c8a84981ab932b0a4f14f, type: 3}

@@ -1,36 +1,36 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Ji2.Context;
 using Ji2.Utils;
-using Ji2Core.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Client.Views.Level
+namespace Client.Views
 {
-    public class LevelView : MonoBehaviour
+    public class LevelView : AFieldView
     {
         private const float CellSizeRatio = 0.96F;
         private const float CellDistanceRatio = 0.04F;
 
         [SerializeField] private RectTransform cellsRootTransform;
         [SerializeField] private GridLayoutGroup grid;
-
-        public Transform GridRoot => grid.transform;
-
+        
         private Context _context;
+
+        public override Transform SpawnRoot => transform;
 
         public void Awake()
         {
-            _context = Context.GetInstance();
+            _context = Context.GetOrCreateInstance();
             _context.Register(this);
         }
 
         public void OnDestroy()
         {
-            _context.Unregister(this);
+            _context.Unregister(GetType());
         }
 
-        public void SetGridSizeByData(int columns, int rows, float imageAspect)
+        public override void SetGridSizeByData(int columns, int rows, float imageAspect)
         {
             var rect = cellsRootTransform.rect;
             
@@ -45,7 +45,7 @@ namespace Client.Views.Level
             grid.spacing = cellSize * CellDistanceRatio;
         }
 
-        public async UniTask AnimateWin()
+        public override async UniTask AnimateWin()
         {
             var sequence = DOTween.Sequence();
             sequence.Append(grid.DoSpacing(Vector2.zero, .2f))

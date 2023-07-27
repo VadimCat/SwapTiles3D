@@ -45,6 +45,7 @@ namespace Client.States
 
         public async UniTask Exit()
         {
+            payload.levelPresenter.Dispose();
             payload.levelPresenter.LevelCompleted -= OnLevelComplete;
             await screenNavigator.CloseScreen<LevelScreen>();
         }

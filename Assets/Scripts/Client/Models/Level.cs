@@ -31,6 +31,7 @@ namespace Client.Models
         public readonly int OkResult;
         public int SelectedTilesCount => _selectedPositions.Count;
 
+        
         private readonly HashSet<Vector2Int> _setTiles;
         private readonly Analytics _analytics;
         private readonly LevelData _levelData;

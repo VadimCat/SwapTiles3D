@@ -14,18 +14,18 @@ namespace Client.States
         private readonly ScreenNavigator screenNavigator;
         private readonly LevelsLoopProgress levelsLoopProgress;
         private readonly LevelsConfig levelsConfig;
-        private readonly AudioService audioService;
+        private readonly Sound _sound;
         private readonly LevelResultViewConfig levelResultViewConfig;
 
         public LevelCompletedState(StateMachine stateMachine, ScreenNavigator screenNavigator,
-            LevelsLoopProgress levelsLoopProgress, LevelsConfig levelsConfig, AudioService audioService,
+            LevelsLoopProgress levelsLoopProgress, LevelsConfig levelsConfig, Sound sound,
             LevelResultViewConfig levelResultViewConfig)
         {
             this.stateMachine = stateMachine;
             this.screenNavigator = screenNavigator;
             this.levelsLoopProgress = levelsLoopProgress;
             this.levelsConfig = levelsConfig;
-            this.audioService = audioService;
+            this._sound = sound;
             this.levelResultViewConfig = levelResultViewConfig;
         }
 
@@ -50,7 +50,7 @@ namespace Client.States
 
         private void OnClickNext()
         {
-            audioService.PlaySfxAsync(SoundNamesCollection.ButtonTap);
+            _sound.PlaySfxAsync(SoundNamesCollection.ButtonTap);
             var levelData = levelsLoopProgress.GetNextLevelData();
             stateMachine.Enter<LoadLevelState, LoadLevelStatePayload>(new LoadLevelStatePayload(levelData, 1f));
         }

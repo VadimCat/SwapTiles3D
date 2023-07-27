@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using Ji2Core.Core.Audio;
 
-namespace Client
+namespace Client.Views
 {
     [UsedImplicitly]
     public class SoundNamesCollection : ISoundNamesCollection
@@ -14,16 +14,17 @@ namespace Client
         public const string TileTap = "TileTap";
         public const string Win = "Win";
 
-        public IEnumerable<string> SoundsList => _names;
-
-        private readonly string[] _names =
+        public IEnumerable<string> SoundsList
         {
-            BackgroundMusic,
-            ButtonTap,
-            Swap,
-            TileSet,
-            TileTap,
-            Win
-        };
+            get
+            {
+                yield return BackgroundMusic;
+                yield return ButtonTap;
+                yield return Swap;
+                yield return TileSet;
+                yield return TileTap;
+                yield return Win;
+            }
+        }
     }
 }

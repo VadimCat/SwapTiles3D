@@ -18,7 +18,7 @@ namespace Client.Tutorial
         private readonly TutorialPointerView _pointer;
         private readonly CameraProvider _cameraProvider;
 
-        private AFieldView _levelView;
+        private FieldView _levelView;
 
         public string SaveKey => "InitialTutorialStepCompleted";
         public event Action Completed;

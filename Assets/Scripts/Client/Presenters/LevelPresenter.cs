@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Client.Models;
 using Client.UI.Screens;
 using Client.Views;
@@ -9,30 +8,29 @@ using Ji2.CommonCore;
 using Ji2.Presenters;
 using Ji2Core.Core;
 using Ji2Core.Core.Audio;
+using Ji2Core.Core.Pools;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.UserInput;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Client.Presenters
 {
-    public class LevelPresenter : IUpdatable
+    public class LevelPresenter : IUpdatable, IDisposable
     {
         public event Action LevelCompleted;
 
-        private readonly AFieldView _view;
+        private readonly FieldView _view;
         private readonly Level _model;
         private readonly ScreenNavigator _screenNavigator;
+        private readonly Pool<CellView> _cellsPool;
         private readonly UpdateService _updateService;
-        private readonly LevelsConfig _levelViewConfig;
+        private readonly LevelsConfig _levelConfig;
         private readonly LevelsLoopProgress _levelsLoopProgress;
-        private readonly AudioService _audioService;
+        private readonly Sound _sound;
         private readonly ICompliments _compliments;
-        private readonly InputService _inputService;
+        private readonly MouseInput _mouseInput;
 
         private readonly ModelAnimator _modelAnimator = new();
-        private readonly Dictionary<Vector2Int, ACellView> _posToCell = new();
-        private readonly Dictionary<ACellView, Vector2Int> _viewToPos = new();
 
         private LevelScreen _levelScreen;
         private int _tilesSet;
@@ -40,24 +38,32 @@ namespace Client.Presenters
 
         private readonly Camera _camera;
         private readonly PositionProvider _positionProvider;
+        private readonly CellsInteractionHandler _cellsInteractionHandler;
 
         public Level Model => _model;
 
-        public LevelPresenter(AFieldView view, Level model, ScreenNavigator screenNavigator,
-            UpdateService updateService, LevelsConfig levelViewConfig, LevelsLoopProgress levelsLoopProgress,
-            AudioService audioService, ICompliments compliments, InputService inputService,
-            CameraProvider cameraProvider)
+        public LevelPresenter(FieldView view, Level model, ScreenNavigator screenNavigator, Pool<CellView> cellsPool,
+            UpdateService updateService, LevelsConfig levelConfig, LevelsLoopProgress levelsLoopProgress,
+            Sound sound, ICompliments compliments, MouseInput mouseInput, CameraProvider cameraProvider)
         {
             _view = view;
             _model = model;
             _screenNavigator = screenNavigator;
+            _cellsPool = cellsPool;
             _updateService = updateService;
-            _levelViewConfig = levelViewConfig;
+            _levelConfig = levelConfig;
             _levelsLoopProgress = levelsLoopProgress;
-            _audioService = audioService;
+            _sound = sound;
             _compliments = compliments;
-            _inputService = inputService;
+            _mouseInput = mouseInput;
             _camera = cameraProvider.MainCamera;
+
+            _positionProvider =
+                new PositionProvider(_model.Size, _screenNavigator.Size, _screenNavigator.ScaleFactor);
+
+            var cellFactory = new CellFactory(_model, _cellsPool, _positionProvider, _view,
+                _levelConfig.GetData(_model.Name).Image);
+            _view.SetDependencies(cellFactory, sound);
 
             model.LevelCompleted += OnLevelCompleted;
             model.TileSelected += SelectTile;
@@ -69,14 +75,42 @@ namespace Client.Presenters
 
             _swipeListener = new SwipeListener(updateService);
             _swipeListener.EventSwiped += TrySwipe;
+
+            _cellsInteractionHandler = new CellsInteractionHandler(_positionProvider, model, view);
         }
-        
+
+        public void BuildLevel()
+        {
+            _view.BuildLevel(_model.Size.x, _model.Size.y);
+            _cellsInteractionHandler.Initialize();
+        }
+
+        public void StartLevel()
+        {
+            _model.LogAnalyticsLevelStart();
+            _levelScreen = (LevelScreen)_screenNavigator.CurrentScreen;
+            _levelScreen.SetLevelName($"Level {_model.LevelCount + 1}");
+
+            _levelScreen.SetUpProgressBar(_model.OkResult, _model.GoodResult, _model.PerfectResult);
+
+            _updateService.Add(this);
+        }
+
+        public Vector3 GetTilePos(Vector2Int pos)
+        {
+            return _view.PosToCell[pos].transform.position;
+        }
+
+        public void OnUpdate()
+        {
+            _model.AppendPlayTime(Time.deltaTime);
+        }
+
         private void TrySwipe(Vector2 from, Vector2 to)
         {
             var swipeDir = to - from;
-            var tileScreenPos =
-                (Vector2)_camera.WorldToScreenPoint(_posToCell[_model.FirstSelected].transform.position);
-            var tileToTouch = tileScreenPos - to;
+            var tileScreenPos = _camera.WorldToScreenPoint(_view.PosToCell[_model.FirstSelected].transform.position);
+            Vector2 tileToTouch = (Vector2)tileScreenPos - to;
             var signedAngle = Vector2.SignedAngle(swipeDir, tileToTouch);
             _model.TrySwipe(signedAngle > 0 ? RotationDirection.Clockwise : RotationDirection.CounterClockwise);
         }
@@ -86,7 +120,7 @@ namespace Client.Presenters
             _modelAnimator.Enqueue(async () =>
             {
                 _swipeListener.Disable();
-                await _posToCell[pos].PlayRotationAnimation(rotation);
+                await _view.PlayRotationAnimation(pos, rotation);
                 _swipeListener.Enable();
             }).Forget();
         }
@@ -102,94 +136,23 @@ namespace Client.Presenters
             int closureSet = _tilesSet;
             _modelAnimator.Enqueue(() =>
             {
-                if (closureSet % 2 == 0)
+                if (closureSet % 4 == 0)
                 {
-                    _compliments.ShowRandomFromScreenPosition(_inputService.lastPos);
+                    _compliments.ShowRandomFromScreenPosition(_mouseInput.lastPos);
                 }
 
-                _audioService.PlaySfxAsync(SoundNamesCollection.TileSet).Forget();
-                return _posToCell[pos].PlaySetAnimation();
+                return _view.PlaySetAnimation(pos);
             }).Forget();
-        }
-
-        public void BuildLevel()
-        {
-            PositionProvider positionProvider = new PositionProvider(_model.Size, _screenNavigator.Size, _screenNavigator.ScaleFactor);
-
-            int columns = _model.Size.x;
-            int rows = _model.Size.y;
-            
-            Sprite image = _levelViewConfig.GetData(_model.Name).Image;
-            _view.SetGridSizeByData(columns, rows, image.Aspect());
-            for (var x = 0; x < _model.CurrentPoses.GetLength(0); x++)
-            for (var y = 0; y < _model.CurrentPoses.GetLength(1); y++)
-            {
-                var position = _model.CurrentPoses[x, y].OriginalPos;
-                int rotation = _model.CurrentPoses[x, y].Rotation;
-                bool isActive = _model.CurrentPoses[x, y].IsActive;
-
-                ACellView aCellView = Object.Instantiate(_levelViewConfig.ACellView, _view.SpawnRoot);
-                aCellView.SetData(image, isActive, position, rotation, columns, rows);
-                Transform transform = aCellView.transform;
-                transform.position = positionProvider.GetPoint(position);
-                transform.localScale = Vector3.one * positionProvider.CellSize;
-                
-                var tilePos = new Vector2Int(x, y);
-
-                _posToCell[new Vector2Int(x, y)] = aCellView;
-                _viewToPos[aCellView] = tilePos;
-
-                aCellView.EventClicked += OnTileClick;
-            }
-        }
-
-        public void StartLevel()
-        {
-            _model.LogAnalyticsLevelStart();
-            _levelScreen = (LevelScreen)_screenNavigator.CurrentScreen;
-            _levelScreen.SetLevelName($"Level {_model.LevelCount + 1}");
-
-            _levelScreen.SetUpProgressBar(_model.OkResult, _model.GoodResult, _model.PerfectResult);
-
-            _updateService.Add(this);
-        }
-
-        public void OnUpdate()
-        {
-            _model.AppendPlayTime(Time.deltaTime);
-        }
-
-        private void OnTileClick(ACellView aCellView)
-        {
-            _audioService.PlaySfxAsync(SoundNamesCollection.TileTap).Forget();
-
-            var pos = _viewToPos[aCellView];
-            _model.ClickTile(pos);
         }
 
         private void DeselectTile(Vector2Int pos)
         {
-            _audioService.PlaySfxAsync(SoundNamesCollection.TileTap).Forget();
-
-            _modelAnimator.Animate(_posToCell[pos].PlayDeselectAnimation()).Forget();
+            _modelAnimator.Animate(_view.PlayDeselectAnimation(pos)).Forget();
         }
 
-        private async void SwapTiles(Vector2Int pos1, Vector2Int pos2)
+        private void SwapTiles(Vector2Int pos1, Vector2Int pos2)
         {
-            await _modelAnimator.Enqueue(() =>
-            {
-                _audioService.PlaySfxAsync(SoundNamesCollection.Swap).Forget();
-                return SwapAnimation(pos1, pos2);
-            });
-        }
-
-        private async UniTask SwapAnimation(Vector2Int pos1, Vector2Int pos2)
-        {
-            var cell1 = _posToCell[pos1];
-            var cell2 = _posToCell[pos2];
-
-            await UniTask.WhenAll(cell1.PlayMoveAnimation(cell2),
-                cell2.PlayMoveAnimation(cell1));
+            _modelAnimator.Enqueue(() => _view.SwapAnimation(pos1, pos2)).Forget();
         }
 
         private void SelectTile(Vector2Int tilePos)
@@ -203,7 +166,7 @@ namespace Client.Presenters
                 _swipeListener.Disable();
             }
 
-            _modelAnimator.Animate(_posToCell[tilePos].PlaySelectAnimation()).Forget();
+            _modelAnimator.Animate(_view.PlaySelectAnimation(tilePos)).Forget();
         }
 
         private async void OnLevelCompleted()
@@ -213,30 +176,20 @@ namespace Client.Presenters
             _updateService.Remove(this);
 
             _modelAnimator.Enqueue(_view.AnimateWin).Forget();
-            _modelAnimator.Enqueue(PulseTiles).Forget();
             await _modelAnimator.AwaitAllAnimationsEnd();
 
-            _audioService.PlaySfxAsync(SoundNamesCollection.Win).Forget();
-            Object.Destroy(_view.gameObject);
+            _sound.PlaySfxAsync(SoundNamesCollection.Win).Forget();
+            // Object.Destroy(_view.gameObject);
 
             LevelCompleted?.Invoke();
         }
 
-        private async UniTask PulseTiles()
+        public void Dispose()
         {
-            List<UniTask> pulseTasks = new List<UniTask>();
-            foreach (var view in _viewToPos.Keys)
+            foreach (CellView cell in _view.PosToCell.Values)
             {
-                var task = view.Pulse();
-                pulseTasks.Add(task);
+                _cellsPool.DeSpawn(cell);
             }
-
-            await UniTask.WhenAll(pulseTasks);
-        }
-
-        public Vector3 GetTilePos(Vector2Int pos)
-        {
-            return _posToCell[pos].transform.position;
         }
     }
 }

@@ -32,8 +32,13 @@ namespace Client.Views
 
         public Vector3 GetPoint(Vector2Int position)
         {
-            return new Vector3(position.x * CellSize - CellSize * Size.x / 2,
-                position.y * CellSize - CellSize * Size.x / 2) + new Vector3(CellSize, CellSize) / 2;
+            return GetPoint(position.x, position.y);
+        }
+
+        public Vector3 GetPoint(int x, int y)
+        {
+            return new Vector3(x * CellSize - CellSize * Size.x / 2, 
+                       y * CellSize - CellSize * Size.x / 2) + new Vector3(CellSize, CellSize) / 2;
         }
     }
 }

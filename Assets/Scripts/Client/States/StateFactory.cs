@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Client.Models;
+using Client.Presenters;
 using Client.Views;
+using Ji2.CommonCore.SaveDataContainer;
 using Ji2.Context;
 using Ji2.Presenters.Tutorial;
 using Ji2Core.Core;
@@ -13,30 +16,31 @@ namespace Client.States
 {
     public class StateFactory : IStateFactory
     {
-        private readonly Context context;
+        private readonly IDependenciesProvider _dp;
 
-        public StateFactory(Context context)
+        public StateFactory(IDependenciesProvider dp)
         {
-            this.context = context;
+            this._dp = dp;
         }
 
         public Dictionary<Type, IExitableState> GetStates(StateMachine stateMachine)
         {
-            var screenNavigator = context.GetService<ScreenNavigator>();
+            var screenNavigator = _dp.GetService<ScreenNavigator>();
             var dict = new Dictionary<Type, IExitableState>();
 
             dict[typeof(InitialState)] = new InitialState(stateMachine, screenNavigator,
-                context.GetService<TutorialService>(),
-                context.LevelsLoopProgress, context.SaveDataContainer);
+                _dp.GetService<TutorialService>(),
+                _dp.GetService<LevelsLoopProgress>(), _dp.GetService<ISaveDataContainer>());
 
-            dict[typeof(LoadLevelState)] = new LoadLevelState(context, stateMachine, context.SceneLoader(),
-                screenNavigator, context.GetService<LevelsConfig>(), context.GetService<BackgroundService>());
+            dict[typeof(LoadLevelState)] = new LoadLevelState(_dp, stateMachine, _dp.GetService<SceneLoader>(),
+                screenNavigator, _dp.GetService<LevelsConfig>(), _dp.GetService<BackgroundService>(),
+                _dp.GetService<LevelFactory>(), _dp.GetService<LevelPresenterFactory>());
 
             dict[typeof(GameState)] = new GameState(stateMachine, screenNavigator);
 
             dict[typeof(LevelCompletedState)] = new LevelCompletedState(stateMachine, screenNavigator,
-                context.LevelsLoopProgress, context.GetService<LevelsConfig>(), context.GetService<AudioService>(),
-                context.GetService<LevelResultViewConfig>());
+                _dp.GetService<LevelsLoopProgress>(), _dp.GetService<LevelsConfig>(), _dp.GetService<Sound>(),
+                _dp.GetService<LevelResultViewConfig>());
 
             return dict;
         }

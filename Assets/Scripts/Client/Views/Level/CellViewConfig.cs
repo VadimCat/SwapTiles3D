@@ -7,8 +7,8 @@ namespace Client.Views
     [CreateAssetMenu(menuName = "CellViewConfig", fileName = "CellViewConfig")]
     public class CellViewConfig : SerializedScriptableObject
     {
-        [FormerlySerializedAs("_cellView")] [SerializeField] private ACellView aCellView;
+        [FormerlySerializedAs("_cellView")] [SerializeField] private CellView aCellView;
 
-        public ACellView ACellView => aCellView;
+        public CellView ACellView => aCellView;
     }
 }

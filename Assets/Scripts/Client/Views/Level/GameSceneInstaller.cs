@@ -7,11 +7,11 @@ namespace Client.Views
 {
     public class GameSceneInstaller : SceneInstaller
     {
-        [SerializeField] private AFieldView fieldView;
+        [SerializeField] private FieldView fieldView;
 
         protected override IEnumerable<(Type type, object obj)> GetDependencies()
         {
-            yield return (typeof(AFieldView), fieldView);
+            yield return (typeof(FieldView), fieldView);
         }
     }
 }

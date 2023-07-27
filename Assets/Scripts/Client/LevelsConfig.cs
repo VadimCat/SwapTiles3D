@@ -1,13 +1,14 @@
-﻿using UnityEngine;
+﻿using Client.Views;
+using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Client.Views
+namespace Client
 {
     [CreateAssetMenu(fileName = "LevelsConfig")]
     public class LevelsConfig : LevelsViewDataStorageBase<LevelViewDataConfig>
     {
-        [FormerlySerializedAs("levelCellView")] [SerializeField] private ACellView levelACellView;
+        [FormerlySerializedAs("levelCellView")] [SerializeField] private CellView levelACellView;
 
-        public ACellView ACellView => levelACellView;
+        public CellView ACellView => levelACellView;
     }
 }

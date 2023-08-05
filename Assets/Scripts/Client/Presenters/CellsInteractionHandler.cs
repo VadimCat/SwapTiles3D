@@ -1,5 +1,9 @@
+using System;
 using Client.Models;
 using Client.Views;
+using Cysharp.Threading.Tasks;
+using Ji2Core.Core;
+using Ji2Core.Core.States;
 using UnityEngine.EventSystems;
 
 namespace Client.Presenters
@@ -9,41 +13,25 @@ namespace Client.Presenters
         private readonly PositionProvider _positionProvider;
         private readonly Level _level;
         private readonly FieldView _fieldView;
+        private readonly SwipeListener _swipeListener;
 
-        private (CellView cell, PointerEventData pointerData) _downData;
-        
-        public CellsInteractionHandler(PositionProvider positionProvider, Level level, FieldView fieldView)
+        private (CellView cell, PointerEventData pointerData)? _downData;
+        private readonly StateMachine _stateMachine;
+
+        public CellsInteractionHandler(PositionProvider positionProvider, Level level, FieldView fieldView, SwipeListener swipeListener, CameraProvider cameraProvider)
         {
             _positionProvider = positionProvider;
             _level = level;
             _fieldView = fieldView;
+            _swipeListener = swipeListener;
+
+            _stateMachine = new StateMachine(new CellsInteractionStatesFactory(swipeListener, fieldView, level, cameraProvider));
         }
 
         public void Initialize()
         {
-            foreach (var cell in _fieldView.PosToCell.Values)
-            {
-                cell.EventPointerDown += CellDown;
-                cell.EventPointerMove += CellMove;
-                cell.EventPointerUp += CellUp;
-            }
-        }
-
-        private void CellDown(CellView cell, PointerEventData pointerData)
-        {
-            _downData = (cell, pointerData);
-            
-            _level.ClickTile(_fieldView.CellToPos[cell]);
-        }
-
-        private void CellMove(CellView cell, PointerEventData pointerData)
-        {
-            
-        }
-
-        private void CellUp(CellView cell, PointerEventData pointerData)
-        {
-            
+            _stateMachine.Load();
+            _stateMachine.Enter<NoCellsState>();
         }
     }
 }

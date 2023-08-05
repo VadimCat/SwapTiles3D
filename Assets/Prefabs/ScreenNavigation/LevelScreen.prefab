@@ -215,6 +215,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8759322470126098184}
     m_Modifications:
+    - target: {fileID: 1008270941054072006, guid: 6e0f847c5e786244b978bb861d5a88fa, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2163638032303500142, guid: 6e0f847c5e786244b978bb861d5a88fa, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2375602415145187847, guid: 6e0f847c5e786244b978bb861d5a88fa, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3985688086073852241, guid: 6e0f847c5e786244b978bb861d5a88fa, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4436129399113836516, guid: 6e0f847c5e786244b978bb861d5a88fa, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -299,6 +315,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4721400673315572794, guid: 6e0f847c5e786244b978bb861d5a88fa, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6037766688028978070, guid: 6e0f847c5e786244b978bb861d5a88fa, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7760443229286327790, guid: 6e0f847c5e786244b978bb861d5a88fa, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8410782083680126355, guid: 6e0f847c5e786244b978bb861d5a88fa, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8483740117940251599, guid: 6e0f847c5e786244b978bb861d5a88fa, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -309,6 +341,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8483740117940251599, guid: 6e0f847c5e786244b978bb861d5a88fa, type: 3}
       propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8751844290739863553, guid: 6e0f847c5e786244b978bb861d5a88fa, type: 3}
+      propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9220233252456862714, guid: 6e0f847c5e786244b978bb861d5a88fa, type: 3}

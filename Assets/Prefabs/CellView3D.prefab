@@ -185,9 +185,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animationConfig: {fileID: 11400000, guid: eace83e6c319df54d9c0c3f4f8635e6b, type: 2}
+  canvas: {fileID: 6665031966991953652}
   <Image>k__BackingField: {fileID: 6665031966305914077}
-  <Button>k__BackingField: {fileID: 0}
-  <Collider>k__BackingField: {fileID: 6665031966729607956}
 --- !u!1 &6665031966991953546
 GameObject:
   m_ObjectHideFlags: 0

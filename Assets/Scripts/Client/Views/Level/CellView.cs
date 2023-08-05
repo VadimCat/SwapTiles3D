@@ -8,10 +8,11 @@ using UnityEngine.UI;
 
 namespace Client.Views
 {
-    public class CellView : MonoBehaviour, IPoolable, IPointerDownHandler, IPointerUpHandler, IPointerMoveHandler
+    public class CellView : MonoBehaviour, IPoolable, IPointerDownHandler, IPointerUpHandler, IPointerMoveHandler, IPointerExitHandler, IPointerClickHandler
     {
         [SerializeField] private CellAnimationConfig animationConfig;
-
+        [SerializeField] private Canvas canvas;
+        
         [field: SerializeField] public RawImage Image { get; private set; }
 
         private float _scale;
@@ -20,6 +21,8 @@ namespace Client.Views
         public event Action<CellView, PointerEventData> EventPointerDown;
         public event Action<CellView, PointerEventData> EventPointerMove;
         public event Action<CellView, PointerEventData> EventPointerUp;
+        public event Action<CellView, PointerEventData> EventPointerExit;
+        public event Action<CellView, PointerEventData> EventPointerClick;
 
         public void SetData(Sprite sprite, bool isActive, Vector2Int position, float initialRotation,
             int columns, int rows, float scale)
@@ -61,18 +64,20 @@ namespace Client.Views
 
         public async UniTask PlaySelectAnimation()
         {
-            DisableInteraction();
+            canvas.sortingOrder = 100;
+            // DisableInteraction();
 
             await DOTween.Sequence()
                 .Join(transform.DOMoveZ(-1, animationConfig.SelectTime))
                 .Join(transform.DOScale(_scale * .85f, animationConfig.SelectTime))
                 .AwaitForComplete();
 
-            EnableInteraction();
+            // EnableInteraction();
         }
 
         public async UniTask PlayDeselectAnimation()
         {
+            canvas.sortingOrder = 0;
             DisableInteraction();
 
             await DOTween.Sequence()
@@ -131,6 +136,7 @@ namespace Client.Views
             if (!_isInteractable)
                 return;
 
+            // Debug.LogError("down");
             EventPointerDown?.Invoke(this, eventData);
         }
 
@@ -139,6 +145,7 @@ namespace Client.Views
             if (!_isInteractable)
                 return;
 
+            // Debug.LogError("move");
             EventPointerMove?.Invoke(this, eventData);
         }
 
@@ -147,7 +154,26 @@ namespace Client.Views
             if (!_isInteractable)
                 return;
 
+            // Debug.LogError("up");
             EventPointerUp?.Invoke(this, eventData);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (!_isInteractable)
+                return;
+
+            // Debug.LogError("exit");
+            EventPointerExit?.Invoke(this, eventData);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (!_isInteractable)
+                return;
+            
+            // Debug.LogError("click");
+            EventPointerClick?.Invoke(this, eventData);
         }
     }
 }

@@ -61,8 +61,7 @@ namespace Client.Presenters
             _positionProvider =
                 new PositionProvider(_model.Size, _screenNavigator.Size, _screenNavigator.ScaleFactor);
 
-            var cellFactory = new CellFactory(_model, _cellsPool, _positionProvider, _view,
-                _levelConfig.GetData(_model.Name).Image);
+            var cellFactory = new CellFactory(_model, _cellsPool, _positionProvider, _view, _levelConfig.GetData(_model.Name).Image);
             _view.SetDependencies(cellFactory, sound);
 
             model.LevelCompleted += OnLevelCompleted;
@@ -76,7 +75,8 @@ namespace Client.Presenters
             _swipeListener = new SwipeListener(updateService);
             _swipeListener.EventSwiped += TrySwipe;
 
-            _cellsInteractionHandler = new CellsInteractionHandler(_positionProvider, model, view);
+            _cellsInteractionHandler =
+                new CellsInteractionHandler(_positionProvider, model, view, _swipeListener, cameraProvider);
         }
 
         public void BuildLevel()

@@ -1,7 +1,5 @@
-using System;
 using Client.Models;
 using Client.Views;
-using Cysharp.Threading.Tasks;
 using Ji2Core.Core;
 using Ji2Core.Core.States;
 using UnityEngine.EventSystems;
@@ -18,14 +16,16 @@ namespace Client.Presenters
         private (CellView cell, PointerEventData pointerData)? _downData;
         private readonly StateMachine _stateMachine;
 
-        public CellsInteractionHandler(PositionProvider positionProvider, Level level, FieldView fieldView, SwipeListener swipeListener, CameraProvider cameraProvider)
+        public CellsInteractionHandler(PositionProvider positionProvider, Level level, FieldView fieldView,
+            SwipeListener swipeListener, CameraProvider cameraProvider)
         {
             _positionProvider = positionProvider;
             _level = level;
             _fieldView = fieldView;
             _swipeListener = swipeListener;
 
-            _stateMachine = new StateMachine(new CellsInteractionStatesFactory(swipeListener, fieldView, level, cameraProvider));
+            _stateMachine = new StateMachine(new CellsInteractionStatesFactory(swipeListener, fieldView, level,
+                cameraProvider, positionProvider));
         }
 
         public void Initialize()

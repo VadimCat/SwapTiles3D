@@ -13,13 +13,15 @@ namespace Client.Presenters
         private readonly FieldView _fieldView;
         private readonly Level _level;
         private readonly CameraProvider _cameraProvider;
+        private readonly PositionProvider _positionProvider;
 
-        public CellsInteractionStatesFactory(SwipeListener swipeListener, FieldView fieldView, Level level, CameraProvider cameraProvider)
+        public CellsInteractionStatesFactory(SwipeListener swipeListener, FieldView fieldView, Level level, CameraProvider cameraProvider, PositionProvider positionProvider)
         {
             _swipeListener = swipeListener;
             _fieldView = fieldView;
             _level = level;
             _cameraProvider = cameraProvider;
+            _positionProvider = positionProvider;
         }
 
         public Dictionary<Type, IExitableState> GetStates(StateMachine stateMachine)
@@ -30,7 +32,7 @@ namespace Client.Presenters
             dict[typeof(FirstCellHold)] = new FirstCellHold(stateMachine, _swipeListener, _fieldView, _level);
             dict[typeof(FirstCellSelected)] = new FirstCellSelected(stateMachine, _swipeListener, _fieldView, _level);
             dict[typeof(SecondCellHold)] = new SecondCellHold(stateMachine, _fieldView, _level);
-            dict[typeof(FirstCellMoving)] = new FirstCellMoving(stateMachine, _swipeListener, _fieldView, _level, _cameraProvider);
+            dict[typeof(FirstCellMoving)] = new FirstCellMoving(stateMachine, _swipeListener, _fieldView, _level, _cameraProvider, _positionProvider);
 
             return dict;
         }

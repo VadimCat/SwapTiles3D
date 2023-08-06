@@ -76,12 +76,4 @@ namespace Client
             return template;
         }
     }
-
-    public static class SpriteExtensions
-    {
-        public static float Aspect(this Sprite sprite)
-        {
-            return sprite.texture.width / sprite.texture.width;
-        }
-    }
 }

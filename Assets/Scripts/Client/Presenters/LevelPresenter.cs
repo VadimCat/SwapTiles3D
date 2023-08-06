@@ -6,6 +6,7 @@ using Core.Compliments;
 using Cysharp.Threading.Tasks;
 using Ji2.CommonCore;
 using Ji2.Presenters;
+using Ji2.Utils;
 using Ji2Core.Core;
 using Ji2Core.Core.Audio;
 using Ji2Core.Core.Pools;
@@ -59,9 +60,11 @@ namespace Client.Presenters
             _camera = cameraProvider.MainCamera;
 
             _positionProvider =
-                new PositionProvider(_model.Size, _screenNavigator.Size, _screenNavigator.ScaleFactor);
+                new PositionProvider(_model.Size, _screenNavigator.Size, _screenNavigator.ScaleFactor,
+                    _levelConfig.GetData(_model.Name).Image.Aspect());
 
-            var cellFactory = new CellFactory(_model, _cellsPool, _positionProvider, _view, _levelConfig.GetData(_model.Name).Image);
+            var cellFactory = new CellFactory(_model, _cellsPool, _positionProvider, _view,
+                _levelConfig.GetData(_model.Name).Image);
             _view.SetDependencies(cellFactory, sound);
 
             model.LevelCompleted += OnLevelCompleted;

@@ -27,12 +27,22 @@ namespace Client.Presenters
         {
             var position = _level.CurrentPoses[x, y].OriginalPos;
             int rotation = _level.CurrentPoses[x, y].Rotation;
-            bool isActive = _level.CurrentPoses[x, y].IsActive;
+
+            if (_level.CurrentPoses[x, y].IsActive)
+            {
+                Vector2Int pos = new Vector2Int(x, y);
+                var cellView = _cellsPool.Spawn(_positionProvider.GetPoint(pos), Quaternion.identity, _fieldView.SpawnRoot,
+                    true);
             
-            Vector2Int pos = new Vector2Int(x, y);
-            var cellView = _cellsPool.Spawn(_positionProvider.GetPoint(pos), Quaternion.identity, _fieldView.SpawnRoot, true);
-            cellView.SetData(_image, isActive, position, rotation, _level.Size.x, _level.Size.y, _positionProvider.CellSize);
-            return cellView;
+                cellView.SetData(_image, position, rotation, _level.Size.x, _level.Size.y, _positionProvider.CellSize,
+                    _positionProvider);
+
+                return cellView;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

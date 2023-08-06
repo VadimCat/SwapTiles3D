@@ -45,7 +45,11 @@ namespace Client.Views
             for (var y = 0; y < height; y++)
             {
                 CellView cellView = _cellViewFactory.Create(x, y);
-                RegisterCell(x, y, cellView);
+
+                if (cellView != null)
+                {
+                    RegisterCell(x, y, cellView);
+                }
             }
             
             void RegisterCell(int x, int y, CellView cellView)
@@ -59,11 +63,16 @@ namespace Client.Views
         {
             _sound.PlaySfxAsync(SoundNamesCollection.Swap).Forget();
 
-            var cell1 = PosToCell[pos1];
-            var cell2 = PosToCell[pos2];
+            CellView cell1 = PosToCell[pos1];
+            CellView cell2 = PosToCell[pos2];
+            _posToCell[pos1] = cell2;
+            _posToCell[pos2] = cell1;
 
-            await UniTask.WhenAll(cell1.PlayMoveAnimation(cell2),
-                cell2.PlayMoveAnimation(cell1));
+            _cellToPos[cell1] = pos2;
+            _cellToPos[cell2] = pos1;
+            
+            await UniTask.WhenAll(cell1.PlayMoveAnimation(pos2),
+                cell2.PlayMoveAnimation(pos1));
         }
 
         public async UniTask PlaySelectAnimation(Vector2Int tilePos)

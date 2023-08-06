@@ -12,21 +12,26 @@ namespace Client.Views
         public readonly Vector2Int Size;
         private readonly Vector2 _availableScreenSize;
 
-        public readonly float CellSize;
+        public readonly float CellWidth;
+        public readonly float CellHeight;
 
         public readonly Vector2 FieldImageSize;
+        public Vector3 CellSize => new Vector3(CellWidth, CellHeight, 1);
 
-        public PositionProvider(Vector2Int size, Vector2 screenSize, float screenNavigatorScaleFactor)
+
+        public PositionProvider(Vector2Int size, Vector2 screenSize, float screenNavigatorScaleFactor, float a)
         {
             Size = size;
             _availableScreenSize = screenSize - new Vector2(BorderL + BorderR, BorderB + BorderT);
 
             float worldToPixels = screenSize.y / 4;
-            float worldWidth = _availableScreenSize.x / worldToPixels;
+            float imageWidth = _availableScreenSize.x / worldToPixels;
+            float imageHeight = imageWidth / a;
+            CellWidth = imageWidth / size.x;
 
-            CellSize = worldWidth / size.x;
+            CellHeight = imageHeight / size.y;
 
-            FieldImageSize = new Vector2(size.x, size.y) * (CellSize * worldToPixels)
+            FieldImageSize = new Vector2(size.x * CellWidth, size.y * CellHeight) * worldToPixels
                              + new Vector2(BorderL + BorderR, BorderB + BorderT) * screenNavigatorScaleFactor;
         }
 
@@ -37,8 +42,15 @@ namespace Client.Views
 
         public Vector3 GetPoint(int x, int y)
         {
-            return new Vector3(x * CellSize - CellSize * Size.x / 2, 
-                       y * CellSize - CellSize * Size.x / 2) + new Vector3(CellSize, CellSize) / 2;
+            return new Vector3(CellWidth * (x - (float)Size.x / 2 + .5f), CellWidth * (y - (float)Size.y / 2 + .5f));
+            // y * CellWidth - CellWidth * Size.y / 2 + CellWidth / 2
+            // CellWidth * (y - Size.y / 2 + .5f)
+        }
+
+        public Vector2Int GetReversePoint(Vector3 position)
+        {
+            return new Vector2Int(Mathf.RoundToInt((position.x + CellWidth * Size.x / 2) / CellWidth),
+                Mathf.RoundToInt((position.y + CellWidth * Size.y / 2) / CellWidth));
         }
     }
 }

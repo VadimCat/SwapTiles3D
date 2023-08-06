@@ -15,17 +15,19 @@ namespace Client.Presenters
         private readonly FieldView _fieldView;
         private readonly Level _level;
         private readonly CameraProvider _cameraProvider;
+        private readonly PositionProvider _positionProvider;
         private (CellView cell, PointerEventData pointerEventData) _payload;
         private Vector3 _prevPos;
 
         public FirstCellMoving(StateMachine stateMachine, SwipeListener swipeListener, FieldView fieldView, Level level,
-            CameraProvider cameraProvider)
+            CameraProvider cameraProvider, PositionProvider positionProvider)
         {
             _stateMachine = stateMachine;
             _swipeListener = swipeListener;
             _fieldView = fieldView;
             _level = level;
             _cameraProvider = cameraProvider;
+            _positionProvider = positionProvider;
         }
 
         public UniTask Enter((CellView cell, PointerEventData pointerEventData) payload)
@@ -35,8 +37,8 @@ namespace Client.Presenters
             payload.cell.EventPointerUp += OnCellUp;
             
             _prevPos = GetWorldPositionOnPlane(payload.pointerEventData.position); 
-            Debug.LogError(payload.pointerEventData.position);
-            Debug.LogError(_prevPos);
+            // Debug.LogError(payload.pointerEventData.position);
+            // Debug.LogError(_prevPos);
             return default;
         }
 
@@ -50,8 +52,8 @@ namespace Client.Presenters
         private void OnCellMove(CellView cell, PointerEventData pointerEventData)
         {
             var movePos = GetWorldPositionOnPlane(pointerEventData.position);
-            Debug.LogError(pointerEventData.position);
-            Debug.LogError(movePos - _prevPos);
+            // Debug.LogError(pointerEventData.position);
+            // Debug.LogError(movePos - _prevPos);
 
             cell.transform.position += movePos - _prevPos;
             _prevPos = movePos;
@@ -59,7 +61,8 @@ namespace Client.Presenters
 
         private void OnCellUp(CellView cell, PointerEventData pointerEventData)
         {
-         
+            var firstCellPos = _positionProvider.GetReversePoint(_payload.cell.transform.position);
+            _level.ClickTile(firstCellPos);
             _stateMachine.Enter<NoCellsState>();
         }
         
@@ -67,8 +70,7 @@ namespace Client.Presenters
         {
             Ray ray = _cameraProvider.MainCamera.ScreenPointToRay(screenPosition);
             Plane xy = new Plane(Vector3.forward, new Vector3(0, 0, 0));
-            float distance;
-            xy.Raycast(ray, out distance);
+            xy.Raycast(ray, out var distance);
             return ray.GetPoint(distance);
         }
     }

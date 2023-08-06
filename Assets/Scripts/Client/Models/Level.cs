@@ -4,6 +4,7 @@ using System.Linq;
 using Ji2.CommonCore.SaveDataContainer;
 using Ji2.Models;
 using Ji2.Models.Analytics;
+using Ji2.Utils;
 using Ji2.Utils.Shuffling;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -93,28 +94,40 @@ namespace Client.Models
 
         public void ClickTile(Vector2Int tilePosition)
         {
-            switch (_selectedPositions.Count)
+            if (CurrentPoses.IsInRange2D(tilePosition.x, tilePosition.y) &&
+                CurrentPoses[tilePosition.x, tilePosition.y].IsActive)
             {
-                case 0:
-                    _selectedPositions.Add(tilePosition);
-                    TileSelected?.Invoke(tilePosition);
-                    break;
-                case 1:
-                    if (_selectedPositions.Contains(tilePosition))
-                    {
-                        _selectedPositions.Remove(tilePosition);
-                        TileDeselected?.Invoke(tilePosition);
-                    }
-                    else
-                    {
+                switch (_selectedPositions.Count)
+                {
+                    case 0:
                         _selectedPositions.Add(tilePosition);
                         TileSelected?.Invoke(tilePosition);
-                        SwapTiles();
-                    }
+                        break;
+                    case 1:
+                        if (_selectedPositions.Contains(tilePosition))
+                        {
+                            _selectedPositions.Remove(tilePosition);
+                            TileDeselected?.Invoke(tilePosition);
+                        }
+                        else
+                        {
+                            _selectedPositions.Add(tilePosition);
+                            TileSelected?.Invoke(tilePosition);
+                            SwapTiles();
+                        }
 
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            else
+            {
+                if (_selectedPositions.Count > 0)
+                {
+                    var pos = _selectedPositions[0];
+                    TileDeselected?.Invoke(pos);
+                }
             }
 
             void SwapTiles()
@@ -125,6 +138,7 @@ namespace Client.Models
                     CurrentPoses[_selectedPositions[0].x, _selectedPositions[0].y]);
 
                 TilesSwapped?.Invoke(_selectedPositions[0], _selectedPositions[1]);
+                
                 _turnsCount++;
                 TurnCompleted?.Invoke(Mathf.Clamp(_turnsCount, 0, OkResult + 2));
                 CheckComplete();
@@ -190,17 +204,21 @@ namespace Client.Models
             {
                 for (var j = 0; j < CurrentPoses.GetLength(1); j++)
                 {
-                    var posToCheck = new Vector2Int(i, j);
-                    CellData currentPose = CurrentPoses[i, j];
+                    var cellIndex = new Vector2Int(i, j);
+                    CellData cell = CurrentPoses[i, j];
 
-                    if (!currentPose.IsOnRightPlace(i, j) || !currentPose.IsDefaultRotation())
+                    if (cell.IsOnRightPlace(i, j) && cell.IsDefaultRotation())
+                    {
+                        if (!_setTiles.Contains(cellIndex))
+                        {
+                            Debug.LogError($"Add{cellIndex}");
+                            TileSet?.Invoke(cellIndex);
+                            _setTiles.Add(cellIndex);
+                        }
+                    }
+                    else
                     {
                         isFailed = true;
-                    }
-                    else if (!_setTiles.Contains(posToCheck))
-                    {
-                        TileSet?.Invoke(posToCheck);
-                        _setTiles.Add(posToCheck);
                     }
                 }
             }

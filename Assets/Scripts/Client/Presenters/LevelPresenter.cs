@@ -38,7 +38,7 @@ namespace Client.Presenters
         private readonly SwipeListener _swipeListener;
 
         private readonly Camera _camera;
-        private readonly PositionProvider _positionProvider;
+        private readonly GridFieldPositionCalculator _gridFieldPositionCalculator;
         private readonly CellsInteractionHandler _cellsInteractionHandler;
 
         public Level Model => _model;
@@ -59,11 +59,11 @@ namespace Client.Presenters
             _mouseInput = mouseInput;
             _camera = cameraProvider.MainCamera;
 
-            _positionProvider =
-                new PositionProvider(_model.Size, _screenNavigator.Size, _screenNavigator.ScaleFactor,
+            _gridFieldPositionCalculator =
+                new GridFieldPositionCalculator(_model.Size, _screenNavigator.Size, _screenNavigator.ScaleFactor,
                     _levelConfig.GetData(_model.Name).Image.Aspect());
 
-            var cellFactory = new CellFactory(_model, _cellsPool, _positionProvider, _view,
+            var cellFactory = new CellFactory(_model, _cellsPool, _gridFieldPositionCalculator, _view,
                 _levelConfig.GetData(_model.Name).Image);
             _view.SetDependencies(cellFactory, sound);
 
@@ -79,7 +79,7 @@ namespace Client.Presenters
             _swipeListener.EventSwiped += TrySwipe;
 
             _cellsInteractionHandler =
-                new CellsInteractionHandler(_positionProvider, model, view, _swipeListener, cameraProvider);
+                new CellsInteractionHandler(_gridFieldPositionCalculator, model, view, _swipeListener, cameraProvider);
         }
 
         public void BuildLevel()
@@ -189,6 +189,8 @@ namespace Client.Presenters
 
         public void Dispose()
         {
+            _swipeListener.EventSwiped -= TrySwipe;
+
             foreach (CellView cell in _view.PosToCell.Values)
             {
                 _cellsPool.DeSpawn(cell);

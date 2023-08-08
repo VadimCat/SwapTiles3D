@@ -13,15 +13,15 @@ namespace Client.Presenters
         private readonly FieldView _fieldView;
         private readonly Level _level;
         private readonly CameraProvider _cameraProvider;
-        private readonly PositionProvider _positionProvider;
+        private readonly GridFieldPositionCalculator _gridFieldPositionCalculator;
 
-        public CellsInteractionStatesFactory(SwipeListener swipeListener, FieldView fieldView, Level level, CameraProvider cameraProvider, PositionProvider positionProvider)
+        public CellsInteractionStatesFactory(SwipeListener swipeListener, FieldView fieldView, Level level, CameraProvider cameraProvider, GridFieldPositionCalculator gridFieldPositionCalculator)
         {
             _swipeListener = swipeListener;
             _fieldView = fieldView;
             _level = level;
             _cameraProvider = cameraProvider;
-            _positionProvider = positionProvider;
+            _gridFieldPositionCalculator = gridFieldPositionCalculator;
         }
 
         public Dictionary<Type, IExitableState> GetStates(StateMachine stateMachine)
@@ -32,7 +32,7 @@ namespace Client.Presenters
             dict[typeof(FirstCellHold)] = new FirstCellHold(stateMachine, _swipeListener, _fieldView, _level);
             dict[typeof(FirstCellSelected)] = new FirstCellSelected(stateMachine, _swipeListener, _fieldView, _level);
             dict[typeof(SecondCellHold)] = new SecondCellHold(stateMachine, _fieldView, _level);
-            dict[typeof(FirstCellMoving)] = new FirstCellMoving(stateMachine, _swipeListener, _fieldView, _level, _cameraProvider, _positionProvider);
+            dict[typeof(FirstCellMoving)] = new FirstCellMoving(stateMachine, _swipeListener, _fieldView, _level, _cameraProvider, _gridFieldPositionCalculator);
 
             return dict;
         }

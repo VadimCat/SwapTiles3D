@@ -10,7 +10,7 @@ namespace Client.Views
     public class FieldView : MonoBehaviour
     {
         private Context _context;
-        private PositionProvider _positionProvider;
+        private GridFieldPositionCalculator _gridFieldPositionCalculator;
         public Transform SpawnRoot => transform;
 
         public IReadOnlyDictionary<Vector2Int, CellView> PosToCell => _posToCell;

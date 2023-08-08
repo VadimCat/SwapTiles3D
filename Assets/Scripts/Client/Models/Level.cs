@@ -94,6 +94,7 @@ namespace Client.Models
 
         public void ClickTile(Vector2Int tilePosition)
         {
+            Debug.LogError(tilePosition);
             if (CurrentPoses.IsInRange2D(tilePosition.x, tilePosition.y) &&
                 CurrentPoses[tilePosition.x, tilePosition.y].IsActive)
             {
@@ -126,6 +127,7 @@ namespace Client.Models
                 if (_selectedPositions.Count > 0)
                 {
                     var pos = _selectedPositions[0];
+                    _selectedPositions.Remove(pos);
                     TileDeselected?.Invoke(pos);
                 }
             }

@@ -15,10 +15,11 @@ namespace Client.Views
         [SerializeField] private Canvas canvas;
 
         [field: SerializeField] public RawImage Image { get; private set; }
-
+        [SerializeField] private GameObject _frame;
+        
         private Vector3 _scale;
         private bool _isInteractable = true;
-        private PositionProvider _positionProvider;
+        private GridFieldPositionCalculator _gridFieldPositionCalculator;
         private Vector3 _startPosition;
         public event Action<CellView, PointerEventData> EventPointerDown;
         public event Action<CellView, PointerEventData> EventPointerMove;
@@ -26,16 +27,16 @@ namespace Client.Views
         public event Action<CellView, PointerEventData> EventPointerExit;
         public event Action<CellView, PointerEventData> EventPointerClick;
 
-        public void SetData(Sprite sprite, Vector2Int position, float initialRotation,
-            int columns, int rows, Vector3 scale, PositionProvider positionProvider)
+        public void SetData(Sprite sprite, Vector2Int originPosition, Vector2Int initialPosition, float initialRotation,
+            int columns, int rows, Vector3 scale, GridFieldPositionCalculator gridFieldPositionCalculator)
         {
-            _positionProvider = positionProvider;
-            _startPosition = _positionProvider.GetPoint(position);
+            _gridFieldPositionCalculator = gridFieldPositionCalculator;
+            _startPosition = _gridFieldPositionCalculator.GetPoint(initialPosition);
             Image.texture = sprite.texture;
             float w = (float)1 / columns;
             float h = (float)1 / rows;
-            float x = w * position.x;
-            float y = h * position.y;
+            float x = w * originPosition.x;
+            float y = h * originPosition.y;
             Image.uvRect = new Rect(x, y, w, h);
             Transform transform1 = transform;
             transform1.localRotation = Quaternion.Euler(0, 0, initialRotation);
@@ -87,7 +88,7 @@ namespace Client.Views
 
         public async UniTask PlayMoveAnimation(Vector2Int indexPosition)
         {
-            _startPosition = _positionProvider.GetPoint(indexPosition);
+            _startPosition = _gridFieldPositionCalculator.GetPoint(indexPosition);
             // DisableInteraction();
             var moveSequence = DOTween.Sequence();
             
@@ -110,8 +111,9 @@ namespace Client.Views
 
         public UniTask PlaySetAnimation()
         {
-            Debug.LogError(gameObject.name);
             DisableInteraction();
+            _frame.gameObject.SetActive(false);
+
             return UniTask.CompletedTask;
         }
 
@@ -122,7 +124,9 @@ namespace Client.Views
 
         public void DeSpawn()
         {
+            EnableInteraction();
             gameObject.SetActive(false);
+            _frame.gameObject.SetActive(true);
 
             EventPointerDown = null;
             EventPointerMove = null;

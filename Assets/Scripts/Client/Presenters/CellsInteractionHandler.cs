@@ -8,7 +8,7 @@ namespace Client.Presenters
 {
     public class CellsInteractionHandler
     {
-        private readonly PositionProvider _positionProvider;
+        private readonly GridFieldPositionCalculator _gridFieldPositionCalculator;
         private readonly Level _level;
         private readonly FieldView _fieldView;
         private readonly SwipeListener _swipeListener;
@@ -16,16 +16,16 @@ namespace Client.Presenters
         private (CellView cell, PointerEventData pointerData)? _downData;
         private readonly StateMachine _stateMachine;
 
-        public CellsInteractionHandler(PositionProvider positionProvider, Level level, FieldView fieldView,
+        public CellsInteractionHandler(GridFieldPositionCalculator gridFieldPositionCalculator, Level level, FieldView fieldView,
             SwipeListener swipeListener, CameraProvider cameraProvider)
         {
-            _positionProvider = positionProvider;
+            _gridFieldPositionCalculator = gridFieldPositionCalculator;
             _level = level;
             _fieldView = fieldView;
             _swipeListener = swipeListener;
 
             _stateMachine = new StateMachine(new CellsInteractionStatesFactory(swipeListener, fieldView, level,
-                cameraProvider, positionProvider));
+                cameraProvider, gridFieldPositionCalculator));
         }
 
         public void Initialize()

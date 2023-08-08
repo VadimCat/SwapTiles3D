@@ -2,7 +2,7 @@
 
 namespace Client.Views
 {
-    public class PositionProvider
+    public class GridFieldPositionCalculator
     {
         private const float BorderL = 56;
         private const float BorderR = 56;
@@ -19,14 +19,15 @@ namespace Client.Views
         public Vector3 CellSize => new Vector3(CellWidth, CellHeight, 1);
 
 
-        public PositionProvider(Vector2Int size, Vector2 screenSize, float screenNavigatorScaleFactor, float a)
+        public GridFieldPositionCalculator(Vector2Int size, Vector2 screenSize, float screenNavigatorScaleFactor,
+            float imageAspect)
         {
             Size = size;
             _availableScreenSize = screenSize - new Vector2(BorderL + BorderR, BorderB + BorderT);
 
             float worldToPixels = screenSize.y / 4;
             float imageWidth = _availableScreenSize.x / worldToPixels;
-            float imageHeight = imageWidth / a;
+            float imageHeight = imageWidth / imageAspect;
             CellWidth = imageWidth / size.x;
 
             CellHeight = imageHeight / size.y;
@@ -42,9 +43,7 @@ namespace Client.Views
 
         public Vector3 GetPoint(int x, int y)
         {
-            return new Vector3(CellWidth * (x - (float)Size.x / 2 + .5f), CellWidth * (y - (float)Size.y / 2 + .5f));
-            // y * CellWidth - CellWidth * Size.y / 2 + CellWidth / 2
-            // CellWidth * (y - Size.y / 2 + .5f)
+            return new Vector3(CellWidth * (x - (float)Size.x / 2 + .5f), CellHeight * (y - (float)Size.y / 2 + .5f));
         }
 
         public Vector2Int GetReversePoint(Vector3 position)

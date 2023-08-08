@@ -9,16 +9,16 @@ namespace Client.Presenters
     {
         private readonly Level _level;
         private readonly Pool<CellView> _cellsPool;
-        private readonly PositionProvider _positionProvider;
+        private readonly GridFieldPositionCalculator _gridFieldPositionCalculator;
         private readonly FieldView _fieldView;
         private readonly Sprite _image;
 
-        public CellFactory(Level level, Pool<CellView> cellsPool, PositionProvider positionProvider,
+        public CellFactory(Level level, Pool<CellView> cellsPool, GridFieldPositionCalculator gridFieldPositionCalculator,
             FieldView fieldView, Sprite image)
         {
             _level = level;
             _cellsPool = cellsPool;
-            _positionProvider = positionProvider;
+            _gridFieldPositionCalculator = gridFieldPositionCalculator;
             _fieldView = fieldView;
             _image = image;
         }
@@ -31,11 +31,12 @@ namespace Client.Presenters
             if (_level.CurrentPoses[x, y].IsActive)
             {
                 Vector2Int pos = new Vector2Int(x, y);
-                var cellView = _cellsPool.Spawn(_positionProvider.GetPoint(pos), Quaternion.identity, _fieldView.SpawnRoot,
+                var cellView = _cellsPool.Spawn(_gridFieldPositionCalculator.GetPoint(pos), Quaternion.identity,
+                    _fieldView.SpawnRoot,
                     true);
-            
-                cellView.SetData(_image, position, rotation, _level.Size.x, _level.Size.y, _positionProvider.CellSize,
-                    _positionProvider);
+
+                cellView.SetData(_image, position, pos, rotation, _level.Size.x, _level.Size.y,
+                    _gridFieldPositionCalculator.CellSize, _gridFieldPositionCalculator);
 
                 return cellView;
             }

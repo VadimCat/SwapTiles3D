@@ -32,7 +32,7 @@ namespace Client.Models
         public readonly int OkResult;
         public int SelectedTilesCount => _selectedPositions.Count;
 
-        
+
         private readonly HashSet<Vector2Int> _setTiles;
         private readonly Analytics _analytics;
         private readonly LevelData _levelData;
@@ -58,7 +58,8 @@ namespace Client.Models
 
             void BuildLevel()
             {
-                var shuffledImagePoses = Shufflling.CreatedShuffled2DimensionalArray(new Vector2Int(cutTemplate.GetLength(0),
+                var shuffledImagePoses = Shufflling.CreatedShuffled2DimensionalArray(new Vector2Int(
+                    cutTemplate.GetLength(0),
                     cutTemplate.GetLength(1)));
 
                 CurrentPoses = new CellData[cutTemplate.GetLength(0), cutTemplate.GetLength(1)];
@@ -79,14 +80,14 @@ namespace Client.Models
                         CurrentPoses[i, j] = new CellData(new Vector2Int(imagePos.x, imagePos.y), rotation);
                     }
                 }
-                
+
                 for (var i = 0; i < _cutTemplate.GetLength(0); i++)
                 for (var j = 0; j < _cutTemplate.GetLength(1); j++)
                 {
                     while (!CurrentPoses[i, j].IsActive && !CurrentPoses[i, j].IsOnRightPlace(i, j))
                     {
-                        ClickTile(new Vector2Int(i, j));
-                        ClickTile(CurrentPoses[i, j].OriginalPos);
+                        ClickTile(new Vector2Int(i, j), false);
+                        ClickTile(CurrentPoses[i, j].OriginalPos, false);
                     }
                 }
             }
@@ -94,9 +95,21 @@ namespace Client.Models
 
         public void ClickTile(Vector2Int tilePosition)
         {
-            Debug.LogError(tilePosition);
+            ClickTile(tilePosition, true);
+        }
+
+        private void ClickTile(Vector2Int tilePosition, bool handleInactive)
+        {
+            if (handleInactive &&CurrentPoses.IsInRange2D(tilePosition.x, tilePosition.y) && 
+                !CurrentPoses[tilePosition.x, tilePosition.y].IsActive)
+            {
+                DeselectCurrent();
+                return;
+            }
+
             if (CurrentPoses.IsInRange2D(tilePosition.x, tilePosition.y) &&
-                CurrentPoses[tilePosition.x, tilePosition.y].IsActive)
+                CurrentPoses[tilePosition.x, tilePosition.y].IsActive &&
+                !CurrentPoses[tilePosition.x, tilePosition.y].IsOnRightPlace(tilePosition.x, tilePosition.y))
             {
                 switch (_selectedPositions.Count)
                 {
@@ -124,12 +137,7 @@ namespace Client.Models
             }
             else
             {
-                if (_selectedPositions.Count > 0)
-                {
-                    var pos = _selectedPositions[0];
-                    _selectedPositions.Remove(pos);
-                    TileDeselected?.Invoke(pos);
-                }
+                DeselectCurrent();
             }
 
             void SwapTiles()
@@ -140,11 +148,21 @@ namespace Client.Models
                     CurrentPoses[_selectedPositions[0].x, _selectedPositions[0].y]);
 
                 TilesSwapped?.Invoke(_selectedPositions[0], _selectedPositions[1]);
-                
+
                 _turnsCount++;
                 TurnCompleted?.Invoke(Mathf.Clamp(_turnsCount, 0, OkResult + 2));
                 CheckComplete();
                 _selectedPositions.Clear();
+            }
+
+            void DeselectCurrent()
+            {
+                if (_selectedPositions.Count > 0)
+                {
+                    var pos = _selectedPositions[0];
+                    _selectedPositions.Remove(pos);
+                    TileDeselected?.Invoke(pos);
+                }
             }
         }
 
@@ -213,7 +231,6 @@ namespace Client.Models
                     {
                         if (!_setTiles.Contains(cellIndex))
                         {
-                            Debug.LogError($"Add{cellIndex}");
                             TileSet?.Invoke(cellIndex);
                             _setTiles.Add(cellIndex);
                         }

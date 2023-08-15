@@ -52,11 +52,13 @@ namespace Client.Views
 
         private void EnableInteraction()
         {
+            Image.raycastTarget = true;
             _isInteractable = true;
         }
 
         private void DisableInteraction()
         {
+            Image.raycastTarget = false;
             _isInteractable = false;
         }
 

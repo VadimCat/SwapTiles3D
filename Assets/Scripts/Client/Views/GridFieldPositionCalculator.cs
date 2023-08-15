@@ -48,8 +48,8 @@ namespace Client.Views
 
         public Vector2Int GetReversePoint(Vector3 position)
         {
-            return new Vector2Int(Mathf.RoundToInt((position.x + CellWidth * Size.x / 2) / CellWidth),
-                Mathf.RoundToInt((position.y + CellWidth * Size.y / 2) / CellWidth));
+            return new Vector2Int(Mathf.RoundToInt((position.x + CellWidth * Size.x / 2 - CellWidth * 0.5f) / CellWidth),
+                Mathf.RoundToInt((position.y + CellWidth * Size.y / 2 - CellWidth * 0.5f) / CellWidth));
         }
     }
 }

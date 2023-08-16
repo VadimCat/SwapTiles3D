@@ -3,6 +3,7 @@ using System.Linq;
 using Client.Models;
 using Client.Views;
 using Cysharp.Threading.Tasks;
+using Ji2.Presenters;
 using Ji2Core.Core.States;
 using UnityEngine.EventSystems;
 
@@ -14,16 +15,18 @@ namespace Client.Presenters
         private readonly SwipeListener _swipeListener;
         private readonly FieldView _fieldView;
         private readonly Level _level;
+        private readonly ModelAnimator _modelAnimator;
         private (CellView cell, PointerEventData pointerEventData) _payload;
         private IEnumerable<CellView> _cellExceptSelected;
 
         public FirstCellSelected(StateMachine stateMachine, SwipeListener swipeListener, FieldView fieldView,
-            Level level)
+            Level level, ModelAnimator modelAnimator)
         {
             _stateMachine = stateMachine;
             _swipeListener = swipeListener;
             _fieldView = fieldView;
             _level = level;
+            _modelAnimator = modelAnimator;
         }
 
         public UniTask Enter((CellView cell, PointerEventData pointerEventData) payload)
@@ -32,8 +35,9 @@ namespace Client.Presenters
             return Enter();
         }
 
-        public UniTask Enter()
+        public async UniTask Enter()
         {
+            await _modelAnimator.AwaitAllAnimationsEnd();
             _swipeListener.Enable();
             _payload.cell.EventPointerDown += C1Down;
             _cellExceptSelected = _fieldView.CellToPos.Keys.Except(new[] { _payload.cell });
@@ -41,8 +45,6 @@ namespace Client.Presenters
             {
                 cell.EventPointerDown += C2Down;
             }
-
-            return UniTask.CompletedTask;
         }
 
         public UniTask Exit()

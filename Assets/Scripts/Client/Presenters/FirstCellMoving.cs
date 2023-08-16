@@ -1,6 +1,7 @@
 using Client.Models;
 using Client.Views;
 using Cysharp.Threading.Tasks;
+using Ji2.Presenters;
 using Ji2Core.Core;
 using Ji2Core.Core.States;
 using UnityEngine;
@@ -11,35 +12,31 @@ namespace Client.Presenters
     public class FirstCellMoving : IPayloadedState<(CellView cell, PointerEventData pointerEventData)>
     {
         private readonly StateMachine _stateMachine;
-        private readonly SwipeListener _swipeListener;
-        private readonly FieldView _fieldView;
         private readonly Level _level;
         private readonly CameraProvider _cameraProvider;
         private readonly GridFieldPositionCalculator _gridFieldPositionCalculator;
+        private readonly ModelAnimator _modelAnimator;
         private (CellView cell, PointerEventData pointerEventData) _payload;
         private Vector3 _prevPos;
 
-        public FirstCellMoving(StateMachine stateMachine, SwipeListener swipeListener, FieldView fieldView, Level level,
-            CameraProvider cameraProvider, GridFieldPositionCalculator gridFieldPositionCalculator)
+        public FirstCellMoving(StateMachine stateMachine, Level level, CameraProvider cameraProvider,
+            GridFieldPositionCalculator gridFieldPositionCalculator, ModelAnimator modelAnimator)
         {
             _stateMachine = stateMachine;
-            _swipeListener = swipeListener;
-            _fieldView = fieldView;
             _level = level;
             _cameraProvider = cameraProvider;
             _gridFieldPositionCalculator = gridFieldPositionCalculator;
+            _modelAnimator = modelAnimator;
         }
 
-        public UniTask Enter((CellView cell, PointerEventData pointerEventData) payload)
+        public async UniTask Enter((CellView cell, PointerEventData pointerEventData) payload)
         {
+            await _modelAnimator.AwaitAllAnimationsEnd();
             _payload = payload;
             payload.cell.EventPointerMove += OnCellMove;
             payload.cell.EventPointerUp += OnCellUp;
             
-            _prevPos = GetWorldPositionOnPlane(payload.pointerEventData.position); 
-            // Debug.LogError(payload.pointerEventData.position);
-            // Debug.LogError(_prevPos);
-            return default;
+            _prevPos = GetWorldPositionOnPlane(payload.pointerEventData.position);
         }
 
         public UniTask Exit()
@@ -63,6 +60,7 @@ namespace Client.Presenters
         {
             var firstCellPos = _gridFieldPositionCalculator.GetReversePoint(_payload.cell.transform.position);
             _level.ClickTile(firstCellPos);
+            Debug.LogError(_level.SelectedTilesCount);
             _stateMachine.Enter<NoCellsState>();
         }
         

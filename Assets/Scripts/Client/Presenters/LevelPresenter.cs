@@ -79,7 +79,7 @@ namespace Client.Presenters
             _swipeListener.EventSwiped += TrySwipe;
 
             _cellsInteractionHandler =
-                new CellsInteractionHandler(_gridFieldPositionCalculator, model, view, _swipeListener, cameraProvider);
+                new CellsInteractionHandler(_gridFieldPositionCalculator, model, view, _swipeListener, cameraProvider, _modelAnimator);
         }
 
         public void BuildLevel()

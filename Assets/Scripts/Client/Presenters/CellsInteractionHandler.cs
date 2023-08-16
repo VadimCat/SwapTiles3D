@@ -1,5 +1,6 @@
 using Client.Models;
 using Client.Views;
+using Ji2.Presenters;
 using Ji2Core.Core;
 using Ji2Core.Core.States;
 using UnityEngine.EventSystems;
@@ -16,8 +17,9 @@ namespace Client.Presenters
         private (CellView cell, PointerEventData pointerData)? _downData;
         private readonly StateMachine _stateMachine;
 
-        public CellsInteractionHandler(GridFieldPositionCalculator gridFieldPositionCalculator, Level level, FieldView fieldView,
-            SwipeListener swipeListener, CameraProvider cameraProvider)
+        public CellsInteractionHandler(GridFieldPositionCalculator gridFieldPositionCalculator, Level level,
+            FieldView fieldView, SwipeListener swipeListener, CameraProvider cameraProvider,
+            ModelAnimator modelAnimator)
         {
             _gridFieldPositionCalculator = gridFieldPositionCalculator;
             _level = level;
@@ -25,7 +27,7 @@ namespace Client.Presenters
             _swipeListener = swipeListener;
 
             _stateMachine = new StateMachine(new CellsInteractionStatesFactory(swipeListener, fieldView, level,
-                cameraProvider, gridFieldPositionCalculator));
+                cameraProvider, gridFieldPositionCalculator, modelAnimator));
         }
 
         public void Initialize()

@@ -31,13 +31,14 @@ namespace Client.Presenters
 
         public Dictionary<Type, IExitableState> GetStates(StateMachine stateMachine)
         {
-            var dict = new Dictionary<Type, IExitableState>();
-
-            dict[typeof(NoCellsState)] = new NoCellsState(stateMachine, _swipeListener, _fieldView, _level, _modelAnimator);
-            dict[typeof(FirstCellHold)] = new FirstCellHold(stateMachine, _swipeListener, _fieldView, _level, _modelAnimator);
-            dict[typeof(FirstCellSelected)] = new FirstCellSelected(stateMachine, _swipeListener, _fieldView, _level, _modelAnimator);
-            dict[typeof(SecondCellHold)] = new SecondCellHold(stateMachine, _fieldView, _level, _modelAnimator);
-            dict[typeof(FirstCellMoving)] = new FirstCellMoving(stateMachine, _level, _cameraProvider, _gridFieldPositionCalculator, _modelAnimator);
+            var dict = new Dictionary<Type, IExitableState>
+            {
+                [typeof(NoCellsState)] = new NoCellsState(stateMachine, _swipeListener, _fieldView, _level, _modelAnimator),
+                [typeof(FirstCellHold)] = new FirstCellHold(stateMachine, _swipeListener, _fieldView, _level, _modelAnimator),
+                [typeof(FirstCellSelected)] = new FirstCellSelected(stateMachine, _swipeListener, _fieldView, _level, _modelAnimator),
+                [typeof(SecondCellHold)] = new SecondCellHold(stateMachine, _fieldView, _level),
+                [typeof(FirstCellMoving)] = new FirstCellMoving(stateMachine, _level, _cameraProvider, _gridFieldPositionCalculator)
+            };
 
             return dict;
         }

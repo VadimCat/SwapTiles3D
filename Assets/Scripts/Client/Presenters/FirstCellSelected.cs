@@ -5,6 +5,7 @@ using Client.Views;
 using Cysharp.Threading.Tasks;
 using Ji2.Presenters;
 using Ji2Core.Core.States;
+using NUnit.Framework;
 using UnityEngine.EventSystems;
 
 namespace Client.Presenters
@@ -31,6 +32,8 @@ namespace Client.Presenters
 
         public UniTask Enter((CellView cell, PointerEventData pointerEventData) payload)
         {
+            Assert.AreEqual(1, _level.SelectedTilesCount);
+
             _payload = payload;
             return Enter();
         }

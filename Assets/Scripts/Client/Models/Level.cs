@@ -86,51 +86,47 @@ namespace Client.Models
                 {
                     while (!CurrentPoses[i, j].IsActive && !CurrentPoses[i, j].IsOnRightPlace(i, j))
                     {
-                        ClickTile(new Vector2Int(i, j), false);
-                        ClickTile(CurrentPoses[i, j].OriginalPos, false);
+                        Swap(new Vector2Int(i, j), CurrentPoses[i, j].OriginalPos);
                     }
                 }
             }
         }
 
-        public void ClickTile(Vector2Int tilePosition)
+        public ClickResult ClickTile(Vector2Int tilePosition)
         {
-            ClickTile(tilePosition, true);
-        }
-
-        private void ClickTile(Vector2Int tilePosition, bool handleInactive)
-        {
-            if (handleInactive &&CurrentPoses.IsInRange2D(tilePosition.x, tilePosition.y) && 
-                !CurrentPoses[tilePosition.x, tilePosition.y].IsActive)
+            if (!CurrentPoses.IsInRange2D(tilePosition.x, tilePosition.y))
             {
                 DeselectCurrent();
-                return;
+                return ClickResult.OutOfRange;
             }
 
-            if (CurrentPoses.IsInRange2D(tilePosition.x, tilePosition.y) &&
-                CurrentPoses[tilePosition.x, tilePosition.y].IsActive &&
-                !CurrentPoses[tilePosition.x, tilePosition.y].IsOnRightPlace(tilePosition.x, tilePosition.y))
+            var currentPos = CurrentPoses[tilePosition.x, tilePosition.y];
+            if (!currentPos.IsActive)
+            {
+                DeselectCurrent();
+                return ClickResult.ClickOnInactive;
+            }
+
+            if (!currentPos.IsOnRightPlace(tilePosition.x, tilePosition.y) || !currentPos.IsDefaultRotation())
             {
                 switch (_selectedPositions.Count)
                 {
                     case 0:
-                        _selectedPositions.Add(tilePosition);
-                        TileSelected?.Invoke(tilePosition);
-                        break;
+                        SelectTile(tilePosition);
+                        return ClickResult.Select;
                     case 1:
                         if (_selectedPositions.Contains(tilePosition))
                         {
                             _selectedPositions.Remove(tilePosition);
                             TileDeselected?.Invoke(tilePosition);
+                            return ClickResult.Select;
                         }
                         else
                         {
-                            _selectedPositions.Add(tilePosition);
-                            TileSelected?.Invoke(tilePosition);
+                            SelectTile(tilePosition);
                             SwapTiles();
+                            return ClickResult.Swap;
                         }
-
-                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -138,31 +134,46 @@ namespace Client.Models
             else
             {
                 DeselectCurrent();
+                return ClickResult.Deselect;
             }
 
             void SwapTiles()
             {
-                (CurrentPoses[_selectedPositions[0].x, _selectedPositions[0].y],
-                    CurrentPoses[_selectedPositions[1].x, _selectedPositions[1].y]) = (
-                    CurrentPoses[_selectedPositions[1].x, _selectedPositions[1].y],
-                    CurrentPoses[_selectedPositions[0].x, _selectedPositions[0].y]);
-
+                Swap(_selectedPositions[0], _selectedPositions[1]);
                 TilesSwapped?.Invoke(_selectedPositions[0], _selectedPositions[1]);
 
-                _turnsCount++;
-                TurnCompleted?.Invoke(Mathf.Clamp(_turnsCount, 0, OkResult + 2));
-                CheckComplete();
                 _selectedPositions.Clear();
-            }
 
-            void DeselectCurrent()
+                IncTurnsCount();
+                CheckComplete();
+            }
+        }
+
+        private void Swap(Vector2Int pos1, Vector2Int pos2)
+        {
+            (CurrentPoses[pos1.x, pos1.y], CurrentPoses[pos2.x, pos2.y]) =
+                (CurrentPoses[pos2.x, pos2.y], CurrentPoses[pos1.x, pos1.y]);
+        }
+
+        private void IncTurnsCount()
+        {
+            _turnsCount++;
+            TurnCompleted?.Invoke(Mathf.Clamp(_turnsCount, 0, OkResult + 2));
+        }
+
+        private void SelectTile(Vector2Int tilePosition)
+        {
+            _selectedPositions.Add(tilePosition);
+            TileSelected?.Invoke(tilePosition);
+        }
+
+        private void DeselectCurrent()
+        {
+            if (_selectedPositions.Count > 0)
             {
-                if (_selectedPositions.Count > 0)
-                {
-                    var pos = _selectedPositions[0];
-                    _selectedPositions.Remove(pos);
-                    TileDeselected?.Invoke(pos);
-                }
+                var pos = _selectedPositions[0];
+                _selectedPositions.Remove(pos);
+                TileDeselected?.Invoke(pos);
             }
         }
 
@@ -231,8 +242,7 @@ namespace Client.Models
                     {
                         if (!_setTiles.Contains(cellIndex))
                         {
-                            TileSet?.Invoke(cellIndex);
-                            _setTiles.Add(cellIndex);
+                            SetTile(cellIndex);
                         }
                     }
                     else
@@ -263,6 +273,16 @@ namespace Client.Models
 
                 return _turnsCount <= OkResult ? LevelResult.Ok : LevelResult.Worst;
             }
+        }
+
+        private void SetTile(Vector2Int cellIndex)
+        {
+            _setTiles.Add(cellIndex);
+            if (_selectedPositions.Contains(cellIndex))
+            {
+                DeselectCurrent();
+            }
+            TileSet?.Invoke(cellIndex);
         }
 
         public void TrySwipe(RotationDirection direction)
@@ -307,5 +327,14 @@ namespace Client.Models
                 return rotation;
             }
         }
+    }
+    
+    public enum ClickResult
+    {
+        OutOfRange,
+        ClickOnInactive,
+        Select,
+        Swap,
+        Deselect
     }
 }

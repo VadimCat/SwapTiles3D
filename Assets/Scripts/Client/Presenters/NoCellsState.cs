@@ -3,7 +3,10 @@ using Client.Views;
 using Cysharp.Threading.Tasks;
 using Ji2.Presenters;
 using Ji2Core.Core.States;
+using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
+using Assert = NUnit.Framework.Assert;
 
 namespace Client.Presenters
 {
@@ -28,6 +31,9 @@ namespace Client.Presenters
         public async UniTask Enter()
         {
             await _modelAnimator.AwaitAllAnimationsEnd();
+
+            Assert.AreEqual(_level.SelectedTilesCount, 0);
+
             _swipeListener.Disable();
             foreach (var key in _fieldView.CellToPos.Keys)
             {
@@ -37,7 +43,6 @@ namespace Client.Presenters
 
         public UniTask Exit()
         {
-            _swipeListener.Disable();
             foreach (var key in _fieldView.CellToPos.Keys)
             {
                 key.EventPointerDown -= OnCellDown;
@@ -48,8 +53,11 @@ namespace Client.Presenters
 
         private void OnCellDown(CellView cell, PointerEventData pointerEventData)
         {
+            Assert.AreEqual(0, _level.SelectedTilesCount);
             _level.ClickTile(_fieldView.CellToPos[cell]);
-            _stateMachine.Enter<FirstCellHold, (CellView, PointerEventData)>((cell, pointerEventData));
+ 
+            Assert.AreEqual(1, _level.SelectedTilesCount);
+            _stateMachine.Enter<FirstCellHold, (CellView, PointerEventData)>((cell, pointerEventData)).Forget();
         }
     }
 }

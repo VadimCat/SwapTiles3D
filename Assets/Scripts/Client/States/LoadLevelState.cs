@@ -61,7 +61,7 @@ namespace Client.States
 
             var gamePayload = BuildLevel();
 
-            _stateMachine.Enter<GameState, GameStatePayload>(gamePayload);
+            _stateMachine.Enter<GameState, GameStatePayload>(gamePayload).Forget();
         }
 
         private GameStatePayload BuildLevel()

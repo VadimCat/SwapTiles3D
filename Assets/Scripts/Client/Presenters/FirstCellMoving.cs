@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Ji2.Presenters;
 using Ji2Core.Core;
 using Ji2Core.Core.States;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -15,28 +16,29 @@ namespace Client.Presenters
         private readonly Level _level;
         private readonly CameraProvider _cameraProvider;
         private readonly GridFieldPositionCalculator _gridFieldPositionCalculator;
-        private readonly ModelAnimator _modelAnimator;
         private (CellView cell, PointerEventData pointerEventData) _payload;
         private Vector3 _prevPos;
 
         public FirstCellMoving(StateMachine stateMachine, Level level, CameraProvider cameraProvider,
-            GridFieldPositionCalculator gridFieldPositionCalculator, ModelAnimator modelAnimator)
+            GridFieldPositionCalculator gridFieldPositionCalculator)
         {
+
             _stateMachine = stateMachine;
             _level = level;
             _cameraProvider = cameraProvider;
             _gridFieldPositionCalculator = gridFieldPositionCalculator;
-            _modelAnimator = modelAnimator;
         }
 
-        public async UniTask Enter((CellView cell, PointerEventData pointerEventData) payload)
+        public UniTask Enter((CellView cell, PointerEventData pointerEventData) payload)
         {
-            await _modelAnimator.AwaitAllAnimationsEnd();
+            Assert.AreEqual(1, _level.SelectedTilesCount);
+
             _payload = payload;
             payload.cell.EventPointerMove += OnCellMove;
             payload.cell.EventPointerUp += OnCellUp;
             
             _prevPos = GetWorldPositionOnPlane(payload.pointerEventData.position);
+            return default;
         }
 
         public UniTask Exit()
@@ -60,8 +62,7 @@ namespace Client.Presenters
         {
             var firstCellPos = _gridFieldPositionCalculator.GetReversePoint(_payload.cell.transform.position);
             _level.ClickTile(firstCellPos);
-            Debug.LogError(_level.SelectedTilesCount);
-            _stateMachine.Enter<NoCellsState>();
+            _stateMachine.Enter<NoCellsState>().Forget();
         }
         
         private Vector3 GetWorldPositionOnPlane(Vector3 screenPosition)

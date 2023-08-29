@@ -3,6 +3,7 @@ using Client.Views;
 using Cysharp.Threading.Tasks;
 using Ji2.Presenters;
 using Ji2Core.Core.States;
+using NUnit.Framework;
 using UnityEngine.EventSystems;
 
 namespace Client.Presenters
@@ -26,14 +27,15 @@ namespace Client.Presenters
             _modelAnimator = modelAnimator;
         }
 
-        public async UniTask Enter((CellView cell, PointerEventData pointerEventData) payload)
+        public UniTask Enter((CellView cell, PointerEventData pointerEventData) payload)
         {
-            await _modelAnimator.AwaitAllAnimationsEnd();
-
+            // await _modelAnimator.AwaitAllAnimationsEnd();
+            Assert.AreEqual(1, _level.SelectedTilesCount);
             _payload = payload;
             _swipeListener.Disable();
             payload.cell.EventPointerUp += PointerUp;
             payload.cell.EventPointerMove += PointerMove;
+            return default;
         }
 
         private void PointerUp(CellView cell, PointerEventData pointerEventData)

@@ -4,6 +4,7 @@ using DG.Tweening;
 using Ji2Core.Core.Pools;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Client.Views
@@ -11,10 +12,9 @@ namespace Client.Views
     public class CellView : MonoBehaviour, IPoolable, IPointerDownHandler, IPointerUpHandler, IPointerMoveHandler
     {
         [SerializeField] private CellAnimationConfig animationConfig;
-        [SerializeField] private Canvas canvas;
-
-        [field: SerializeField] public RawImage Image { get; private set; }
-        [SerializeField] private GameObject _frame;
+        [SerializeField] private GameObject frame;
+        [SerializeField] private Image image;
+        [field: SerializeField] public MeshRenderer Renderer { get; private set; }
         
         private Vector3 _scale;
         private bool _isInteractable = true;
@@ -24,20 +24,28 @@ namespace Client.Views
         public event Action<CellView, PointerEventData> EventPointerMove;
         public event Action<CellView, PointerEventData> EventPointerUp;
 
+        private MaterialPropertyBlock _propertyBlock;
+        private static readonly int BaseMap = Shader.PropertyToID("_BaseMap");
+        private static readonly int BaseMapSt = Shader.PropertyToID("_BaseMap_ST");
+
         public void SetData(Sprite sprite, Vector2Int originPosition, Vector2Int initialPosition, float initialRotation,
             int columns, int rows, Vector3 scale, GridFieldPositionCalculator gridFieldPositionCalculator)
         {
             _gridFieldPositionCalculator = gridFieldPositionCalculator;
             _startPosition = _gridFieldPositionCalculator.GetPoint(initialPosition);
-            Image.texture = sprite.texture;
             float w = (float)1 / columns;
             float h = (float)1 / rows;
             float x = w * originPosition.x;
             float y = h * originPosition.y;
-            Image.uvRect = new Rect(x, y, w, h);
             Transform transform1 = transform;
             transform1.localRotation = Quaternion.Euler(0, 0, initialRotation);
 
+            _propertyBlock = new MaterialPropertyBlock();
+            Debug.LogError(sprite.name);
+            _propertyBlock.SetTexture(BaseMap, sprite.texture);
+            _propertyBlock.SetVector(BaseMapSt, new Vector4(w, h, x,y));
+            
+            Renderer.SetPropertyBlock(_propertyBlock);
             _scale = scale;
             transform1.localScale = scale;
         }
@@ -49,24 +57,23 @@ namespace Client.Views
 
         private void EnableInteraction()
         {
-            Image.raycastTarget = true;
+            image.raycastTarget = true;
             _isInteractable = true;
         }
 
         private void DisableInteraction()
         {
-            Image.raycastTarget = false;
+            image.raycastTarget = false;
             _isInteractable = false;
         }
 
         public async UniTask PlaySelectAnimation()
         {
-            canvas.sortingOrder = 100;
             // DisableInteraction();
 
             await DOTween.Sequence()
                 .Join(transform.DOMoveZ(-1, animationConfig.SelectTime))
-                .Join(transform.DOScale(_scale * .85f, animationConfig.SelectTime))
+                // .Join(transform.DOScale(_scale , animationConfig.SelectTime))
                 .AwaitForComplete();
 
             // EnableInteraction();
@@ -74,11 +81,10 @@ namespace Client.Views
 
         public async UniTask PlayDeselectAnimation()
         {
-            canvas.sortingOrder = 0;
             DisableInteraction();
 
             await DOTween.Sequence()
-                .Join(transform.DOScale(_scale, animationConfig.SelectTime))
+                // .Join(transform.DOScale(_scale, animationConfig.SelectTime))
                 .Join(transform.DOMove(_startPosition, animationConfig.SelectTime))
                 .AwaitForComplete();
 
@@ -111,7 +117,7 @@ namespace Client.Views
         public UniTask PlaySetAnimation()
         {
             DisableInteraction();
-            _frame.gameObject.SetActive(false);
+            frame.gameObject.SetActive(false);
 
             return UniTask.CompletedTask;
         }
@@ -125,7 +131,7 @@ namespace Client.Views
         {
             EnableInteraction();
             gameObject.SetActive(false);
-            _frame.gameObject.SetActive(true);
+            frame.gameObject.SetActive(true);
 
             EventPointerDown = null;
             EventPointerMove = null;

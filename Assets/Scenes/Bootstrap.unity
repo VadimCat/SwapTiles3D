@@ -182,6 +182,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8826204613276117320, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8826204613276117320, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
+      propertyPath: m_PlaneDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8826204613276117321, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
+      propertyPath: m_ReferencePixelsPerUnit
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9131764606992471702, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0

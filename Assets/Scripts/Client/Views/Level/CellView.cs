@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Ji2Core.Core.Pools;
@@ -28,6 +29,8 @@ namespace Client.Views
         private static readonly int BaseMap = Shader.PropertyToID("_BaseMap");
         private static readonly int BaseMapSt = Shader.PropertyToID("_BaseMap_ST");
 
+        private CancellationTokenSource _tokenSource;
+        
         public void SetData(Sprite sprite, Vector2Int originPosition, Vector2Int initialPosition, float initialRotation,
             int columns, int rows, Vector3 scale, GridFieldPositionCalculator gridFieldPositionCalculator)
         {
@@ -41,7 +44,6 @@ namespace Client.Views
             transform1.localRotation = Quaternion.Euler(0, 0, initialRotation);
 
             _propertyBlock = new MaterialPropertyBlock();
-            Debug.LogError(sprite.name);
             _propertyBlock.SetTexture(BaseMap, sprite.texture);
             _propertyBlock.SetVector(BaseMapSt, new Vector4(w, h, x,y));
             
@@ -69,14 +71,10 @@ namespace Client.Views
 
         public async UniTask PlaySelectAnimation()
         {
-            // DisableInteraction();
-
             await DOTween.Sequence()
                 .Join(transform.DOMoveZ(-1, animationConfig.SelectTime))
-                // .Join(transform.DOScale(_scale , animationConfig.SelectTime))
                 .AwaitForComplete();
 
-            // EnableInteraction();
         }
 
         public async UniTask PlayDeselectAnimation()
@@ -84,25 +82,23 @@ namespace Client.Views
             DisableInteraction();
 
             await DOTween.Sequence()
-                // .Join(transform.DOScale(_scale, animationConfig.SelectTime))
                 .Join(transform.DOMove(_startPosition, animationConfig.SelectTime))
                 .AwaitForComplete();
 
             EnableInteraction();
         }
 
-        public async UniTask PlayMoveAnimation(Vector2Int indexPosition)
+        public async UniTask PlayMoveAnimation(Vector2Int indexPosition, int upFloor)
         {
+
             _startPosition = _gridFieldPositionCalculator.GetPoint(indexPosition);
             DisableInteraction();
             var moveSequence = DOTween.Sequence();
             
-            moveSequence.Append(transform.DOMoveZ(-1.5f, animationConfig.SelectTime));
-            // var position = aCellView.transform.position;
+            moveSequence.Append(transform.DOMoveZ(-1 * upFloor, animationConfig.SelectTime));
             moveSequence.Append(transform.DOMoveX(_startPosition.x, animationConfig.MoveTime));
             moveSequence.Append(transform.DOMoveY(_startPosition.y, animationConfig.MoveTime).SetEase(Ease.OutExpo));
             moveSequence.Join(transform.DOMoveX(_startPosition.x, animationConfig.MoveTime).SetEase(Ease.OutExpo));
-            // moveSequence.Append(transform.DOMoveZ(0, animationConfig.SelectTime));
 
             await moveSequence.AwaitForComplete();
             await PlayDeselectAnimation();

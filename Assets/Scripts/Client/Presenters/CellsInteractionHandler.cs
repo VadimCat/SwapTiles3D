@@ -1,5 +1,6 @@
 using Client.Models;
 using Client.Views;
+using Cysharp.Threading.Tasks;
 using Ji2.Presenters;
 using Ji2Core.Core;
 using Ji2Core.Core.States;
@@ -9,11 +10,6 @@ namespace Client.Presenters
 {
     public class CellsInteractionHandler
     {
-        private readonly GridFieldPositionCalculator _gridFieldPositionCalculator;
-        private readonly Level _level;
-        private readonly FieldView _fieldView;
-        private readonly SwipeListener _swipeListener;
-
         private (CellView cell, PointerEventData pointerData)? _downData;
         private readonly StateMachine _stateMachine;
 
@@ -21,11 +17,6 @@ namespace Client.Presenters
             FieldView fieldView, SwipeListener swipeListener, CameraProvider cameraProvider,
             ModelAnimator modelAnimator)
         {
-            _gridFieldPositionCalculator = gridFieldPositionCalculator;
-            _level = level;
-            _fieldView = fieldView;
-            _swipeListener = swipeListener;
-
             _stateMachine = new StateMachine(new CellsInteractionStatesFactory(swipeListener, fieldView, level,
                 cameraProvider, gridFieldPositionCalculator, modelAnimator));
         }
@@ -33,7 +24,7 @@ namespace Client.Presenters
         public void Initialize()
         {
             _stateMachine.Load();
-            _stateMachine.Enter<NoCellsState>();
+            _stateMachine.Enter<NoCellsState>().Forget();
         }
     }
 }

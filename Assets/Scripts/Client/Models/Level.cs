@@ -164,7 +164,10 @@ namespace Client.Models
         private void SelectTile(Vector2Int tilePosition)
         {
             _selectedPositions.Add(tilePosition);
-            TileSelected?.Invoke(tilePosition);
+            if (_selectedPositions.Count != 2)
+            {
+                TileSelected?.Invoke(tilePosition);
+            }
         }
 
         private void DeselectCurrent()

@@ -66,8 +66,8 @@ namespace Client.Views
             CellView cell1 = PosToCell[pos1];
             CellView cell2 = PosToCell[pos2];
             
-            await UniTask.WhenAll(cell1.PlayMoveAnimation(pos2),
-                cell2.PlayMoveAnimation(pos1));
+            await UniTask.WhenAll(cell1.PlayMoveAnimation(pos2, 2),
+                cell2.PlayMoveAnimation(pos1, 1));
             
             _posToCell[pos1] = cell2;
             _posToCell[pos2] = cell1;

@@ -13,7 +13,7 @@ namespace Client.Presenters
         private const float Threshold = 150;
         private float _startTime;
         private Vector2? _startSwipePos;
-
+        private bool _isEnabled;
         public event Action<Vector2, Vector2> EventSwiped;
         
         public SwipeListener(UpdateService updateService)
@@ -26,16 +26,24 @@ namespace Client.Presenters
         public void Enable()
         {
             _updateService.Add(this);
+            _isEnabled = true;
         }
 
         public void Disable()
         {
+            _isEnabled = false;
+
             _updateService.Remove(this);
             _startSwipePos = null;
         }
         
         public void OnUpdate()
         {
+            if (!_isEnabled)
+            {
+                return;
+            }
+            
             var phase = _touchScreenInputActions.Input.TouchPhase.ReadValue<TouchPhase>();
 
             switch (phase)

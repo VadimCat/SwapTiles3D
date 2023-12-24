@@ -285,6 +285,7 @@ namespace Client.Models
             {
                 DeselectCurrent();
             }
+
             TileSet?.Invoke(cellIndex);
         }
 
@@ -308,30 +309,21 @@ namespace Client.Models
 
                 selectedTile.Rotation = ClampAngle(selectedTile.Rotation + directionMultiplier * _rotationAngle);
                 TileRotated?.Invoke(_selectedPositions[0], selectedTile.Rotation);
+
                 CheckComplete();
-                if (_setTiles.Contains(_selectedPositions[0]))
+                /*if (_setTiles.Contains(_selectedPositions[0]))
                 {
                     _selectedPositions.Clear();
-                }
+                }*/
             }
 
             int ClampAngle(int rotation)
             {
-                while (rotation >= 360)
-                {
-                    rotation -= 360;
-                }
-
-                while (rotation < 0)
-                {
-                    rotation += 360;
-                }
-
-                return rotation;
+                return (rotation % 360 + 360) % 360;
             }
         }
     }
-    
+
     public enum ClickResult
     {
         OutOfRange,

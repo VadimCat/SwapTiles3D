@@ -8,8 +8,10 @@ using UnityEngine.EventSystems;
 
 namespace Client.Presenters
 {
-    public class FirstCellHold : IPayloadedState<(CellView cell, PointerEventData pointerEventData)>
+    public class FirstCellHold : IPayloadedState<(CellView cell, PointerEventData pointerEventData)>, ISwipeController
     {
+        public bool IsSwipesAllowed => false;
+
         private readonly StateMachine _stateMachine;
         private readonly SwipeListener _swipeListener;
         private readonly FieldView _fieldView;
@@ -56,5 +58,6 @@ namespace Client.Presenters
             _payload.cell.EventPointerMove -= PointerMove;
             return default;
         }
+
     }
 }

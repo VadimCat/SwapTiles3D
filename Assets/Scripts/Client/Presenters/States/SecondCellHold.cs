@@ -7,8 +7,10 @@ using UnityEngine.EventSystems;
 
 namespace Client.Presenters
 {
-    public class SecondCellHold : IPayloadedState<(CellView cell, PointerEventData pointerEventData)>
+    public class SecondCellHold : IPayloadedState<(CellView cell, PointerEventData pointerEventData)>, ISwipeController
     {
+        public bool IsSwipesAllowed => false;
+
         private readonly StateMachine _stateMachine;
         private readonly FieldView _fieldView;
         private readonly Level _level;

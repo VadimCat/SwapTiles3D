@@ -13,6 +13,8 @@ namespace Client.Presenters
         private (CellView cell, PointerEventData pointerData)? _downData;
         private readonly StateMachine _stateMachine;
 
+        public bool IsSwipesAllowed => ((ISwipeController)_stateMachine.CurrentState).IsSwipesAllowed;
+
         public CellsInteractionHandler(GridFieldPositionCalculator gridFieldPositionCalculator, Level level,
             FieldView fieldView, SwipeListener swipeListener, CameraProvider cameraProvider,
             ModelAnimator modelAnimator)

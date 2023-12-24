@@ -1,7 +1,6 @@
 using Client.Models;
 using Client.Views;
 using Cysharp.Threading.Tasks;
-using Ji2.Presenters;
 using Ji2Core.Core;
 using Ji2Core.Core.States;
 using NUnit.Framework;
@@ -10,8 +9,10 @@ using UnityEngine.EventSystems;
 
 namespace Client.Presenters
 {
-    public class FirstCellMoving : IPayloadedState<(CellView cell, PointerEventData pointerEventData)>
+    public class FirstCellMoving : IPayloadedState<(CellView cell, PointerEventData pointerEventData)>, ISwipeController
     {
+        public bool IsSwipesAllowed => false;
+
         private readonly StateMachine _stateMachine;
         private readonly Level _level;
         private readonly CameraProvider _cameraProvider;
@@ -22,7 +23,6 @@ namespace Client.Presenters
         public FirstCellMoving(StateMachine stateMachine, Level level, CameraProvider cameraProvider,
             GridFieldPositionCalculator gridFieldPositionCalculator)
         {
-
             _stateMachine = stateMachine;
             _level = level;
             _cameraProvider = cameraProvider;

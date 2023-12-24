@@ -124,7 +124,11 @@ namespace Client.Presenters
             {
                 _swipeListener.Disable();
                 await _view.PlayRotationAnimation(pos, rotation);
-                _swipeListener.Enable();
+                //HACK: better to make RotatingState or smth like
+                if (_cellsInteractionHandler.IsSwipesAllowed)
+                {
+                    _swipeListener.Enable();
+                }
             }).Forget();
         }
 

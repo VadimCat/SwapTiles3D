@@ -10,8 +10,10 @@ using Assert = NUnit.Framework.Assert;
 
 namespace Client.Presenters
 {
-    public class NoCellsState : IState
+    public class NoCellsState : IState, ISwipeController
     {
+        public bool IsSwipesAllowed => false;
+
         private readonly StateMachine _stateMachine;
         private readonly SwipeListener _swipeListener;
         private readonly FieldView _fieldView;

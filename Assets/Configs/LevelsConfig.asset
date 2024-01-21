@@ -13,7 +13,14 @@ MonoBehaviour:
   m_Name: LevelsConfig
   m_EditorClassIdentifier: 
   levels:
+  - {fileID: 11400000, guid: 0674223bd0061dd439b84d2350420e34, type: 2}
   - {fileID: 11400000, guid: 8c87864d5a93241bc8eda77fdf3dde01, type: 2}
   - {fileID: 11400000, guid: f5b5e24dcf0f9bd4ea922dfd3e1dbb28, type: 2}
   - {fileID: 11400000, guid: f0f8b90c27fe38245a1d41d663a2ed56, type: 2}
+  - {fileID: 11400000, guid: 9d93e6c89386c1d4d925f151e5dee8ad, type: 2}
+  - {fileID: 11400000, guid: 57c2938ab47d69a4893d743c2c139908, type: 2}
+  - {fileID: 11400000, guid: c2a936e56ecfe194fb59aec8367368ff, type: 2}
+  - {fileID: 11400000, guid: da95653999b23684184ec2e0bf9f944d, type: 2}
+  - {fileID: 11400000, guid: 0314f72b0e540924a9864fed1241020e, type: 2}
+  - {fileID: 11400000, guid: 76edcd8ecdb90c042bdc2cf8c4e14150, type: 2}
   levelACellView: {fileID: 6665031966729607952, guid: 9f862959e89c8a84981ab932b0a4f14f, type: 3}

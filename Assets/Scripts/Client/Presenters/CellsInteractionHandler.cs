@@ -20,7 +20,7 @@ namespace Client.Presenters
             ModelAnimator modelAnimator)
         {
             _stateMachine = new StateMachine(new CellsInteractionStatesFactory(swipeListener, fieldView, levelPlayableDecorator,
-                cameraProvider, gridFieldPositionCalculator, modelAnimator), true);
+                cameraProvider, gridFieldPositionCalculator, modelAnimator));
         }
 
         public void Initialize()

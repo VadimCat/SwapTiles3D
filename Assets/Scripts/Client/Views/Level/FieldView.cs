@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Ji2.Context;
 using Ji2Core.Core.Audio;
@@ -9,7 +9,7 @@ namespace Client.Views
 {
     public class FieldView : MonoBehaviour
     {
-        private Context _context;
+        private DiContext _diContext;
         private GridFieldPositionCalculator _gridFieldPositionCalculator;
         public Transform SpawnRoot => transform;
 
@@ -26,7 +26,7 @@ namespace Client.Views
             _cellViewFactory = cellViewFactory;
             _sound = sound;
         }
-        
+
         public async UniTask AnimateWin()
         {
             List<UniTask> pulseTasks = new List<UniTask>();
@@ -46,29 +46,26 @@ namespace Client.Views
             {
                 CellView cellView = _cellViewFactory.Create(x, y);
                 cellView.name = $"{x} {y}";
-                if (cellView != null)
-                {
-                    RegisterCell(x, y, cellView);
-                }
+                RegisterCell(x, y, cellView);
             }
-            
+
             void RegisterCell(int x, int y, CellView cellView)
             {
                 _posToCell[new Vector2Int(x, y)] = cellView;
                 _cellToPos[cellView] = new Vector2Int(x, y);
             }
         }
-        
+
         public async UniTask SwapAnimation(Vector2Int pos1, Vector2Int pos2)
         {
             _sound.PlaySfxAsync(SoundNamesCollection.Swap).Forget();
 
             CellView cell1 = PosToCell[pos1];
             CellView cell2 = PosToCell[pos2];
-            
+
             await UniTask.WhenAll(cell1.PlayMoveAnimation(pos2, 2),
                 cell2.PlayMoveAnimation(pos1, 1));
-            
+
             _posToCell[pos1] = cell2;
             _posToCell[pos2] = cell1;
 
@@ -85,7 +82,7 @@ namespace Client.Views
         public async UniTask PlayDeselectAnimation(Vector2Int pos)
         {
             _sound.PlaySfxAsync(SoundNamesCollection.TileTap).Forget();
-            
+
             await PosToCell[pos].PlayDeselectAnimation();
         }
 

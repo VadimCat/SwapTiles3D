@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Ji2.CommonCore.SaveDataContainer;
 using Ji2.Models;
 using Ji2.Models.Analytics;
 using Ji2.Utils;
@@ -11,28 +10,20 @@ using Random = UnityEngine.Random;
 
 namespace Client.Models
 {
-    public class Level : LevelBase<ProgressBase>
+    public class LevelPlayableDecorator : ILevel
     {
-        public event Action LevelCompleted;
         public event Action<Vector2Int> TileSelected;
         public event Action<Vector2Int> TileDeselected;
         public event Action<Vector2Int, Vector2Int> TilesSwapped;
         public event Action<Vector2Int, int> TileRotated;
         public event Action<Vector2Int> TileSet;
-        public event Action<int> TurnCompleted;
 
-        public CellData[,] CurrentPoses;
-        private int _turnsCount;
+        public Cell[,] CurrentPoses;
 
-        private readonly bool[,] _cutTemplate;
         private readonly int _rotationAngle;
-
-        public readonly int PerfectResult;
-        public readonly int GoodResult;
-        public readonly int OkResult;
+        private readonly ILevel _level;
         public int SelectedTilesCount => _selectedPositions.Count;
-
-
+        
         private readonly HashSet<Vector2Int> _setTiles;
         private readonly Analytics _analytics;
         private readonly LevelData _levelData;
@@ -40,53 +31,60 @@ namespace Client.Models
 
         public Vector2Int Size => new(CurrentPoses.GetLength(0), CurrentPoses.GetLength(1));
 
-        public LevelResult Result { get; private set; } = LevelResult.None;
         public Vector2Int FirstSelected => _selectedPositions.FirstOrDefault();
-
-        public Level(IAnalytics analytics, LevelData levelData, bool[,] cutTemplate, int rotationAngle,
-            ISaveDataContainer saveDataContainer)
-            : base(analytics, levelData, saveDataContainer)
+        
+        public ProgressBase Progress => _level.Progress;
+        public string Name => _level.Name;
+        public int LevelCount => _level.LevelCount;
+        public Difficulty Difficulty => _level.Difficulty;
+        public LevelData LevelData => _level.LevelData;
+        public event Action EventLevelCompleted
         {
-            _cutTemplate = cutTemplate;
+            add => _level.EventLevelCompleted += value;
+            remove => _level.EventLevelCompleted -= value;
+        }
+        
+        public LevelPlayableDecorator(bool[,] cutTemplate, int rotationAngle, ILevel level)
+        {
             _rotationAngle = rotationAngle;
+            _level = level;
             _setTiles = new HashSet<Vector2Int>(cutTemplate.GetLength(0) * cutTemplate.GetLength(1));
-            PerfectResult = TurnsCountForResult(LevelResult.Perfect);
-            GoodResult = TurnsCountForResult(LevelResult.Good);
-            OkResult = TurnsCountForResult(LevelResult.Ok);
 
             BuildLevel();
 
             void BuildLevel()
             {
-                var shuffledImagePoses = Shufflling.CreatedShuffled2DimensionalArray(new Vector2Int(
-                    cutTemplate.GetLength(0),
-                    cutTemplate.GetLength(1)));
 
-                CurrentPoses = new CellData[cutTemplate.GetLength(0), cutTemplate.GetLength(1)];
-
-                for (var i = 0; i < _cutTemplate.GetLength(0); i++)
-                for (var j = 0; j < _cutTemplate.GetLength(1); j++)
+                CurrentPoses = new Cell[cutTemplate.GetLength(0), cutTemplate.GetLength(1)];
+                
+                var availableElements = new List<Vector2Int>(cutTemplate.GetLength(0) * cutTemplate.GetLength(1));
+                
+                for (var i = 0; i < cutTemplate.GetLength(0); i++)
+                for (var j = 0; j < cutTemplate.GetLength(1); j++)
                 {
-                    var imagePos = shuffledImagePoses[i, j];
-                    if (_cutTemplate[imagePos.x, imagePos.y])
+                    if (!cutTemplate[i, j])
                     {
-                        CurrentPoses[i, j] = CellData.Disabled(imagePos);
+                        availableElements.Add(new Vector2Int(i, j));
+                    }
+                }
+
+                var shuffledIndexes = Shufflling.CreateShuffledArray(availableElements.Count);
+                    int elementsUsed = 0;
+                
+                for (var i = 0; i < cutTemplate.GetLength(0); i++)
+                for (var j = 0; j < cutTemplate.GetLength(1); j++)
+                {
+                    var current = new Vector2Int(i,j);
+                    if (cutTemplate[i, j])
+                    {
+                        CurrentPoses[i, j] = Cell.Disabled(current);
+                        _setTiles.Add(current);
                     }
                     else
                     {
                         int rotationsCount = rotationAngle == 0 ? 0 : 360 / rotationAngle;
                         int rotation = rotationAngle == 0 ? 0 : Random.Range(0, rotationsCount) * _rotationAngle;
-
-                        CurrentPoses[i, j] = new CellData(new Vector2Int(imagePos.x, imagePos.y), rotation);
-                    }
-                }
-
-                for (var i = 0; i < _cutTemplate.GetLength(0); i++)
-                for (var j = 0; j < _cutTemplate.GetLength(1); j++)
-                {
-                    while (!CurrentPoses[i, j].IsActive && !CurrentPoses[i, j].IsOnRightPlace(i, j))
-                    {
-                        Swap(new Vector2Int(i, j), CurrentPoses[i, j].OriginalPos);
+                        CurrentPoses[i, j] = new Cell(availableElements[shuffledIndexes[elementsUsed++]], rotation);
                     }
                 }
             }
@@ -144,43 +142,10 @@ namespace Client.Models
 
                 _selectedPositions.Clear();
 
-                IncTurnsCount();
                 CheckComplete();
             }
         }
-
-        private void Swap(Vector2Int pos1, Vector2Int pos2)
-        {
-            (CurrentPoses[pos1.x, pos1.y], CurrentPoses[pos2.x, pos2.y]) =
-                (CurrentPoses[pos2.x, pos2.y], CurrentPoses[pos1.x, pos1.y]);
-        }
-
-        private void IncTurnsCount()
-        {
-            _turnsCount++;
-            TurnCompleted?.Invoke(Mathf.Clamp(_turnsCount, 0, OkResult + 2));
-        }
-
-        private void SelectTile(Vector2Int tilePosition)
-        {
-            _selectedPositions.Add(tilePosition);
-            if (_selectedPositions.Count != 2)
-            {
-                TileSelected?.Invoke(tilePosition);
-            }
-        }
-
-        private void DeselectCurrent()
-        {
-            if (_selectedPositions.Count > 0)
-            {
-                var pos = _selectedPositions[0];
-                _selectedPositions.Remove(pos);
-                TileDeselected?.Invoke(pos);
-            }
-        }
-
-
+        
         public bool TryGetRandomNotSelectedCell(out Vector2Int selectedTile)
         {
             if (_selectedPositions.Count == 1)
@@ -214,86 +179,11 @@ namespace Client.Models
             return true;
         }
 
-        private int TurnsCountForResult(LevelResult result)
-        {
-            switch (result)
-            {
-                case LevelResult.Ok:
-                    return _cutTemplate.GetLength(0) * _cutTemplate.GetLength(1) * 3;
-                case LevelResult.Good:
-                    return _cutTemplate.GetLength(0) * _cutTemplate.GetLength(1) * 2;
-                case LevelResult.Perfect:
-                    return _cutTemplate.GetLength(0) * _cutTemplate.GetLength(1);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(result), result, null);
-            }
-        }
-
-
-        private void CheckComplete()
-        {
-            bool isFailed = false;
-
-            for (var i = 0; i < CurrentPoses.GetLength(0); i++)
-            {
-                for (var j = 0; j < CurrentPoses.GetLength(1); j++)
-                {
-                    var cellIndex = new Vector2Int(i, j);
-                    CellData cell = CurrentPoses[i, j];
-
-                    if (cell.IsOnRightPlace(i, j) && cell.IsDefaultRotation())
-                    {
-                        if (!_setTiles.Contains(cellIndex))
-                        {
-                            SetTile(cellIndex);
-                        }
-                    }
-                    else
-                    {
-                        isFailed = true;
-                    }
-                }
-            }
-
-            if (!isFailed)
-            {
-                Result = GetResult();
-                LevelCompleted?.Invoke();
-                saveDataContainer.ResetKey(Name);
-            }
-
-            LevelResult GetResult()
-            {
-                if (_turnsCount <= PerfectResult)
-                {
-                    return LevelResult.Perfect;
-                }
-
-                if (_turnsCount <= GoodResult)
-                {
-                    return LevelResult.Good;
-                }
-
-                return _turnsCount <= OkResult ? LevelResult.Ok : LevelResult.Worst;
-            }
-        }
-
-        private void SetTile(Vector2Int cellIndex)
-        {
-            _setTiles.Add(cellIndex);
-            if (_selectedPositions.Contains(cellIndex))
-            {
-                DeselectCurrent();
-            }
-
-            TileSet?.Invoke(cellIndex);
-        }
-
         public void TrySwipe(RotationDirection direction)
         {
             if (_selectedPositions.Count == 1)
             {
-                ref CellData selectedTile = ref CurrentPoses[_selectedPositions[0].x, _selectedPositions[0].y];
+                ref Cell selectedTile = ref CurrentPoses[_selectedPositions[0].x, _selectedPositions[0].y];
                 int directionMultiplier;
                 switch (direction)
                 {
@@ -311,10 +201,6 @@ namespace Client.Models
                 TileRotated?.Invoke(_selectedPositions[0], selectedTile.Rotation);
 
                 CheckComplete();
-                /*if (_setTiles.Contains(_selectedPositions[0]))
-                {
-                    _selectedPositions.Clear();
-                }*/
             }
 
             int ClampAngle(int rotation)
@@ -322,14 +208,107 @@ namespace Client.Models
                 return (rotation % 360 + 360) % 360;
             }
         }
+        
+        private void CheckComplete()
+        {
+            bool isFailed = false;
+
+            for (var i = 0; i < CurrentPoses.GetLength(0); i++)
+            {
+                for (var j = 0; j < CurrentPoses.GetLength(1); j++)
+                {
+                    var cellIndex = new Vector2Int(i, j);
+                    Cell cell = CurrentPoses[i, j];
+
+                    if (cell.IsOnRightPlace(i, j) && cell.IsDefaultRotation())
+                    {
+                        if (!_setTiles.Contains(cellIndex))
+                        {
+                            SetTile(cellIndex);
+                        }
+                    }
+                    else
+                    {
+                        isFailed = true;
+                    }
+                }
+            }
+
+            if (!isFailed)
+            {
+                _level.Complete();
+            }
+        }
+
+        private void SetTile(Vector2Int cellIndex)
+        {
+            _setTiles.Add(cellIndex);
+            if (_selectedPositions.Contains(cellIndex))
+            {
+                DeselectCurrent();
+            }
+            TileSet?.Invoke(cellIndex);
+        }
+
+        private void Swap(Vector2Int pos1, Vector2Int pos2)
+        {
+            (CurrentPoses[pos1.x, pos1.y], CurrentPoses[pos2.x, pos2.y]) =
+                (CurrentPoses[pos2.x, pos2.y], CurrentPoses[pos1.x, pos1.y]);
+        }
+
+        private void SelectTile(Vector2Int tilePosition)
+        {
+            _selectedPositions.Add(tilePosition);
+            if (_selectedPositions.Count != 2)
+            {
+                TileSelected?.Invoke(tilePosition);
+            }
+        }
+
+        private void DeselectCurrent()
+        {
+            for (var i = 0; i < _selectedPositions.Count; i++)
+            {
+                var selected = _selectedPositions[i];
+                var pos = selected;
+                _selectedPositions.Remove(pos);
+                TileDeselected?.Invoke(pos);
+            }
+        }
+
+        public void Complete()
+        {
+            _level.Complete();
+        }
+
+        public void Start()
+        {
+            _level.Start();
+        }
+        
+        public void AppendPlayTime(float time)
+        {
+            _level.AppendPlayTime(time);
+        }
+
+        public void LoadProgress(ProgressBase progress)
+        {
+            _level.LoadProgress(progress);
+        }
+
+        public void CreateProgress()
+        {
+            _level.CreateProgress();
+        }
+
+        public enum ClickResult
+        {
+            OutOfRange,
+            ClickOnInactive,
+            Select,
+            Swap,
+            Deselect
+        }
     }
 
-    public enum ClickResult
-    {
-        OutOfRange,
-        ClickOnInactive,
-        Select,
-        Swap,
-        Deselect
-    }
 }

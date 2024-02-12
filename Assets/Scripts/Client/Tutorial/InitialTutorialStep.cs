@@ -25,7 +25,7 @@ namespace Client.Tutorial
 
         private CancellationTokenSource _cancellationTokenSource;
         private LevelPresenter _presenter;
-        private Level _model;
+        private LevelPlayableDecorator _model;
 
         public InitialTutorialStep(StateMachine stateMachine, TutorialPointerView pointer, CameraProvider cameraProvider)
         {

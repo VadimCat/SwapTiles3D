@@ -18,7 +18,6 @@ using Ji2.Models.Analytics;
 using Ji2.Presenters.Tutorial;
 using Ji2.UI;
 using Ji2Core.Core.Pools;
-using UnityEngine.Serialization;
 
 namespace Client
 {
@@ -29,13 +28,12 @@ namespace Client
         [SerializeField] private BackgroundService backgroundService;
         [SerializeField] private UpdateService updateService;
         [SerializeField] private ImageCompliments compliments;
-        [FormerlySerializedAs("audioService")] [SerializeField] private Sound sound;
+        [SerializeField] private Sound sound;
         [SerializeField] private TutorialPointerView tutorialPointer;
-        [SerializeField] private LevelResultViewConfig levelResultViewConfig;
 
         private AppSession _appSession;
 
-        private readonly Context _context = Context.GetOrCreateInstance();
+        private readonly DiContext _diContext = DiContext.GetOrCreateInstance();
 
         protected override void Start()
         {
@@ -45,21 +43,20 @@ namespace Client
             InstallLevelsData();
             InstallNavigator();
             InstallInputService();
-            _context.Register(updateService);
-            _context.Register(backgroundService);
+            _diContext.Register(updateService);
+            _diContext.Register(backgroundService);
             var sceneLoader = new SceneLoader(updateService);
 
             InstallAnalytics();
 
             ISaveDataContainer dataContainer = new PlayerPrefsSaveDataContainer();
-            _context.Register(dataContainer);
-            _context.Register(levelResultViewConfig);
-            _context.Register(new LevelsLoopProgress(dataContainer, levelsConfig.GetLevelsOrder()));
+            _diContext.Register(dataContainer);
+            _diContext.Register(new LevelsLoopProgress(dataContainer, levelsConfig.GetLevelsOrder()));
 
 
-            _context.Register(sceneLoader);
-            _context.Register<ICompliments>(compliments);
-            _context.Register(new Pool<CellView>(levelsConfig.ACellView, transform));
+            _diContext.Register(sceneLoader);
+            _diContext.Register<ICompliments>(compliments);
+            _diContext.Register(new Pool<CellView>(levelsConfig.ACellView, transform));
             
             InstallFactories();
             
@@ -70,35 +67,35 @@ namespace Client
 
         private void InstallFactories()
         {
-            _context.Register(new LevelFactory(_context));
-            _context.Register(new LevelPresenterFactory(_context));
+            _diContext.Register(new LevelFactory(_diContext));
+            _diContext.Register(new LevelPresenterFactory(_diContext));
         }
 
         private void InstallTutorial()
         {
-            _context.Register(tutorialPointer);
-            ITutorialFactory factory = new TutorialFactory(_context);
+            _diContext.Register(tutorialPointer);
+            ITutorialFactory factory = new TutorialFactory(_diContext);
             ITutorialStep[] steps = { factory.Create<InitialTutorialStep>() };
-            var tutorialService = new TutorialService(_context.GetService<ISaveDataContainer>(), steps);
-            _context.Register(tutorialService);
+            var tutorialService = new TutorialService(_diContext.GetService<ISaveDataContainer>(), steps);
+            _diContext.Register(tutorialService);
         }
 
         private void InstallStateMachine()
         {
-            StateMachine appStateMachine = new StateMachine(new StateFactory(_context));
-            _context.Register(appStateMachine);
+            StateMachine appStateMachine = new StateMachine(new StateFactory(_diContext));
+            _diContext.Register(appStateMachine);
         }
 
         private void InstallAnalytics()
         {
             IAnalytics analytics = new Analytics();
             analytics.AddLogger(new YandexMetricaLogger(AppMetrica.Instance));
-            _context.Register(analytics);
+            _diContext.Register(analytics);
         }
 
         private void StartApplication()
         {
-            var appStateMachine = _context.GetService<StateMachine>();
+            var appStateMachine = _diContext.GetService<StateMachine>();
             appStateMachine.Load();
             _appSession = new AppSession(appStateMachine);
             _appSession.StateMachine.Enter<InitialState>();
@@ -106,31 +103,31 @@ namespace Client
 
         private void InstallCamera()
         {
-            _context.Register(new CameraProvider());
+            _diContext.Register(new CameraProvider());
         }
 
         private void InstallInputService()
         {
-            _context.Register(new Ji2Core.Core.UserInput.MouseInput(updateService));
+            _diContext.Register(new Ji2Core.Core.UserInput.MouseInput(updateService));
         }
 
         private void InstallAudioService()
         {
             sound.Bootstrap();
             sound.PlayMusic(SoundNamesCollection.BackgroundMusic);
-            _context.Register(sound);
+            _diContext.Register(sound);
         }
 
         private void InstallNavigator()
         {
             screenNavigator.Bootstrap();
-            _context.Register(screenNavigator);
+            _diContext.Register(screenNavigator);
         }
 
         private void InstallLevelsData()
         {
             levelsConfig.Bootstrap();
-            _context.Register(levelsConfig);
+            _diContext.Register(levelsConfig);
         }
     }
 }

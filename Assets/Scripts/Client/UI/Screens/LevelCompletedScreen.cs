@@ -15,7 +15,6 @@ namespace Client.UI.Screens
         [SerializeField] private Image levelImageResult;
         [SerializeField] private Image animateResult;
         [SerializeField] private Image border;
-        [SerializeField] private Image rewardMedal;
 
         public event Action ClickNext;
         public event Action ClickRetry;
@@ -45,10 +44,9 @@ namespace Client.UI.Screens
             nextButton.image.DOFade(1, 1f);
         }
 
-        public void SetLevelResult(Sprite levelResult, Color rewardMedalColor)
+        public void SetLevelResult(Sprite levelResult)
         {
             this.levelImageResult.sprite = levelResult;
-            rewardMedal.color = rewardMedalColor;
         }
 
         private async void FireNext()

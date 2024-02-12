@@ -28,11 +28,6 @@ namespace Client.States
             this.saveDataContainer = saveDataContainer;
         }
 
-        public async UniTask Exit()
-        {
-            await screenNavigator.CloseScreen<LoadingScreen>();
-        }
-
         public async UniTask Enter()
         {
             var facebookTask = LoadFb();
@@ -49,6 +44,11 @@ namespace Client.States
 #endif
             stateMachine.Enter<LoadLevelState, LoadLevelStatePayload>(
                 new LoadLevelStatePayload(levelsLoopProgress.GetNextLevelData(), fakeLoadingTime));
+        }
+
+        public async UniTask Exit()
+        {
+            await screenNavigator.CloseScreen<LoadingScreen>();
         }
 
         private async UniTask LoadFb()

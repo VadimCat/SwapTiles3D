@@ -1,9 +1,9 @@
 using Client.Models;
 using Client.Views;
 using Cysharp.Threading.Tasks;
-using Ji2.Presenters;
 using Ji2Core.Core.States;
-using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
 
 namespace Client.Presenters
@@ -14,49 +14,43 @@ namespace Client.Presenters
 
         private readonly StateMachine _stateMachine;
         private readonly SwipeListener _swipeListener;
-        private readonly FieldView _fieldView;
-        private readonly Level _level;
-        private readonly ModelAnimator _modelAnimator;
+        private readonly LevelPlayableDecorator _levelPlayableDecorator;
         private (CellView cell, PointerEventData pointerEventData) _payload;
 
-        public FirstCellHold(StateMachine stateMachine, SwipeListener swipeListener, FieldView fieldView, Level level,
-            ModelAnimator modelAnimator)
+        public FirstCellHold(StateMachine stateMachine, SwipeListener swipeListener, LevelPlayableDecorator levelPlayableDecorator)
         {
             _stateMachine = stateMachine;
             _swipeListener = swipeListener;
-            _fieldView = fieldView;
-            _level = level;
-            _modelAnimator = modelAnimator;
+            _levelPlayableDecorator = levelPlayableDecorator;
         }
 
         public UniTask Enter((CellView cell, PointerEventData pointerEventData) payload)
         {
-            // await _modelAnimator.AwaitAllAnimationsEnd();
-            Assert.AreEqual(1, _level.SelectedTilesCount);
+            Assert.AreEqual(1, _levelPlayableDecorator.SelectedTilesCount);
             _payload = payload;
             _swipeListener.Disable();
             payload.cell.EventPointerUp += PointerUp;
             payload.cell.EventPointerMove += PointerMove;
-            return default;
+            return UniTask.CompletedTask;
         }
 
         private void PointerUp(CellView cell, PointerEventData pointerEventData)
         {
             _stateMachine.Enter<FirstCellSelected, (CellView cell, PointerEventData pointerEventData)>((cell,
-                pointerEventData));
+                pointerEventData)).Forget();
         }
 
         private void PointerMove(CellView cell, PointerEventData pointerEventData)
         {
             _stateMachine.Enter<FirstCellMoving, (CellView cell, PointerEventData pointerEventData)>((cell,
-                pointerEventData));
+                pointerEventData)).Forget();
         }
 
         public UniTask Exit()
         {
             _payload.cell.EventPointerUp -= PointerUp;
             _payload.cell.EventPointerMove -= PointerMove;
-            return default;
+            return UniTask.CompletedTask;
         }
 
     }

@@ -1,5 +1,6 @@
 using Ji2.CommonCore.SaveDataContainer;
 using Ji2.Context;
+using Ji2.Models;
 using Ji2.Models.Analytics;
 
 namespace Client.Models
@@ -15,9 +16,11 @@ namespace Client.Models
             _analytics = dependenciesProvider.GetService<IAnalytics>();
         }
 
-        public Level Create(LevelData levelData, bool[,] cutTemplate, int rotationAngle)
+        public LevelPlayableDecorator Create(LevelData levelData, bool[,] cutTemplate, int rotationAngle)
         {
-            return new Level(_analytics, levelData, cutTemplate, rotationAngle, _saveDataContainer);
+            return new LevelPlayableDecorator(cutTemplate, rotationAngle, 
+                new LevelAnalyticsLoggerDecorator(_analytics, _saveDataContainer,
+                    new LevelBase(levelData, _saveDataContainer)));
         }
     }
 }

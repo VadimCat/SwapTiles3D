@@ -5,7 +5,6 @@ using DG.Tweening;
 using Ji2Core.Core.Pools;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Client.Views

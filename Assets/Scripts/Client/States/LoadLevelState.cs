@@ -67,11 +67,11 @@ namespace Client.States
         private GameStatePayload BuildLevel()
         {
             var view = _dp.GetService<FieldView>();
-            var viewConfig = _levelsConfig.GetData(_levelData.name);
+            var viewConfig = _levelsConfig.GetData(_levelData.Name);
             _backgroundService.SwitchBackground(viewConfig.Background);
-            var viewData = viewConfig.ViewData(_levelData.lvlLoop);
+            var viewData = viewConfig.ViewData(_levelData.LvlLoop);
             //HACK
-            _levelData.difficulty = viewData.Difficulty;
+            _levelData.Difficulty = viewData.Difficulty;
             var levelModel = _levelFactory.Create(_levelData, viewData.CutTemplate, viewData.DiscreteRotationAngle);
             var levelPresenter = _levelPresenterFactory.Create(view, levelModel);
 

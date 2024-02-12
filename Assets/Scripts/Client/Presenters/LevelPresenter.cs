@@ -21,11 +21,10 @@ namespace Client.Presenters
         public event Action LevelCompleted;
 
         private readonly FieldView _view;
-        private readonly Level _model;
+        private readonly LevelPlayableDecorator _model;
         private readonly ScreenNavigator _screenNavigator;
         private readonly Pool<CellView> _cellsPool;
         private readonly UpdateService _updateService;
-        private readonly LevelsConfig _levelConfig;
         private readonly LevelsLoopProgress _levelsLoopProgress;
         private readonly Sound _sound;
         private readonly ICompliments _compliments;
@@ -38,12 +37,11 @@ namespace Client.Presenters
         private readonly SwipeListener _swipeListener;
 
         private readonly Camera _camera;
-        private readonly GridFieldPositionCalculator _gridFieldPositionCalculator;
         private readonly CellsInteractionHandler _cellsInteractionHandler;
 
-        public Level Model => _model;
+        public LevelPlayableDecorator Model => _model;
 
-        public LevelPresenter(FieldView view, Level model, ScreenNavigator screenNavigator, Pool<CellView> cellsPool,
+        public LevelPresenter(FieldView view, LevelPlayableDecorator model, ScreenNavigator screenNavigator, Pool<CellView> cellsPool,
             UpdateService updateService, LevelsConfig levelConfig, LevelsLoopProgress levelsLoopProgress,
             Sound sound, ICompliments compliments, MouseInput mouseInput, CameraProvider cameraProvider)
         {
@@ -52,34 +50,31 @@ namespace Client.Presenters
             _screenNavigator = screenNavigator;
             _cellsPool = cellsPool;
             _updateService = updateService;
-            _levelConfig = levelConfig;
             _levelsLoopProgress = levelsLoopProgress;
             _sound = sound;
             _compliments = compliments;
             _mouseInput = mouseInput;
             _camera = cameraProvider.MainCamera;
 
-            _gridFieldPositionCalculator =
-                new GridFieldPositionCalculator(_model.Size, _screenNavigator.Size, _screenNavigator.ScaleFactor,
-                    _levelConfig.GetData(_model.Name).Image.Aspect());
+            var gridFieldPositionCalculator = new GridFieldPositionCalculator(_model.Size, _screenNavigator.Size, _screenNavigator.ScaleFactor,
+                levelConfig.GetData(_model.Name).Image.Aspect());
 
-            var cellFactory = new CellFactory(_model, _cellsPool, _gridFieldPositionCalculator, _view,
-                _levelConfig.GetData(_model.Name).Image);
+            var cellFactory = new CellFactory(_model, _cellsPool, gridFieldPositionCalculator, _view,
+                levelConfig.GetData(_model.Name).Image);
             _view.SetDependencies(cellFactory, sound);
 
-            model.LevelCompleted += OnLevelCompleted;
-            model.TileSelected += SelectTile;
-            model.TilesSwapped += SwapTiles;
-            model.TileDeselected += DeselectTile;
-            model.TileSet += SetTile;
-            model.TurnCompleted += UpdateTurn;
-            model.TileRotated += Rotate;
+            _model.EventLevelCompleted += OnLevelCompleted;
+            _model.TileSelected += SelectTile;
+            _model.TilesSwapped += SwapTiles;
+            _model.TileDeselected += DeselectTile;
+            _model.TileSet += SetTile;
+            _model.TileRotated += Rotate;
 
             _swipeListener = new SwipeListener(updateService);
             _swipeListener.EventSwiped += TrySwipe;
 
             _cellsInteractionHandler =
-                new CellsInteractionHandler(_gridFieldPositionCalculator, model, view, _swipeListener, cameraProvider, _modelAnimator);
+                new CellsInteractionHandler(gridFieldPositionCalculator, _model, view, _swipeListener, cameraProvider, _modelAnimator);
         }
 
         public void BuildLevel()
@@ -90,13 +85,11 @@ namespace Client.Presenters
 
         public void StartLevel()
         {
-            _model.LogAnalyticsLevelStart();
             _levelScreen = (LevelScreen)_screenNavigator.CurrentScreen;
             _levelScreen.SetLevelName($"Level {_model.LevelCount + 1}");
-
-            _levelScreen.SetUpProgressBar(_model.OkResult, _model.GoodResult, _model.PerfectResult);
-
+            
             _updateService.Add(this);
+            _model.Start();
         }
 
         public Vector3 GetTilePos(Vector2Int pos)
@@ -130,11 +123,6 @@ namespace Client.Presenters
                     _swipeListener.Enable();
                 }
             }).Forget();
-        }
-
-        private void UpdateTurn(int turnCount)
-        {
-            _levelScreen.SetTurnsCount(turnCount).Forget();
         }
 
         private void SetTile(Vector2Int pos)
@@ -178,7 +166,7 @@ namespace Client.Presenters
 
         private async void OnLevelCompleted()
         {
-            _model.LogAnalyticsLevelFinish();
+            _cellsInteractionHandler.Stop();
             _levelsLoopProgress.IncLevel();
             _updateService.Remove(this);
 
@@ -186,15 +174,20 @@ namespace Client.Presenters
             await _modelAnimator.AwaitAllAnimationsEnd();
 
             _sound.PlaySfxAsync(SoundNamesCollection.Win).Forget();
-            // Object.Destroy(_view.gameObject);
 
             LevelCompleted?.Invoke();
         }
 
         public void Dispose()
         {
+            _model.EventLevelCompleted -= OnLevelCompleted;
+            _model.TileSelected -= SelectTile;
+            _model.TilesSwapped -= SwapTiles;
+            _model.TileDeselected -= DeselectTile;
+            _model.TileSet -= SetTile;
+            _model.TileRotated -= Rotate;
+            
             _swipeListener.EventSwiped -= TrySwipe;
-
             foreach (CellView cell in _view.PosToCell.Values)
             {
                 _cellsPool.DeSpawn(cell);

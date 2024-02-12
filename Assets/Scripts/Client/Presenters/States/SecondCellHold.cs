@@ -2,7 +2,8 @@ using Client.Models;
 using Client.Views;
 using Cysharp.Threading.Tasks;
 using Ji2Core.Core.States;
-using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
 
 namespace Client.Presenters
@@ -13,19 +14,19 @@ namespace Client.Presenters
 
         private readonly StateMachine _stateMachine;
         private readonly FieldView _fieldView;
-        private readonly Level _level;
+        private readonly LevelPlayableDecorator _levelPlayableDecorator;
         private (CellView cell, PointerEventData pointerEventData) _payload;
 
-        public SecondCellHold(StateMachine stateMachine, FieldView fieldView, Level level)
+        public SecondCellHold(StateMachine stateMachine, FieldView fieldView, LevelPlayableDecorator levelPlayableDecorator)
         {
             _stateMachine = stateMachine;
             _fieldView = fieldView;
-            _level = level;
+            _levelPlayableDecorator = levelPlayableDecorator;
         }
 
         public UniTask Enter((CellView cell, PointerEventData pointerEventData) payload)
         {
-            Assert.AreEqual(1, _level.SelectedTilesCount);
+            Assert.AreEqual(1, _levelPlayableDecorator.SelectedTilesCount);
             _payload = payload;
             _payload.cell.EventPointerUp += PointerUp;
             _payload.cell.EventPointerMove += PointerMove;
@@ -39,7 +40,7 @@ namespace Client.Presenters
 
         private void PointerUp(CellView cell, PointerEventData pointerEventData)
         {
-            _level.ClickTile(_fieldView.CellToPos[cell]);
+            _levelPlayableDecorator.ClickTile(_fieldView.CellToPos[cell]);
             _stateMachine.Enter<NoCellsState>().Forget();
         }
 

@@ -38,7 +38,7 @@ namespace Client.States
         {
             var levelCompletedPayload = new LevelCompletedPayload()
             {
-                level = payload.levelPresenter.Model
+                LevelPlayableDecorator = payload.levelPresenter.Model
             };
             stateMachine.Enter<LevelCompletedState, LevelCompletedPayload>(levelCompletedPayload);
         }

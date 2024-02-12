@@ -15,28 +15,24 @@ namespace Client.States
         private readonly LevelsLoopProgress levelsLoopProgress;
         private readonly LevelsConfig levelsConfig;
         private readonly Sound _sound;
-        private readonly LevelResultViewConfig levelResultViewConfig;
 
         public LevelCompletedState(StateMachine stateMachine, ScreenNavigator screenNavigator,
-            LevelsLoopProgress levelsLoopProgress, LevelsConfig levelsConfig, Sound sound,
-            LevelResultViewConfig levelResultViewConfig)
+            LevelsLoopProgress levelsLoopProgress, LevelsConfig levelsConfig, Sound sound)
         {
             this.stateMachine = stateMachine;
             this.screenNavigator = screenNavigator;
             this.levelsLoopProgress = levelsLoopProgress;
             this.levelsConfig = levelsConfig;
             this._sound = sound;
-            this.levelResultViewConfig = levelResultViewConfig;
         }
 
         public async UniTask Enter(LevelCompletedPayload payload)
         {
             var screen = await screenNavigator.PushScreen<LevelCompletedScreen>();
-            var levelName = payload.level.Name;
+            var levelName = payload.LevelPlayableDecorator.Name;
             var levelViewConfig = levelsConfig.GetData(levelName);
             var levelResultImage = levelViewConfig.Image;
-            var color = levelResultViewConfig.GetColor(payload.level.Result);
-            screen.SetLevelResult(levelResultImage, color);
+            screen.SetLevelResult(levelResultImage);
 
             screen.ClickNext += OnClickNext;
             screen.ClickRetry += OnClickRetry;
@@ -64,6 +60,6 @@ namespace Client.States
 
     public class LevelCompletedPayload
     {
-        public Level level;
+        public LevelPlayableDecorator LevelPlayableDecorator;
     }
 }

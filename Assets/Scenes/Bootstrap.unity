@@ -123,6 +123,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &54692975 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2999049635880329263, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
+  m_PrefabInstance: {fileID: 907379512993701660}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8549110b4616ee4e8231b9fc018d6df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &907379512993701660
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -138,6 +149,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bootstrap
       objectReference: {fileID: 0}
+    - target: {fileID: 907379513116661681, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
+      propertyPath: sound
+      value: 
+      objectReference: {fileID: 54692975}
     - target: {fileID: 907379513116661682, guid: ebe0b4796b5ce1746809f6da5aae686e, type: 3}
       propertyPath: m_RootOrder
       value: 0

@@ -12,18 +12,18 @@ namespace Client.Presenters
     {
         private readonly SwipeListener _swipeListener;
         private readonly FieldView _fieldView;
-        private readonly Level _level;
+        private readonly LevelPlayableDecorator _levelPlayableDecorator;
         private readonly CameraProvider _cameraProvider;
         private readonly GridFieldPositionCalculator _gridFieldPositionCalculator;
         private readonly ModelAnimator _modelAnimator;
 
-        public CellsInteractionStatesFactory(SwipeListener swipeListener, FieldView fieldView, Level level,
+        public CellsInteractionStatesFactory(SwipeListener swipeListener, FieldView fieldView, LevelPlayableDecorator levelPlayableDecorator,
             CameraProvider cameraProvider, GridFieldPositionCalculator gridFieldPositionCalculator,
             ModelAnimator modelAnimator)
         {
             _swipeListener = swipeListener;
             _fieldView = fieldView;
-            _level = level;
+            _levelPlayableDecorator = levelPlayableDecorator;
             _cameraProvider = cameraProvider;
             _gridFieldPositionCalculator = gridFieldPositionCalculator;
             _modelAnimator = modelAnimator;
@@ -33,11 +33,11 @@ namespace Client.Presenters
         {
             var dict = new Dictionary<Type, IExitableState>
             {
-                [typeof(NoCellsState)] = new NoCellsState(stateMachine, _swipeListener, _fieldView, _level, _modelAnimator),
-                [typeof(FirstCellHold)] = new FirstCellHold(stateMachine, _swipeListener, _fieldView, _level, _modelAnimator),
-                [typeof(FirstCellSelected)] = new FirstCellSelected(stateMachine, _swipeListener, _fieldView, _level, _modelAnimator),
-                [typeof(SecondCellHold)] = new SecondCellHold(stateMachine, _fieldView, _level),
-                [typeof(FirstCellMoving)] = new FirstCellMoving(stateMachine, _level, _cameraProvider, _gridFieldPositionCalculator)
+                [typeof(NoCellsState)] = new NoCellsState(stateMachine, _swipeListener, _fieldView, _levelPlayableDecorator, _modelAnimator),
+                [typeof(FirstCellHold)] = new FirstCellHold(stateMachine, _swipeListener, _levelPlayableDecorator),
+                [typeof(FirstCellSelected)] = new FirstCellSelected(stateMachine, _swipeListener, _fieldView, _levelPlayableDecorator, _modelAnimator),
+                [typeof(SecondCellHold)] = new SecondCellHold(stateMachine, _fieldView, _levelPlayableDecorator),
+                [typeof(FirstCellMoving)] = new FirstCellMoving(stateMachine, _levelPlayableDecorator, _cameraProvider, _gridFieldPositionCalculator)
             };
 
             return dict;

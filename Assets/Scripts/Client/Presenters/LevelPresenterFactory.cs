@@ -37,7 +37,7 @@ namespace Client.Presenters
             _cellsPool = dp.GetService<Pool<CellView>>();
         }
 
-        public LevelPresenter Create(FieldView view, Level model)
+        public LevelPresenter Create(FieldView view, LevelPlayableDecorator model)
         {
             return new LevelPresenter(view, model, _screenNavigator, _cellsPool, _updateService, _levelsConfig,
                 _levelsLoopProgress, _sound, _compliments, _mouseInput, _cameraProvider);

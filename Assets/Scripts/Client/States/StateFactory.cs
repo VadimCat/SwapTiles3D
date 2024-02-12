@@ -39,8 +39,7 @@ namespace Client.States
             dict[typeof(GameState)] = new GameState(stateMachine, screenNavigator);
 
             dict[typeof(LevelCompletedState)] = new LevelCompletedState(stateMachine, screenNavigator,
-                _dp.GetService<LevelsLoopProgress>(), _dp.GetService<LevelsConfig>(), _dp.GetService<Sound>(),
-                _dp.GetService<LevelResultViewConfig>());
+                _dp.GetService<LevelsLoopProgress>(), _dp.GetService<LevelsConfig>(), _dp.GetService<Sound>());
 
             return dict;
         }

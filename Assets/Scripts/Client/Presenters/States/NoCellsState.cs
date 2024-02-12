@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Threading;
 using Client.Models;
 using Client.Views;
 using Cysharp.Threading.Tasks;
@@ -6,7 +8,6 @@ using Ji2Core.Core.States;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
-using Assert = NUnit.Framework.Assert;
 
 namespace Client.Presenters
 {
@@ -17,48 +18,59 @@ namespace Client.Presenters
         private readonly StateMachine _stateMachine;
         private readonly SwipeListener _swipeListener;
         private readonly FieldView _fieldView;
-        private readonly Level _level;
+        private readonly LevelPlayableDecorator _levelPlayableDecorator;
         private readonly ModelAnimator _modelAnimator;
-
-        public NoCellsState(StateMachine stateMachine, SwipeListener swipeListener, FieldView fieldView, Level level,
+        private CancellationTokenSource _cancellationTokenSource;
+        private readonly List<CellView> _cachedCells = new();
+        
+        public NoCellsState(StateMachine stateMachine, SwipeListener swipeListener, FieldView fieldView,
+            LevelPlayableDecorator levelPlayableDecorator,
             ModelAnimator modelAnimator)
         {
             _stateMachine = stateMachine;
             _swipeListener = swipeListener;
             _fieldView = fieldView;
-            _level = level;
+            _levelPlayableDecorator = levelPlayableDecorator;
             _modelAnimator = modelAnimator;
         }
 
         public async UniTask Enter()
         {
-            await _modelAnimator.AwaitAllAnimationsEnd();
+            _cancellationTokenSource = new CancellationTokenSource();
+            await _modelAnimator.AwaitAllAnimationsEnd(_cancellationTokenSource.Token);
 
-            Assert.AreEqual(_level.SelectedTilesCount, 0);
-
+            if (_cancellationTokenSource.IsCancellationRequested)
+            {
+                return;
+            }
+            
+            Assert.AreEqual(0, _levelPlayableDecorator.SelectedTilesCount);
+            
             _swipeListener.Disable();
             foreach (var key in _fieldView.CellToPos.Keys)
             {
+                _cachedCells.Add(key);
                 key.EventPointerDown += OnCellDown;
             }
         }
 
         public UniTask Exit()
         {
-            foreach (var key in _fieldView.CellToPos.Keys)
-            {
-                key.EventPointerDown -= OnCellDown;
-            }
+            _cancellationTokenSource.Cancel();
 
+            foreach (var cell in _cachedCells)
+            {
+                cell.EventPointerDown -= OnCellDown;
+            }
+            _cachedCells.Clear();
             return UniTask.CompletedTask;
         }
 
         private void OnCellDown(CellView cell, PointerEventData pointerEventData)
         {
-            Assert.AreEqual(0, _level.SelectedTilesCount);
-            _level.ClickTile(_fieldView.CellToPos[cell]);
- 
-            Assert.AreEqual(1, _level.SelectedTilesCount);
+            Assert.AreEqual(0, _levelPlayableDecorator.SelectedTilesCount);
+            _levelPlayableDecorator.ClickTile(_fieldView.CellToPos[cell]);
+
             _stateMachine.Enter<FirstCellHold, (CellView, PointerEventData)>((cell, pointerEventData)).Forget();
         }
     }

@@ -4,14 +4,13 @@ using Client.UI.Screens;
 using Client.Views;
 using Core.Compliments;
 using Cysharp.Threading.Tasks;
+using Ji2;
 using Ji2.Audio;
 using Ji2.CommonCore;
+using Ji2.Pools;
 using Ji2.Presenters;
 using Ji2.Utils;
-using Ji2Core.Core;
-using Ji2Core.Core.Pools;
 using Ji2Core.Core.ScreenNavigation;
-using Ji2Core.Core.UserInput;
 using UnityEngine;
 
 namespace Client.Presenters

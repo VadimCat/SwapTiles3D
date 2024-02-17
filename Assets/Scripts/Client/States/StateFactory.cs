@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using Client.Models;
 using Client.Presenters;
+using Ji2;
 using Ji2.Audio;
 using Ji2.CommonCore.SaveDataContainer;
 using Ji2.Context;
 using Ji2.Presenters.Tutorial;
-using Ji2Core.Core;
+using Ji2.States;
 using Ji2Core.Core.ScreenNavigation;
-using Ji2Core.Core.States;
 using UI.Background;
 
 namespace Client.States

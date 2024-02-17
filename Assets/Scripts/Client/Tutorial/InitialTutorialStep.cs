@@ -5,10 +5,10 @@ using Client.Presenters;
 using Client.States;
 using Client.Views;
 using Cysharp.Threading.Tasks;
+using Ji2;
 using Ji2.Presenters.Tutorial;
+using Ji2.States;
 using Ji2.UI;
-using Ji2Core.Core;
-using Ji2Core.Core.States;
 
 namespace Client.Tutorial
 {

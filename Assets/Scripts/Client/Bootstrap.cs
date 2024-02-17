@@ -1,23 +1,23 @@
 using Client.Models;
 using Client.Presenters;
 using Client.States;
-using Ji2Core.Core;
 using Ji2Core.Core.ScreenNavigation;
-using Ji2Core.Core.States;
 using Ji2Core.Plugins.AppMetrica;
 using UI.Background;
 using UnityEngine;
 using Client.Tutorial;
 using Client.Views;
 using Core.Compliments;
+using Ji2;
 using Ji2.Audio;
 using Ji2.CommonCore;
 using Ji2.CommonCore.SaveDataContainer;
 using Ji2.Context;
 using Ji2.Models.Analytics;
+using Ji2.Pools;
 using Ji2.Presenters.Tutorial;
+using Ji2.States;
 using Ji2.UI;
-using Ji2Core.Core.Pools;
 
 namespace Client
 {

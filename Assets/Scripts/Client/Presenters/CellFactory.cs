@@ -1,6 +1,6 @@
 using Client.Models;
 using Client.Views;
-using Ji2Core.Core.Pools;
+using Ji2.Pools;
 using UnityEngine;
 
 namespace Client.Presenters

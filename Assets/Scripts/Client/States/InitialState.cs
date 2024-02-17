@@ -2,9 +2,9 @@
 using Facebook.Unity;
 using Ji2.CommonCore.SaveDataContainer;
 using Ji2.Presenters.Tutorial;
+using Ji2.States;
 using Ji2.UI.Screens;
 using Ji2Core.Core.ScreenNavigation;
-using Ji2Core.Core.States;
 using UnityEngine;
 
 namespace Client.States

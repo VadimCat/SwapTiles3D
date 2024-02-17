@@ -1,13 +1,12 @@
 using Client.Models;
 using Client.Views;
 using Core.Compliments;
+using Ji2;
 using Ji2.Audio;
 using Ji2.CommonCore;
 using Ji2.Context;
-using Ji2Core.Core;
-using Ji2Core.Core.Pools;
+using Ji2.Pools;
 using Ji2Core.Core.ScreenNavigation;
-using Ji2Core.Core.UserInput;
 
 namespace Client.Presenters
 {

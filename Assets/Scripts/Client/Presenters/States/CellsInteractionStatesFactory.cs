@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using Client.Models;
 using Client.Views;
+using Ji2;
 using Ji2.Presenters;
-using Ji2Core.Core;
-using Ji2Core.Core.States;
+using Ji2.States;
 
 namespace Client.Presenters
 {

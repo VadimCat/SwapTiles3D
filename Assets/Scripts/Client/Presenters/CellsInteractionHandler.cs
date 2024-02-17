@@ -1,9 +1,9 @@
 using Client.Models;
 using Client.Views;
 using Cysharp.Threading.Tasks;
+using Ji2;
 using Ji2.Presenters;
-using Ji2Core.Core;
-using Ji2Core.Core.States;
+using Ji2.States;
 using UnityEngine.EventSystems;
 
 namespace Client.Presenters

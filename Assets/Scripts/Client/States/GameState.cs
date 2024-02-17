@@ -1,8 +1,8 @@
 ﻿using Client.Presenters;
 using Client.UI.Screens;
 using Cysharp.Threading.Tasks;
+using Ji2.States;
 using Ji2Core.Core.ScreenNavigation;
-using Ji2Core.Core.States;
 using UI.Background;
 
 namespace Client.States

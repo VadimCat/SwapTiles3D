@@ -1,4 +1,5 @@
 ﻿using Client.Views;
+using Ji2.Configs.Levels;
 using UnityEngine;
 using UnityEngine.Serialization;
 

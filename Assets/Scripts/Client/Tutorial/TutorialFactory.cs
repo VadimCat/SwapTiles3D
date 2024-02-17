@@ -1,9 +1,9 @@
 ﻿using System;
+using Ji2;
 using Ji2.Context;
 using Ji2.Presenters.Tutorial;
+using Ji2.States;
 using Ji2.UI;
-using Ji2Core.Core;
-using Ji2Core.Core.States;
 
 namespace Client.Tutorial
 {

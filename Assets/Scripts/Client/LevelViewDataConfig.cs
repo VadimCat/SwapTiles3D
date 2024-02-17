@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using Ji2.Configs.Levels;
 using Ji2.Models;
 using Sirenix.OdinInspector;
 using UnityEngine;

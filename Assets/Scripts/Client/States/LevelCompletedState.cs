@@ -2,7 +2,7 @@
 using Client.UI.Screens;
 using Client.Views;
 using Cysharp.Threading.Tasks;
-using Ji2Core.Core.Audio;
+using Ji2.Audio;
 using Ji2Core.Core.ScreenNavigation;
 using Ji2Core.Core.States;
 

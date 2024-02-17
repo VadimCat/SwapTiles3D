@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using Ji2Core.Core.Audio;
+using Ji2.Audio;
 
 namespace Client.Views
 {

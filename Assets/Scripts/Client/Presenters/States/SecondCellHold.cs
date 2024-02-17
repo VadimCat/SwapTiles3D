@@ -2,7 +2,6 @@ using Client.Models;
 using Client.Views;
 using Cysharp.Threading.Tasks;
 using Ji2Core.Core.States;
-using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
 

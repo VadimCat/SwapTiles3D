@@ -1,5 +1,4 @@
-﻿using System;
-using Client.Presenters;
+﻿using Client.Presenters;
 using Client.UI.Screens;
 using Cysharp.Threading.Tasks;
 using Ji2Core.Core.ScreenNavigation;

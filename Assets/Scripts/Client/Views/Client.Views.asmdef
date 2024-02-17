@@ -6,7 +6,8 @@
         "Ji2",
         "Ji2.Utils",
         "UniTask.DOTween",
-        "Ji2.Context"
+        "Ji2.Context",
+        "Ji2.Audio"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

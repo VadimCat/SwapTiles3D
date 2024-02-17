@@ -1,15 +1,12 @@
-using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Ji2.Context;
-using Ji2Core.Core.Audio;
+using Ji2.Audio;
 using UnityEngine;
 
 namespace Client.Views
 {
     public class FieldView : MonoBehaviour
     {
-        private DiContext _diContext;
         private GridFieldPositionCalculator _gridFieldPositionCalculator;
         public Transform SpawnRoot => transform;
 

@@ -43,7 +43,7 @@ namespace Client.Tutorial
         {
             if (obj is GameState state)
             {
-                _presenter = state.Payload.levelPresenter;
+                _presenter = state.Payload.LevelPresenter;
                 _model = _presenter.Model;
                 _pointer.SetCamera(_cameraProvider.MainCamera);
                 

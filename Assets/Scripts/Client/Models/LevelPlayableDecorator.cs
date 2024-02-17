@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Ji2.Analytics;
 using Ji2.Models;
-using Ji2.Models.Analytics;
 using Ji2.Utils;
 using Ji2.Utils.Shuffling;
 using UnityEngine;

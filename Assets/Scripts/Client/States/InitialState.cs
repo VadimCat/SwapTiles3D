@@ -11,44 +11,44 @@ namespace Client.States
 {
     public class InitialState : IState
     {
-        private readonly StateMachine stateMachine;
-        private readonly ScreenNavigator screenNavigator;
-        private readonly TutorialService tutorialService;
-        private readonly LevelsLoopProgress levelsLoopProgress;
-        private readonly ISaveDataContainer saveDataContainer;
+        private readonly StateMachine _stateMachine;
+        private readonly ScreenNavigator _screenNavigator;
+        private readonly TutorialService _tutorialService;
+        private readonly LevelsLoopProgress _levelsLoopProgress;
+        private readonly ISaveDataContainer _saveDataContainer;
 
 
         public InitialState(StateMachine stateMachine, ScreenNavigator screenNavigator, TutorialService tutorialService,
             LevelsLoopProgress levelsLoopProgress, ISaveDataContainer saveDataContainer)
         {
-            this.stateMachine = stateMachine;
-            this.screenNavigator = screenNavigator;
-            this.tutorialService = tutorialService;
-            this.levelsLoopProgress = levelsLoopProgress;
-            this.saveDataContainer = saveDataContainer;
+            this._stateMachine = stateMachine;
+            this._screenNavigator = screenNavigator;
+            this._tutorialService = tutorialService;
+            this._levelsLoopProgress = levelsLoopProgress;
+            this._saveDataContainer = saveDataContainer;
         }
 
         public async UniTask Enter()
         {
             var facebookTask = LoadFb();
 
-            saveDataContainer.Load();
-            levelsLoopProgress.Load();
-            tutorialService.TryRunSteps();
+            _saveDataContainer.Load();
+            _levelsLoopProgress.Load();
+            _tutorialService.TryRunSteps();
             
-            await UniTask.WhenAll(facebookTask, screenNavigator.PushScreen<LoadingScreen>()) ;
+            await UniTask.WhenAll(facebookTask, _screenNavigator.PushScreen<LoadingScreen>()) ;
 
             float fakeLoadingTime = 0;
 #if !UNITY_EDITOR
             fakeLoadingTime = 5;
 #endif
-            stateMachine.Enter<LoadLevelState, LoadLevelStatePayload>(
-                new LoadLevelStatePayload(levelsLoopProgress.GetNextLevelData(), fakeLoadingTime));
+            _stateMachine.Enter<LoadLevelState, LoadLevelStatePayload>(
+                new LoadLevelStatePayload(_levelsLoopProgress.GetNextLevelData(), fakeLoadingTime));
         }
 
         public async UniTask Exit()
         {
-            await screenNavigator.CloseScreen<LoadingScreen>();
+            await _screenNavigator.CloseScreen<LoadingScreen>();
         }
 
         private async UniTask LoadFb()

@@ -12,24 +12,24 @@ namespace Editor
     public class LevelCreationToolWindow : EditorWindow
     {
         protected const string BaseArtPath = "Assets/Art/Levels/";
-        protected static LevelsConfig storageBase;
+        protected static LevelsConfig StorageBase;
 
-        private static Sprite levelSprite;
-        private static Sprite backSprite;
-        private static string levelName;
-        private static Vector2Int defaultCutSize;
+        private static Sprite _levelSprite;
+        private static Sprite _backSprite;
+        private static string _levelName;
+        private static Vector2Int _defaultCutSize;
 
         private static void DrawGUI()
         {
             EditorGUILayout.LabelField("LevelsStorage");
-            storageBase = (LevelsConfig)EditorGUILayout.ObjectField(storageBase, typeof(LevelsConfig), true);
+            StorageBase = (LevelsConfig)EditorGUILayout.ObjectField(StorageBase, typeof(LevelsConfig), true);
             EditorGUILayout.LabelField("Level name");
-            levelName = EditorGUILayout.TextField(levelName);
+            _levelName = EditorGUILayout.TextField(_levelName);
             EditorGUILayout.LabelField("Level sprite");
-            levelSprite = (Sprite)EditorGUILayout.ObjectField(levelSprite, typeof(Sprite), true);
-            backSprite = (Sprite)EditorGUILayout.ObjectField(backSprite, typeof(Sprite), true);
+            _levelSprite = (Sprite)EditorGUILayout.ObjectField(_levelSprite, typeof(Sprite), true);
+            _backSprite = (Sprite)EditorGUILayout.ObjectField(_backSprite, typeof(Sprite), true);
 
-            defaultCutSize = EditorGUILayout.Vector2IntField("CutSize", defaultCutSize);
+            _defaultCutSize = EditorGUILayout.Vector2IntField("CutSize", _defaultCutSize);
         }
 
         [MenuItem("Tools/LevelCreationTool")]
@@ -44,7 +44,7 @@ namespace Editor
         private static void SetDefaultData()
         {
             var levelDataStorage = AssetDatabase.FindAssets("t:LevelsConfig")[0];
-            storageBase = AssetDatabase.LoadAssetAtPath<LevelsConfig>(AssetDatabase.GUIDToAssetPath(levelDataStorage));
+            StorageBase = AssetDatabase.LoadAssetAtPath<LevelsConfig>(AssetDatabase.GUIDToAssetPath(levelDataStorage));
         }
 
         private void OnGUI()
@@ -53,12 +53,12 @@ namespace Editor
 
             if (GUILayout.Button("Add level"))
             {
-                if (storageBase.LevelIdExists(levelName))
+                if (StorageBase.LevelIdExists(_levelName))
                 {
-                    throw new LevelExistsException(levelName);
+                    throw new LevelExistsException(_levelName);
                 }
 
-                CreateLevel(levelName, levelSprite, defaultCutSize, backSprite);
+                CreateLevel(_levelName, _levelSprite, _defaultCutSize, _backSprite);
             }
 
             if (GUILayout.Button("Fill levels automaticly"))
@@ -74,7 +74,7 @@ namespace Editor
                 var levelSprites = GetSpritesFromPathes(spritePathes);
                 foreach (var spr in levelSprites)
                 {
-                    CreateLevel(spr.name, spr,defaultCutSize, backSprite);
+                    CreateLevel(spr.name, spr,_defaultCutSize, _backSprite);
                 }
             }
         }
@@ -87,8 +87,8 @@ namespace Editor
 
             var path = Path.Combine("Assets\\Configs\\Levels", $"{id}_ViewData.asset");
 
-            storageBase.AddLevel(config);
-            EditorUtility.SetDirty(storageBase);
+            StorageBase.AddLevel(config);
+            EditorUtility.SetDirty(StorageBase);
             
             AssetDatabase.CreateAsset(config, path);
             AssetDatabase.SaveAssets();

@@ -9,49 +9,49 @@ namespace Client.States
 {
     public class GameState : IPayloadedState<GameStatePayload>
     {
-        private readonly StateMachine stateMachine;
-        private readonly ScreenNavigator screenNavigator;
-        private readonly BackgroundService backgroundService;
-        private readonly LevelsLoopProgress levelsLoopProgress;
+        private readonly StateMachine _stateMachine;
+        private readonly ScreenNavigator _screenNavigator;
+        private readonly BackgroundService _backgroundService;
+        private readonly LevelsLoopProgress _levelsLoopProgress;
 
-        private GameStatePayload payload;
+        private GameStatePayload _payload;
         
         public GameState(StateMachine stateMachine, ScreenNavigator screenNavigator)
         {
-            this.stateMachine = stateMachine;
-            this.screenNavigator = screenNavigator;
+            this._stateMachine = stateMachine;
+            this._screenNavigator = screenNavigator;
         }
 
-        public GameStatePayload Payload => payload;
+        public GameStatePayload Payload => _payload;
 
         public async UniTask Enter(GameStatePayload payload)
         {
-            this.payload = payload;
-            await screenNavigator.PushScreen<LevelScreen>();
+            this._payload = payload;
+            await _screenNavigator.PushScreen<LevelScreen>();
 
-            payload.levelPresenter.StartLevel();
-            payload.levelPresenter.LevelCompleted += OnLevelComplete;
+            payload.LevelPresenter.StartLevel();
+            payload.LevelPresenter.LevelCompleted += OnLevelComplete;
         }
 
         private void OnLevelComplete()
         {
             var levelCompletedPayload = new LevelCompletedPayload()
             {
-                LevelPlayableDecorator = payload.levelPresenter.Model
+                LevelPlayableDecorator = _payload.LevelPresenter.Model
             };
-            stateMachine.Enter<LevelCompletedState, LevelCompletedPayload>(levelCompletedPayload);
+            _stateMachine.Enter<LevelCompletedState, LevelCompletedPayload>(levelCompletedPayload);
         }
 
         public async UniTask Exit()
         {
-            payload.levelPresenter.Dispose();
-            payload.levelPresenter.LevelCompleted -= OnLevelComplete;
-            await screenNavigator.CloseScreen<LevelScreen>();
+            _payload.LevelPresenter.Dispose();
+            _payload.LevelPresenter.LevelCompleted -= OnLevelComplete;
+            await _screenNavigator.CloseScreen<LevelScreen>();
         }
     }
 
     public class GameStatePayload
     {
-        public LevelPresenter levelPresenter;
+        public LevelPresenter LevelPresenter;
     }
 }

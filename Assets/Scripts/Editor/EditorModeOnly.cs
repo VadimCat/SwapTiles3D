@@ -84,9 +84,9 @@ namespace Editor
                 Object.DestroyImmediate(go, false);
             }
 
-            var DeactivateOnStartTaggedObjects = FindGameObjectsByTag(DeactivateOnStartTag);
+            var deactivateOnStartTaggedObjects = FindGameObjectsByTag(DeactivateOnStartTag);
 
-            foreach (GameObject go in DeactivateOnStartTaggedObjects)
+            foreach (GameObject go in deactivateOnStartTaggedObjects)
             {
                 // Deactivate only objects in scene
                 if (!go.scene.IsValid())

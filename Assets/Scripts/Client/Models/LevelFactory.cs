@@ -1,7 +1,8 @@
+using Ji2;
+using Ji2.Analytics;
 using Ji2.CommonCore.SaveDataContainer;
 using Ji2.Context;
 using Ji2.Models;
-using Ji2.Models.Analytics;
 
 namespace Client.Models
 {

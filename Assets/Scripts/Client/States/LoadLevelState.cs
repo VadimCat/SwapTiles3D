@@ -79,7 +79,7 @@ namespace Client.States
 
             return new GameStatePayload
             {
-                levelPresenter = levelPresenter
+                LevelPresenter = levelPresenter
             };
         }
 

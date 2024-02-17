@@ -1,4 +1,4 @@
-using Ji2Core.UI.Screens;
+using Ji2.ScreenNavigation;
 using TMPro;
 using UnityEngine;
 

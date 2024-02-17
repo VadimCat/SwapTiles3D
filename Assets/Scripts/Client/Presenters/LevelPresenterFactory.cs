@@ -19,7 +19,6 @@ namespace Client.Presenters
         private readonly LevelsLoopProgress _levelsLoopProgress;
         private readonly Sound _sound;
         private readonly ICompliments _compliments;
-        private readonly MouseInput _mouseInput;
         private readonly CameraProvider _cameraProvider;
         private readonly Pool<CellView> _cellsPool;
 
@@ -32,7 +31,6 @@ namespace Client.Presenters
             _sound = dp.GetService<Sound>();
             _compliments = dp.GetService<ICompliments>();
             //TODO: replace legacy input with new input system class
-            _mouseInput = dp.GetService<MouseInput>();
             _cameraProvider = dp.GetService<CameraProvider>();
             _cellsPool = dp.GetService<Pool<CellView>>();
         }
@@ -40,7 +38,7 @@ namespace Client.Presenters
         public LevelPresenter Create(FieldView view, LevelPlayableDecorator model)
         {
             return new LevelPresenter(view, model, _screenNavigator, _cellsPool, _updateService, _levelsConfig,
-                _levelsLoopProgress, _sound, _compliments, _mouseInput, _cameraProvider);
+                _levelsLoopProgress, _sound, _compliments, _cameraProvider);
         }
     }
 }

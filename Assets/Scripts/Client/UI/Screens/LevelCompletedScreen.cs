@@ -1,7 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Ji2Core.UI.Screens;
+using Ji2.ScreenNavigation;
 using UnityEngine;
 using UnityEngine.UI;
 

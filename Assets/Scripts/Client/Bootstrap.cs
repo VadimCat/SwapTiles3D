@@ -42,7 +42,6 @@ namespace Client
             InstallAudioService();
             InstallLevelsData();
             InstallNavigator();
-            InstallInputService();
             _diContext.Register(updateService);
             _diContext.Register(backgroundService);
             var sceneLoader = new SceneLoader(updateService);
@@ -104,11 +103,6 @@ namespace Client
         private void InstallCamera()
         {
             _diContext.Register(new CameraProvider());
-        }
-
-        private void InstallInputService()
-        {
-            _diContext.Register(new Ji2Core.Core.UserInput.MouseInput(updateService));
         }
 
         private void InstallAudioService()

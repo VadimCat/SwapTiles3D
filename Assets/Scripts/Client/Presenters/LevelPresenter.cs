@@ -28,7 +28,6 @@ namespace Client.Presenters
         private readonly LevelsLoopProgress _levelsLoopProgress;
         private readonly Sound _sound;
         private readonly ICompliments _compliments;
-        private readonly MouseInput _mouseInput;
 
         private readonly ModelAnimator _modelAnimator = new();
 
@@ -43,7 +42,7 @@ namespace Client.Presenters
 
         public LevelPresenter(FieldView view, LevelPlayableDecorator model, ScreenNavigator screenNavigator, Pool<CellView> cellsPool,
             UpdateService updateService, LevelsConfig levelConfig, LevelsLoopProgress levelsLoopProgress,
-            Sound sound, ICompliments compliments, MouseInput mouseInput, CameraProvider cameraProvider)
+            Sound sound, ICompliments compliments, CameraProvider cameraProvider)
         {
             _view = view;
             _model = model;
@@ -53,7 +52,6 @@ namespace Client.Presenters
             _levelsLoopProgress = levelsLoopProgress;
             _sound = sound;
             _compliments = compliments;
-            _mouseInput = mouseInput;
             _camera = cameraProvider.MainCamera;
 
             var gridFieldPositionCalculator = new GridFieldPositionCalculator(_model.Size, _screenNavigator.Size, _screenNavigator.ScaleFactor,
@@ -133,7 +131,7 @@ namespace Client.Presenters
             {
                 if (closureSet % 4 == 0)
                 {
-                    _compliments.ShowRandomFromScreenPosition(_mouseInput.lastPos);
+                    _compliments.ShowRandomFromScreenPosition(default);
                 }
 
                 return _view.PlaySetAnimation(pos);
